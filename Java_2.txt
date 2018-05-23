@@ -1,0 +1,891 @@
+Java Questions 
+https://chortle.ccsu.edu/java5/Notes/chap34A/ch34A_4.html
+
+---- what happens when obj created ?
+ 1. Memory is allocated from heap to hold all instance variables
+ 2. all instance variable initializers and initialization blocks are executed.
+	The instance variables of the objects are initialized to their default values.
+ 3. Then the body of the constructor is executed.
+	Thus, the constructor for the base class completes first and constructor for the most derived class completes last.
+
+---- Constructor (initialize the object)
+	DEF - Constructor in java is a special type of method that is used to initialize the object.
+		= Java constructor is invoked at the time of object creation.
+		- provides data for the object that is why it is known as constructor.
+		= Constr have only public, protected, private, default. final & static not allowed, they shows compile time exception.
+		
+		==== Access modifiers for constructor is same as class
+		===== Constructor can be private (It makes as a singletonClass)
+		=== parent class variable & parent constructor are called first
+		=== whenever an instance created by child object, 
+			1.) Default Constructor of parent class is called first
+			2.) Corresponding(default constr of child/Parameterized constr of child) Child constructor called second.
+		
+	RULES for creating java constructor
+	 2 rules defined for the constructor.
+		- Constructor name must be same as its class name
+		- Constructor must have no explicit return type
+	
+	There are 2 TYPES of constructors:
+		- Default constructor (no-arg constructor) (Adv : provides the default values to the object like 0, null etc. depending on the type)
+		- Parameterized constructor (A constructor that have parameters is known as parameterized constructor)
+	Rule: If there is no constructor in a class, compiler automatically creates a default constructor.
+	
+	 a.) Default constructor
+		class Student3{  
+			int id;  
+			String name;  			
+			void display(){System.out.println(id+" "+name);}  
+			  
+			public static void main(String args[]){  
+				Student3 s1=new Student3();  
+				Student3 s2=new Student3();  
+				s1.display();  
+				s2.display();  
+			}  
+		 }  
+		Output : 0 null
+				 0 null
+		0 and null values are provided by default constructor.
+
+	 b.) Parameterized constructor
+			class Student4{  
+				int id;  
+				String name;  
+				  
+				Student4(int i,String n){  
+				id = i;  
+				name = n;  
+				}  
+				void display(){System.out.println(id+" "+name);}  
+			   
+				public static void main(String args[]){  
+					Student4 s1 = new Student4(111,"Karan");  
+					Student4 s2 = new Student4(222,"Aryan");  
+					s1.display();  
+					s2.display();  
+			   }  
+			}  
+			Output :
+				111 Karan
+				222 Aryan
+	
+	- Constructor Return type
+		public class Oops {
+		void Oops(){ 
+			System.out.println("Class Oops"); 
+		} 
+		public static void main (String[] args) {
+		 new Oops(); 
+		}
+	}
+		O/p ---> nothing prints (Bcz constructor have void, so default constr can't called.)
+		O/p ---> Class Oops (Removing void in Oops Constr, this output occurs.)
+	
+	= If put void infront of constr, no exception or error, but default constr can't be called.
+	
+		Diff betw Java Constructor	& Java Method
+			--------------------------------------------------------------------------------------------------------
+									Java Constructor									Java Method
+			--------------------------------------------------------------------------------------------------------
+			Constructor is used to INITIALIZE THE STATE OF AN OBJECT.	Method is used to EXPOSE BEHAVIOUR OF AN OBJECT.
+			Constructor MUST NOT HAVE RETURN TYPE.						Method must have return type.
+			Constructor is invoked implicitly.							Method is invoked explicitly.
+			Constructor name must be same as the class name.			Method name may or may not be same as class name.
+	       ----------------------------------------------------------------------------------------------------------
+	
+ -- volatile (variable is marked as volatile it means that the variable will be stored in main memory)
+	=  every time a volatile variable is read it will be read from the main memory similarly  
+		every time the volatile variable is written the changes will be written to the main memory only. 
+	- volatile keyword is used to represent a variable visibility
+	- Once var is marked as volatile, then one thread modify the variables value, the updated value is visible to all threads.
+
+	= Volatile makes/guarantee the visibility of resources to all Threads & accessed from Main Memory only.
+
+ -- atomic operation
+	 - int++ is not an atomic operation.
+	   So by the time one threads read it’s value and increment it by one, other thread has read the older value leading to wrong result.
+	   
+ -- Aggregation -> Is a mappings like 1-1,1-many,many-1,many-many
+	Library have both students & books
+		Association -> Here Libraray & students are Association (Bcz both r independent)
+		Composition -> Here Libraray & Books are Composition (Bcz both r dependent)
+
+1.) Variable Types :
+	 local variables = Variables defined inside methods, constructors or blocks 
+			 - We have to initialize the value bfr it's usage
+			 - Access modifiers are not allowed
+
+	 Instance Variables = defined at the class level (variables within a class but outside any method)
+			     =  Default value 0 and false, automatically initialized 
+			     -  Access modifiers like public (visible for any child class), private(only for parent class) are allowed
+			     -  created when an object is created with the use of the keyword 'new' 
+				  
+	 static/class variables = variables declared with in a class, outside any method, with the static keyword.
+				= Default values are same as instance variables
+				  Constants are variables that are declared as public/private, final and static
+				  Static variables are stored in static memory.
+				  accessed by calling with the class name . ClassName.VariableName.
+				  Class variables also known as static variables are declared with the static keyword in a class, 
+
+    -- Access Modifiers
+		public -> CAN be accessed from any packages(both outside & inside packages).
+		protected -> CAN be accessed from ‘same package’ and a subclass existing in any package can access.
+		default -> CAN be accessed within package only
+		private -> CAN be accessed within class only
+
+2.) static keyword
+	The static can be:
+		variable (also known as class variable)
+		method (also known as class method)
+		block
+		nested class
+    
+	a.) Static/class Variable
+		= used to refer the common property of all object (Ex: company name of employees,college name of students etc.)
+		- gets memory only once in class area at the time of class loading.
+		= instance variable gets the memory at the time of object creation, each object will have the copy of the instance variable, 
+			if it is incremented, it won't reflect to other objects
+		= static variable will get the memory only once, if any object changes the value of the static variable, it will retain its value.
+		
+		Adv:
+		it saves memory
+		
+		Ex 1 :
+		class Student8{  
+		   int rollno;  
+		   String name;  
+		   static String college ="ITS";  
+			 
+		   Student8(int r,String n){  
+			   rollno = r;  
+			   name = n;  
+		   }  
+		 void display (){System.out.println(rollno+" "+name+" "+college);}  
+		  
+		 public static void main(String args[]){  
+		 Student8 s1 = new Student8(111,"Karan");  
+		 Student8 s2 = new Student8(222,"Aryan");  		   
+		 s1.display();  
+		 s2.display();  
+		 }  
+	 }  
+		Output:111 Karan ITS
+			   222 Aryan ITS
+	
+		Ex 2 :
+		class Counter2{  
+			static var -> static int count=0;//will get memory only once and retain its value  
+			Instance var -> int count=0;//will get memory when instance is created  
+			
+			Counter2(){  
+			count++;  
+			System.out.println(count);  
+			}  			 
+			public static void main(String args[]){  			  
+			Counter2 c1=new Counter2();  
+			Counter2 c2=new Counter2();  			  
+			 }  
+			} 
+		Output(static variable):1,2
+		Output(instance variable):1,1
+		
+	b.) Static Method (Without obj we can call a method)
+			- A static method can be invoked without the need for creating an instance of a class.
+			- static method can access static data member and can change the value of it.
+			
+			Ex:
+			class Calculate{  
+			  static int cube(int x){  
+				return x*x*x;  
+			  }  			  
+			  public static void main(String args[]){  
+				  int result=Calculate.cube(5);  
+				  System.out.println(result);  
+			  }  
+			}  
+			Output:125
+			
+			- There are two main restrictions for the static method. They are:
+				The static method CAN NOT USE NON STATIC DATA member or call NON-STATIC METHOD directly.
+				this and super cannot be used in static context.
+	
+
+
+	c.) Java static block
+		- Is used to initialize the static data member.
+		- It is executed before main method at the time of classloading.
+			
+		Ex:
+		class A2{  
+		  static{System.out.println("static block is invoked");}  
+		   public static void main(String args[]){  
+		   System.out.println("Hello main");  
+		  }  
+		}  
+		Output:static block is invoked
+				Hello main
+		
+		= we can execute a program without main() method, by using static block
+		class A3{  
+		  static{  
+		  System.out.println("static block is invoked");  
+		  System.exit(0);  
+		  }  
+		}  
+		
+3.) String, StringTo(), String Tokenizer	
+
+	String is immutable and final in java
+	Strings are implicitly thread safe.
+ -- Immutables Adv :
+   - this way Java Runtime saves a lot of java HEAP SPACE because different String variables can refer to same String variable in the pool.
+   - Another reason is THREAD SAFETY: Immutables are always thread safe because a thread has to completely build them before 
+      they can be passed to someone else - and after building, they can't be changed anymore.
+   - String is immutable, its hashcode is cached at the time of creation and it doesn’t need to be calculated again.
+     This makes it a great candidate for key in a Map and it’s processing is fast than other HashMap key objects.
+     This is why String is mostly used OBJECT AS HASHMAP KEYS.
+   - Security (Java class loading mechanism works on class names passed as parameters, then these classes are searched in class path.) 
+ 
+  -- String
+	- There are two ways to create String object:
+		By string literal (Double Quotes)
+		By new keyword (new)
+		
+		a.) string literal 
+			=  String created using literal are created in String pool itself which exists in PermGen area of heap
+			(Adv : more memory efficient ,
+				(because no new objects are created if it exists already in string constant pool, reference will be passed))
+			Each time you create a string literal, the JVM checks the string constant pool first. If the string already exists in the pool,
+ 			a reference to the pooled instance is returned. If string doesn't exist in the pool, a new string instance is created and placed in the pool.
+			
+			Ex :
+			String s1="Welcome";  
+			String s2="Welcome";//will not create new instance
+			
+		b.) new keyword
+			= we create string with new() Operator, it’s created in heap and not added into string pool
+			
+			Ex :
+			String s = new String("Test");
+			we need to call String.intern() method which is used to put  them into String pool explicitly
+
+    -- String s =new String("abc");  --> hw many obj r created ?
+        Ans.
+	    Two objects will be created here. 
+	    One object creates memory in heap with new operator and second in stack constant pool with "abc". 
+	  
+  -- toString()
+	- We want to REPRESENT ANY OBJECT AS A STRING, toString() method comes into existence.
+	- If you print any object, java compiler internally invokes the toString() method on the object. So overriding the toString() method, 
+		returns the desired output,	it can be the state of an object etc. depends on your implementation
+		
+  -- String Tokenizer (old method, replaced by split method)
+	- The java.util.StringTokenizer class allows you to BREAK A STRING INTO TOKENS. It is simple way to break string.
+	- Methods :
+		boolean hasMoreTokens()				checks if there is more tokens available.
+		String nextToken()					returns the next token from the StringTokenizer object.
+		String nextToken(String delim)		returns the next token based on the delimeter.
+		boolean hasMoreElements()			same as hasMoreTokens() method.
+		Object nextElement()				same as nextToken() but its return type is Object.
+		int countTokens()					returns the total number of tokens.
+		
+		Example :
+		import java.util.StringTokenizer;  
+		public class Simple{  
+		 public static void main(String args[]){  
+	 **   StringTokenizer st = new StringTokenizer("my name is khan"," ");  
+	 **	  while (st.hasMoreTokens()) {  
+				 System.out.println(st.nextToken());  
+			 } } } 
+			Output : 	my
+					   name
+					   is
+					   khan
+					   
+	= StringTokenizer class is deprecated now. It is recommended to use split() method of String class
+	
+	Char array is preferred over String for storing password ? 
+		bcz String is immutable, its value is stored in string pool.Anyone have access to heapdump, they can see password as cleartext.
+		so char array, if we declare password & not using, we make it as blank.
+ 
+4.) Difference between string & stringbuffer & StringBuilder
+	String object is immutable( meaning the value stored in the object cannot be changed)
+
+	if you aren’t going to use threading then use the StringBuilder class as it’ll be more efficient than StringBuffer due to the absence of synchronization.
+
+	----------------------------------------------------------------------------------
+						 String                    StringBuffer         StringBuilder
+	----------------------------------------------------------------------------------                 
+	Storage Area | Constant String Pool           Heap                       Heap 
+	Modifiable   |  No (immutable)            Yes( mutable )          Yes( mutable )
+	Thread Safe  |         Yes                    Yes                        No
+	Performance  |         Fast                  very slow                   Fast
+	-----------------------------------------------------------------------------------
+	
+	= When should we choose String and StringBuffer? 
+		If we do not want to store string modifications in the same memory we must choose String.
+		To do modifications in the same memory, we must choose StringBuffer or StringBuilder.
+		
+	= StringBuffer doesn’t override equals() and hashcode() mthd
+	
+	convert int to string
+		Integer.toString()
+		String.valueOf()
+		String.format()
+	String to int conversion
+		Integer.parseInt(myString);
+	
+5.) Wrapper Class
+	- All wrapper classes in java.lang are immutable
+	= Wrapper classes are classes that allow primitive types to be accessed as objects.
+	- Each of Java's eight primitive data types has a class dedicated to it. These are known as wrapper classes
+	- All wrapper classes in java.lang are IMMUTABLE
+	Ex :    int  x = 25;
+		Integer  y = new Integer(33); 
+
+	int have wrapper class of Integer, similarly all have it.
+	boolean - Boolean, char - Character, byte - Byte, float - Float, double - Double
+	
+  -- Autoboxing & Unboxing
+	= The automatic conversion of primitive data types into its equivalent Wrapper type is known as boxing and opposite operation is known as unboxing. 
+	= This is the new feature of Java5 (Autoboxing).	
+	- No need of conversion between primitives and Wrappers manually, so less coding is required.
+	
+	Ex :
+	class BoxingExample1{  
+	  public static void main(String args[]){  
+		 int a=50;  
+		**	Integer a2=new Integer(a);//Boxing  
+	  	**	Integer a3=5;//Autoboxing
+			System.out.println(a2+" "+a3);  output -> 50 5
+			
+			Integer i=new Integer(50);  
+		**	int a=i;  // Unboxing
+			System.out.println(a);  output -> 50
+	 }   
+	}  
+	
+	- There are some rules for method overloading with boxing:
+		Widening beats boxing
+		Widening beats varargs - example shown below
+		Boxing beats varargs	
+			Ex : public static void printValue(int i, int j, int k){
+					System.out.println("int");
+				}
+				public static void printValue(byte...b){
+					System.out.println("long");
+				}
+				public static void main(String... args) {
+					byte b = 9;
+					printValue(b,b,b);
+				}
+			output --> int
+
+		Widening conversions are 
+			From byte -> short, int, long, float or double
+			From short -> int, long, float or double
+			From char -> int, long, float or double
+			From int -> long, float or double
+			From long -> float or double
+			From float -> double
+			
+6.) Java Enum
+	  = Enum in java is a data type that contains fixed set of constants.
+	  - The enum can be defined within or outside the class because it is similar to a class.
+	  = enum may implement many interfaces but cannot extend any class because it internally extends Enum class
+	  - values()
+		 The java compiler internally adds the values() method when it creates an enum. 
+		 The values() method returns an array containing all the values of the enum.  
+	  - Constructor of enum type is private. If you don't declare private, compiler internally creates private constructor.
+	  - enum (As an enum cannot be instantiated using the new operator)
+			public enum Test { BREAKFAST(7, 30), LUNCH(12, 15), DINNER(19, 45);
+			Test t = new BREAKFAST; ---> wrong
+			Test t = BREAKFAST;  ---> correct
+	
+	   Ex 1 :
+	**	enum Season { WINTER, SPRING, SUMMER, FALL }   -----> outside class
+		class EnumExample2{  
+	**	enum Season { WINTER, SPRING, SUMMER, FALL; }//semicolon(;) is optional here  -----> Inside class
+		public static void main(String[] args) {  
+		Season s=Season.WINTER;  (or) for (Season s : Season.values()) System.out.println(s); }
+		System.out.println(s);  
+		}}   
+		Output -> WINTER
+		
+	   EnumExample2 
+		Example of specifying initial value to the enum constants
+		class EnumExample4{  
+			enum Season{   
+		**	WINTER(5), SPRING(10), SUMMER(15), FALL(20);   
+			  
+			private int value;  
+			private Season(int value){  
+				this.value=value;  
+				}  
+			}  
+			public static void main(String args[]){  
+		** 	 for (Season s : Season.values())  
+				System.out.println(s+" "+s.value);  		
+			}} 
+			Output:WINTER 5
+				   SPRING 10
+				   SUMMER 15
+				   FALL 20
+	
+	
+7.)  Marker/Tagged Interface (Empty Interface - No Methods, No Variables) provide some essential information to the JVM
+	=  these interfaces are implemented by some classes to provide special instructions to JVM
+	  Ex: Serializable, Cloneable, EventListner, Runtime
+	    
+    a.) Serialization	(writing the state of an object into a byte stream)
+		why Serializable ? 
+		 = Whenever an object has to sent over the network, those objects should be serialized. 
+			Also if the state of an object is to be saved, objects need to be serilazed.
+			
+			Usage ::
+			This Byte stream can be used for different purpose.
+				Write to Disk
+				Store in Memory
+				Sent byte stream to other platform over network
+				Save byte stream in DB(As BLOB)
+
+		 - an OBJECT CAN BE REPRESENTED AS A SEQUENCE OF BYTES that includes the object's data as well as information about the 
+			object's type and the types of data stored in the object.
+		 - After a serialized object has been written into a file, it can be read from the file and deserialized that is, 
+			the type information and bytes that represent the object and its data can be used TO RECREATE THE OBJECT IN MEMORY.
+		 = The String class and all the wrapper classes implements java.io.Serializable interface by default
+		 
+		 - Classes ObjectInputStream and ObjectOutputStream are high-level streams that contain the methods for 
+			serializing and deserializing an object.
+		 
+		 = Sent byte stream to other platform over network
+		 = Save byte stream in DB(As BLOB)
+
+		Example - 
+		 --- Serialization (writeObject(), flush() - flush the current output stream, close())
+			import java.io.*;  
+			class Persist{  
+				public static void main(String args[])throws Exception{  
+				  Student s1 =new Student(211,"ravi");  				  
+				  FileOutputStream fout=new FileOutputStream("f.txt");  
+				  ObjectOutputStream out=new ObjectOutputStream(fout);  				  
+				  out.writeObject(s1);  
+				  out.flush();  
+				  System.out.println("success");  
+				}  
+			}  
+			
+		---- De-serialization (readObject(), close())
+			import java.io.*;  
+			class Depersist{  
+			 public static void main(String args[])throws Exception{  				
+			  ObjectInputStream in=new ObjectInputStream(new FileInputStream("f.txt"));  
+			  Student s=(Student)in.readObject();  
+			  System.out.println(s.id+" "+s.name);  			  
+			  in.close();  
+			 }  
+			}  
+		
+		-- static variables are not Serializable. 
+			Since static fields are not part of object state, they are part of class, serialization ignores the static fields.
+		
+		-- Transient Keyword (Transient variable values can't be converted into bytes)
+			= A transient variable is a variable that can not be serialized
+			- The transient keyword in java is used on class attributes/variables to indicate that serialization process of such class should 
+			  ignore such variables while creating a persistent byte stream for any instance of that class. 
+			= If you deserialize the object, you will get the default value for transient variable.
+					
+			Example :
+			import java.io.Serializable;  
+			public class Student implements Serializable{  
+			 int id; String name;  
+		  ** transient int age;//Now it will not be serialized  
+			 public Student(int id, String name,int age) {  
+			  this.id = id;  this.name = name;  this.age=age;  
+			 } }  
+
+			import java.io.*;  
+			class PersistExample{  
+			 public static void main(String args[])throws Exception{  
+			  Student s1 =new Student(211,"ravi",22); //creating object  
+			  //writing object into file  
+			  FileOutputStream f=new FileOutputStream("f.txt");  
+			  ObjectOutputStream out=new ObjectOutputStream(f);  
+			  out.writeObject(s1);  
+			  out.flush();  out.close();  f.close();  System.out.println("success");  
+			 }  }  
+			 
+			 // code for deserialization.
+			 import java.io.*;  
+			 class DePersist{  
+			 public static void main(String args[])throws Exception{  
+			  ObjectInputStream in=new ObjectInputStream(new FileInputStream("f.txt"));  
+			  Student s=(Student)in.readObject();  
+			  System.out.println(s.id+" "+s.name+" "+s.age);  
+			  in.close();  
+			 }  
+			}  
+			Output : 211 ravi 0(default value)
+			
+		 = whenever any final field/reference is evaluated as “constant expression“, it is serialized by JVM ignoring the presence of transient keyword.
+		 - If you want to persist the state of non-serializable fields then use readObject() and writeObject() methods. 
+		   
+				Example :
+			 ** public final transient String confidentialInfo = &quot;password&quot;;
+				After serialize & de-serialize then, 
+				Output - password
+		 = When you try to serialize an object which implements Serializable interface, incase if the object includes 
+			a reference of an non serializable object then NotSerializableException will be thrown.
+			
+	b.) Clone (Less Processing Task)
+		- The object cloning is a way to create exact copy of an object.
+		- java.lang.Cloneable interface must be implemented by the class (If we don't implement Cloneable interface, 
+			clone() method generates CloneNotSupportedException)
+		 
+		 Adv:
+		  The clone() method saves the extra processing task for creating the exact copy of an object. If we perform it by using the new keyword, 
+			it will take a lot of processing to be performed that is why we use object cloning.
+		  
+		 Example -
+		    class Student18 implements Cloneable{  
+				int rollno;  
+				String name;  
+				  
+				Student18(int rollno,String name){  
+					this.rollno=rollno;  
+					this.name=name;  
+				}  
+				  
+				public Object clone()throws CloneNotSupportedException{  
+				return super.clone();  
+				}  
+				  
+				public static void main(String args[]){  
+				try{  
+					Student18 s1=new Student18(101,"amit");  					  
+				**	Student18 s2=(Student18)s1.clone();  
+					  
+					System.out.println(s1.rollno+" "+s1.name);  
+					System.out.println(s2.rollno+" "+s2.name);  				  
+				 }
+				catch(CloneNotSupportedException c){}  				  
+				}  
+			}  
+			
+	c.) Externalizable (not a marker interface)
+		- The Externalizable interface provides the facility of writing the state of an object into a byte stream in COMPRESS FORMAT. 
+		
+		java.io.Externalizable interface and 
+		provide implementation of writeExternal() and readExternal() methods to be used in serialization process.
+		
+		The Externalizable interface provides two methods:
+			public void writeExternal(ObjectOutput out) throws IOException
+			public void readExternal(ObjectInput in) throws IOException
+
+8.) Singleton class (Limitation of object creation)
+	Singleton pattern restricts the instantiation of a class and ensures that only one instance of the class exists in the java virtual machine.
+	The singleton class must provide a global access point to get the instance of the class. 
+	
+  - Usage :
+		Singleton pattern is used for db logging, drivers objects, caching and thread pool.
+	
+  -	Features :
+		Private constructor to restrict instantiation of the class from other classes.
+		Private static variable of the same class that is the only instance of the class.
+		Public static method that returns the instance of the class, this is the global access point for outer world to get the instance of 
+			the singleton class.
+	
+  -	Methods to implement singleton class :
+		Static block initialization
+		Lazy Initialization
+		Thread Safe Singleton
+		Using Reflection to destroy Singleton Pattern
+		Enum Singleton
+		Serialization and Singleton
+		Eager initialization
+		
+		1.) Static block
+			public class StaticBlockSingleton {
+			private static StaticBlockSingleton instance;			
+			private StaticBlockSingleton(){}			
+			//static block initialization for exception handling
+			static{
+				try{
+					instance = new StaticBlockSingleton();
+				}catch(Exception e){
+					throw new RuntimeException("Exception occured in creating singleton instance");
+				}
+			}
+			
+			public static StaticBlockSingleton getInstance(){
+				return instance;
+			}
+		}
+
+		2.) Lazy & 3.) Thread Safe Singleton
+			public class LazyInitializedSingleton {
+			private static LazyInitializedSingleton instance;			
+			private LazyInitializedSingleton(){}
+			
+			public static LazyInitializedSingleton getInstance(){		----> Lazy
+			public static synchronized LazyInitializedSingleton getInstance(){		----> Thread Safe Singleton
+				if(instance == null){
+					instance = new LazyInitializedSingleton();
+				}
+				return instance;
+			}
+		}
+
+		4.) Enum 
+			 - enum value is instantiated only once in a Java program
+			 - Since Java Enum values are globally accessible, so is the singleton.
+			 
+			public enum EnumSingleton {
+			INSTANCE;			
+			public static void doSomething(){
+				//do something
+			}
+		}
+	
+  -- Methods to create more than 1 instance in singleton class :
+		Cloneable (implements cloneable interface -> override clone() method)
+		Reflextion
+	
+		Example :
+		- Main file 
+			package com.TestJava;
+			public class Collect {
+			public static void main(String[] args) throws CloneNotSupportedException {
+				SingletonClass sc = SingletonClass.getInstance();
+		**		SingletonClass sc1 = (SingletonClass) sc.clone();
+			 }
+			}
+		
+		- Singletonclass file
+			package com.TestJava;
+			public class SingletonClass implements Cloneable {
+			@Override
+		**	protected Object clone() throws CloneNotSupportedException {
+				return new SingletonClass();
+			}
+
+			private static SingletonClass singletonClass ;
+			public static SingletonClass getInstance() {
+				if (singletonClass == null) {
+					singletonClass = new SingletonClass();
+					System.out.println("Singleton class");
+				}
+				return singletonClass;
+			}
+		}
+
+   
+9.) Shallow & Deep Copy in clone() method (https://www.cs.utexas.edu/~scottm/cs307/handouts/deepCopying.htm)
+	  The default behavior of an object’s clone() method automatically yields a shallow copy. 
+	  So to achieve a deep copy the classes must be edited or adjusted.
+	
+	- Shallow Copy (data simply refers to the same array as vals.)
+	  = This can lead to unpleasant side effects if the elements of values are changed via some other reference.
+	  - Generally clone method of an object, creates a new instance of the same class and copies all the fields to the new instance and returns it.	  
+	  
+	- Deep Copy (creating a new array and copying over the values)
+	  = Changes to the array values refers to will not result in changes to the array data refers to
+	  - When the copied object contains some other object its references are copied recursively in deep copy.
+	  Ex : Serialization
+	  ----------------------------------------------------------------------------------------------------------------------------
+					Shallow Copy											|							Deep Copy
+	  ----------------------------------------------------------------------------------------------------------------------------
+	  Cloned Object and original object are not 100% disjoint.				|	Cloned Object and original object are 100% disjoint.
+	  Any changes made to cloned object will be reflected in original object|   Any changes made to cloned object will not be reflected in 
+			or vice versa.													|		original object or vice versa.
+	  Default version of clone method creates the shallow copy of an object.|	To create the deep copy of an object, you have to override clone method.
+	  Shallow copy is preferred if an object has only primitive fields.		|	Deep copy is preferred if an object has references to other objects as fields.
+	  Shallow copy is fast and also less expensive.							|	Deep copy is slow and very expensive.
+	  ----------------------------------------------------------------------------------------------------------------------------
+
+10.) Binding (http://javaconceptoftheday.com/static-binding-and-dynamic-binding-in-java/)
+		DEF - Binding refers to the link between method call and method definition. 
+		
+	2 Types of binding :
+	   - static binding 
+			Static binding is a binding which happens during compilation. 
+			It is also called early binding because binding happens before a program actually runs.
+				
+	   - dynamic binding
+			Dynamic binding is a binding which happens during run time.
+			It is also called late binding because binding happens when program actually is running.
+		----------------------------------------------------------------------------------------------------------------------------	
+				Static Binding									 |				Dynamic Binding
+		----------------------------------------------------------------------------------------------------------------------------
+		It is a binding that happens at compile time.			 |	It is a binding that happens at run time.
+		Actual object is not used for binding.					 |	Actual object is used for binding.
+		It is also called early binding because binding happens  |  It is also called late binding because binding happens at run time.
+					during compilation.	                         |
+		Method overloading is the best example of static binding.|	Method overriding is the best example of dynamic binding.
+		Private, static and final methods show static binding. 	 | 	Other than private, static and final methods show dynamic binding. 
+			Because, they can not be overridden.				 | 		Because, they can be overridden.
+		----------------------------------------------------------------------------------------------------------------------------
+			
+11.) Formal and Actual Parameters
+	  formal parameter — the IDENTIFIER used in a method to stand for the value that is passed into the method by a caller.
+		For example, amount is a formal parameter of processDeposit
+	  actual parameter — the actual value that is passed into the method by a caller.
+		For example, the 200 used when processDeposit is called is an actual parameter. Actual parameters are often called arguments   
+		
+  - Pass by Value(not original value passed) & Pass by Reference (passing address)
+	When an object is passed by value, this means that a COPY OF THE OBJECT IS PASSED. Thus, even if changes are made to that object,
+	it doesn’t affect the original value. 
+	When an object is passed by reference, this means that the actual object is not passed, rather a REFERENCE OF THE OBJECT IS PASSED.
+	Thus, any changes made by the external method, are also reflected in all places.
+			
+12.) Assert
+	 - Assertion is a statement in java. It can be used to test your assumptions about the program.
+	 = While executing assertion, it is believed to be true. If it fails, JVM will throw an error named AssertionError.
+		It is mainly used for testing purpose.
+		
+	  - Syntax of an assert statement is as follow (short version):
+		a.) assert expression1;
+			 or (full version):
+		b.) assert expression1 : expression2; 
+			Where:
+			expression1 must be a boolean expression.
+			expression2 must return a value (must not return void).
+	
+	- Example :
+		public static void main( String args[] ){    
+		Scanner scanner = new Scanner( System.in );  
+		System.out.print("Enter ur age ");  
+		
+		int value = scanner.nextInt();  
+		assert value>=18:" Not valid";  
+	  
+		System.out.println("value is "+value);  
+	 }  
+	Output: Enter ur age 11
+			Exception in thread "main" java.lang.AssertionError: Not valid
+
+	Other features :
+		Assertions can be enabled or disabled on a class-by-class basis.
+		Assert statements should not cause side effects (Doesn't change values of variables, like increment, etc)
+			
+13.) Inner Class 
+		
+	--- Nested class
+	= A class that is declared inside another class is called nested class, 
+	- there are four types of a nested class in java : 
+		member inner class, local inner class, annonymous inner class and static nested class. 
+		
+		= Inner class extends exactly only one class or implements exactly only one interface
+		= Java allows only public and default modifier for top level classes in java. 
+			Inner classes can be private.
+		
+		class TestMemberOuter1{  
+		  private int data=30;  
+		  class Inner{  
+		   void msg(){System.out.println("data is "+data);}  
+		  }  
+		 public static void main(String args[]){  
+	**	   TestMemberOuter1 obj=new TestMemberOuter1();  
+	***	   TestMemberOuter1.Inner in=obj.new Inner();  
+		   in.msg();  
+		  }  
+		} 
+
+14.) Immutabe Classes
+	We can make a class immutable by
+	1. Making all methods and variables as private & final.
+	2. Setting variables within constructor. A more sophisticated approach is to make the constructor private.
+	
+	Public Class ImmutableClass{
+		 private int member;
+		 ImmutableClass(int var){
+			 member=var;
+		 } 
+	} 
+
+	  and then we can initialize the object of the class as
+	  ImmutableClass immutableObject = new ImmutableClass(5);
+   
+   3. No setter methods (bcz these mthds r mutators)
+   4. Class as final
+   	
+	Benefits of making a class immutable
+	 - are automatically thread-safe and have no synchronization issues
+	 - do not need an implementation of clone
+	 - do not need a copy constructor
+	 
+15.) instanceof()
+	We can use instanceof keyword to check if an object belongs to a class or not.
+     Ex :
+                public static void main(String args[]){
+                                Object str = new String("abc");
+                                
+                                if(str instanceof String){
+                                                System.out.println("String value:"+str);
+                                }
+                    }
+                O/P ---> true	 
+
+16.) Object classes
+		clone() - Creates and returns a copy of this object.
+		equals() - Indicates whether some other object is "equal to" this one.
+		hashCode() - Returns a hash code value for the object.
+		finalize() - Called by the garbage collector on an object when garbage collection determines that there are no more references to the object.
+		getClass() - Returns the runtime class of an object.
+		toString() - Returns a string representation of the object.
+		notify() - Wakes up a single thread that is waiting on this object's monitor. 
+		notifyAll() - Wakes up all threads that are waiting on this object's monitor.
+		wait() - Causes current thread to wait until another thread invokes the notify() method or the notifyAll() method for this object.
+
+		Example --
+			public static String toString(){
+                System.out.println("Test toString called");
+                return "";
+                }
+                
+			public static void main(String args[]){
+                System.out.println(toString());
+				}
+		
+		== The code won’t compile because we can’t have an Object class method with static keyword.
+		   The reason is that static method belongs to class and since every class base is Object, we can’t have same method 
+				in instance as well as in class.
+		 
+17.) Blocking Queue
+		java.util.concurrent.BlockingQueue is a Queue that supports operations that wait for the queue to become non-empty 
+		when retrieving and removing an element, 
+		and wait for space to become available in the queue when adding an element.
+		
+		- BlockingQueue doesn’t accept null values and throw NullPointerException if you try to store null value in the queue.
+		- BlockingQueue implementations are thread-safe. 
+		
+		
+18.) Servlets
+	A Java servlet is a Java program that extends the capabilities of a server. 
+	Although servlets can respond to any types of requests,
+	
+  servlet context
+	is an interface which helps to communicate with other servlets.
+	It contains information about the Web application and container.
+	
+  -	By calling invalidate() method on session object, we can destory the session.
+		
+  - if you call destory method from service(), it just execute the code written in the destory(), but it wont kill the servlet instance.
+	destroy() will be called before killing the servlet instance by servlet engine.
+	
+  - different session tracking methods?
+	Cookies: You can use HTTP cookies to store information. Cookies will be stored at browser side. 
+	URL rewriting: With this method, the information is carried through url as request parameters. In general added parameter will be sessionid, userid.
+	HttpSession: Using HttpSession, we can store information at server side. Http Session provides methods to handle session related information.
+
+	
+------------------------------------------------------------------------------------
+
+
+Others -
+----------------------------------------
+
+-----------------------------------------
+ 
+ 

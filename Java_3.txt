@@ -1,0 +1,703 @@
+- Difference between import and static import? 
+ = The import provides accessibility to classes and interface whereas static import provides accessibility to static members of the class.
+ - The import allows the java programmer to access classes of a package without package qualification whereas 
+	the static import feature allows to access the static members of a class without the class qualification. 
+
+- Autoboxing & Unboxing	
+	= The automatic conversion of primitive data types into its equivalent Wrapper type is known as boxing and opposite operation is known as unboxing. 
+	= This is the new feature of Java5 (Autoboxing).	
+	- No need of conversion between primitives and Wrappers manually, so less coding is required.
+	
+	Ex :
+	class BoxingExample1{  
+	  public static void main(String args[]){  
+		int a=50;  
+			Integer a2=new Integer(a);//Boxing  
+	  		Integer a3=5;//Autoboxing
+			System.out.println(a2+" "+a3);  output -> 50 5
+			
+			Integer i=new Integer(50);  
+			int a=i;  // Unboxing
+			System.out.println(a);  output -> 50
+	 }   
+	}  
+	
+	- There are some rules for method overloading with boxing:
+		Widening beats boxing
+		Widening beats varargs
+		Boxing beats varargs
+		
+- Java Enum
+  = Enum in java is a data type that contains fixed set of constants.
+  - The enum can be defined within or outside the class because it is similar to a class.
+  = enum may implement many interfaces but cannot extend any class because it internally extends Enum class
+  - values()
+	 The java compiler internally adds the values() method when it creates an enum. 
+	 The values() method returns an array containing all the values of the enum.  
+  - Constructor of enum type is private. If you don't declare private, compiler internally creates private constructor.
+  
+   Ex 1 :
+	enum Season { WINTER, SPRING, SUMMER, FALL }   -----> outside class
+	class EnumExample2{  
+	enum Season { WINTER, SPRING, SUMMER, FALL; }//semicolon(;) is optional here  -----> Inside class
+	public static void main(String[] args) {  
+	Season s=Season.WINTER;  (or) for (Season s : Season.values()) System.out.println(s); }
+	System.out.println(s);  
+	}}   
+	Output -> WINTER
+	
+   EnumExample2 
+	Example of specifying initial value to the enum constants
+	class EnumExample4{  
+		enum Season{   
+		WINTER(5), SPRING(10), SUMMER(15), FALL(20);   
+		  
+		private int value;  
+		private Season(int value){  
+			this.value=value;  
+			}  
+		}  
+		public static void main(String args[]){  
+			for (Season s : Season.values())  
+			System.out.println(s+" "+s.value);  		
+		}} 
+		Output:WINTER 5
+			   SPRING 10
+			   SUMMER 15
+			   FALL 20
+
+- String
+	- There are two ways to create String object:
+		By string literal (Double Quotes)
+		By new keyword (new)
+		
+		a.) string literal (Adv : more memory efficient (because no new objects are created if it exists already in string constant pool))
+			Each time you create a string literal, the JVM checks the string constant pool first. If the string already exists in the pool,
+ 			a reference to the pooled instance is returned. If string doesn't exist in the pool, a new string instance is created and placed in the pool.
+			
+			Ex :
+			String s1="Welcome";  
+			String s2="Welcome";//will not create new instance
+			
+- toString()
+	- We want to REPRESENT ANY OBJECT AS A STRING, toString() method comes into existence.
+	- If you print any object, java compiler internally invokes the toString() method on the object. So overriding the toString() method, 
+		returns the desired output,	it can be the state of an object etc. depends on your implementation
+		
+- String Tokenizer (old method, replaced by split method)
+	- The java.util.StringTokenizer class allows you to BREAK A STRING INTO TOKENS. It is simple way to break string.
+	- Methods :
+		boolean hasMoreTokens()				checks if there is more tokens available.
+		String nextToken()					returns the next token from the StringTokenizer object.
+		String nextToken(String delim)		returns the next token based on the delimeter.
+		boolean hasMoreElements()			same as hasMoreTokens() method.
+		Object nextElement()				same as nextToken() but its return type is Object.
+		int countTokens()					returns the total number of tokens.
+		
+		Example :
+		import java.util.StringTokenizer;  
+		public class Simple{  
+		 public static void main(String args[]){  
+		   StringTokenizer st = new StringTokenizer("my name is khan"," ");  
+			 while (st.hasMoreTokens()) {  
+				 System.out.println(st.nextToken());  
+			 } } } 
+			Output : 	my
+					   name
+					   is
+					   khan
+					   
+	= StringTokenizer class is deprecated now. It is recommended to use split() method of String class
+	
+- Collection & Collections
+	- Collection is an interface whereas Collections is a class. 
+	- Collection interface provides normal functionality of data structure to List, Set and Queue. 
+		But, Collections class is to sort and synchronize collection elements.
+	
+	- Collections class provides methods to make List, Set or Map elements as synchronized
+	
+   - If we use generic class, we don't need typecasting. It is typesafe and checked at compile time.
+   - The Dictionary class provides the capability to store key-value pairs.   
+   - The default size of load factor is 0.75. The default capacity is computed as initial capacity * load factor.
+-------------------------------------------------------------------
+base class for Error and Exception? ---> Throwable.
+
+finally block have return type, but its bad idea to implement. because it overrides any values or exceptions thrown from try & catch block.
+For each try block there can be zero or more catch blocks, but only one finally block.
+finally block cannot execute at System.exit() or  (by causing a fatal error that causes the process to abort)
+			   
+- Garbage Collection
+	Garbage Collection is process of reclaiming the runtime unused memory automatically. 
+	In other words, it is a way to destroy the unused objects.
+
+	Adv :
+		It makes java memory efficient because garbage collector removes the unreferenced objects from heap memory.
+		It is automatically done by the garbage collector(a part of JVM) so we don't need to make extra efforts.
+	
+	Unreferenced Object by 3 ways (reuse of objects):
+		By nulling the reference (Employee e=new Employee();  e=null;)
+		By assigning a reference to another (Employee e1=new Employee();   Employee e2=new Employee(); 
+												e1=e2; //now, first object referred by e1 is available for garbage collection)
+		By annonymous object etc.(new Employee(); )
+	
+ = The Garbage collector of JVM collects only those objects that are created by new keyword. 
+   So if you have created any object without new, you can use finalize method to perform cleanup processing (destroying remaining objects).	
+	protected void finalize(){} 
+ =  Garbage collection is performed by a daemon thread called Garbage Collector(GC). This thread calls the finalize() method before object is garbage collected.	
+	public static void gc(){}  
+	System.gc();  /// Used in program
+ - gc() is a daemon thread.gc() method is defined in System class that is used to send request to JVM to perform garbage collection.
+ - finalize() method is invoked just before the object is garbage collected.It is used to perform cleanup processing. 
+	
+  - Daemon thread
+		Daemon thread in java is a service provider thread that provides services to the user thread
+		when all the user threads dies, JVM terminates this thread automatically. Its life depends on user threads.		
+		It is a low priority thread.
+		If you want to make a user thread as Daemon, it must not be started otherwise it will throw IllegalThreadStateException.
+		
+		Methods -
+		public void setDaemon(boolean status)	->	is used to mark the current thread as daemon thread or user thread.
+		public boolean isDaemon()				->	is used to check that current is daemon.
+
+- Shutdown Hook Thread
+	- Performing clean resource means closing log file, sending some alerts
+	- we want to execute some code before JVM shuts down, use shutdown hook.
+		
+- Wrapper classes are classes that allow primitive types to be accessed as objects.
+
+- Synchronization
+	Achieved by 3 ways :
+	Synchronized method.
+	Synchronized block.
+	static synchronization.
+	
+- JDBC
+   - JDBC Driver is a software component that enables java application to interact with the database.	
+   
+   - Steps to establish a connection 
+		Registering the driver class
+		Creating connection
+		Creating statement
+		Executing queries
+		Closing connection
+		
+   - In case of Statement, query is complied each time whereas in case of PreparedStatement, query is complied only once.
+   - The DriverManager class manages the registered drivers. It can be used to register and unregister drivers.
+   - The Connection interface maintains a session with the database. It can be used for transaction management. 
+   - By using PreparedStatement interface, we can store and retrieve images.   
+-----------------------------------------
+- The Reader/Writer class hierarchy is character-oriented, and the InputStream/OutputStream class hierarchy is byte-oriented.
+- An I/O filter is an object that reads from one stream and writes to another
+
+- The purpose of the System class is to provide access to system resources.
+
+- A native method is a method that is implemented in a language other than Java.
+
+- If you change the value in properties file, you don't need to recompile the java class.
+
+- Threads are independent so it doesn't affect other threads if exception occur in a single thread.
+  At a time one thread is executed only.
+  
+- Can we call the run() method instead of start()? 
+	yes, but it will not work as a thread rather it will work as a normal object so there will not be context-switching between the threads.
+
+
+----------------------------------------------
+Why equal method overrides?
+Static And Dynamic Binding, regex
+aggregation & composition
+Singleton class, nested class
+@annotations	
+
+-------------------------------
+- Exception
+	--------------------------------------------------------------------------------------------------------------------------
+									Throw 								  |					 Throws
+	--------------------------------------------------------------------------------------------------------------------------
+	Throw keyword is used to throw an exception explicitly(Manually)	  | Throws clause in used to declare an exception.
+	The keyword throw is used inside method body to invoke an exception   | throws clause is used in method declaration (signature).
+	Throw keyword cannot throw more than one exception  				  | throws can declare multiple exceptions.
+	If we see syntax wise than throw is followed by an instance variable  | throws is followed by exception class names.
+	--------------------------------------------------------------------------------------------------------------------------
+	
+	- throw 
+		 throw (ThrowableInstance);
+		 ThrowableInstance ---> new NullPointerException("test");
+	 
+	- throws (method is capable of raising an exception that it does not handle, handled by method signature)
+		 type method_name(parameter_list) throws exception_list
+			{
+			 //definition of method
+			}
+	  = The throws statement is used by a method to specify the types of exceptions the method throws. 
+	  = If a method is capable of raising an exception that it does not handle, the method must specify that 
+		the exception has to be handled by the calling method.
+	
+	- Own Exception
+	   Create a class that extend from a right kind of class from the Exception Hierarchy.
+	   
+	   Example :
+	   public class DivideByZeroException extends ArithmeticException 
+		{
+		 public DivideByZeroException() 
+		 {
+			super("Divide by 0 error");
+		 }
+		}
+	
+	- There are 2 categories of exceptions:
+		1.) Built in Exceptions
+			Checked Exceptions
+			Unchecked Exceptions
+		2.) User Defined Exceptions
+
+- When should we choose String and StringBuffer? 
+	If we do not want to store string modifications in the same memory we must choose String.
+	To do modifications in the same memory, we must choose StringBuffer or StringBuilder.
+
+- ArrayList and LinkedList
+	ArrayList provides support random access through an index without inserting or removing elements from any place other than an end.
+	LinkedList provides support for random access through an index with inserting and deletion elements from any place .
+	If your application does not require insertion or deletion of elements, the Array is the most efficient data structure.	
+	
+	Map
+	The keys are like indexes. In List, the indexes are integer. In Map, the keys can be any objects.
+	
+	The Enumeration interface defines a way to traverse all the members of a collection of objects
+	
+- Stack class (LIFO)
+	The Stack class represents a last-in-first-out (LIFO) stack of objects
+	The elements are accessed only from the top of the stack. You can retrieve, insert, or remove an element from the top of the stack.
+
+- Queue interface (FIFO)
+	It extends Collection interface. It is designed for holding elements prior to processing. It is typically ordered in a FIFO manner.
+	Main Methods are - remove() and pull().
+
+- covariant return types (Based on return type, Overriden can be achieved)
+	It allows the user to have a method in inherited class with same signature as in parent’s class but differing only in return types. 
+	It makes programs more readable and solves casting problem.
+
+	class Shape
+	{
+		public Shape transform(int x, int y)
+	}
+	class Rectangle extends Shape
+	{
+		public Rectangle transform(int x, int y)
+	}
+	
+- Generic class
+	Check done at compile-time – avoid nasty casting surprises during runtime.
+
+- InputStream/OutputStream
+		The InputStream class defines methods for reading bytes or arrays of bytes.
+		FileInputStream -> It reads data from file on the native file system
+		SequenceInputStream : It concatenate multiple input streams into one input stream. 
+		StringBufferInputStream : It allow programs to read from a StringBuffer as if it were an input stream. 
+		PipedInputStream : In this data can be read from a thread by using PipedInputStream
+		
+- The first thread to be executed in a multithreaded process is called the main thread. 
+	The main thread is created automatically on the startup of java program execution.
+
+- Transient (Transient variable value can't be convert into bytes)
+	= A transient variable is a variable that can not be serialized
+	- The transient keyword in java is used on class attributes/variables to indicate that serialization process of such class should 
+	  ignore such variables while creating a persistent byte stream for any instance of that class. 
+	= If you deserialize the object, you will get the default value for transient variable.
+			
+	Example :
+	import java.io.Serializable;  
+	public class Student implements Serializable{  
+	 int id; String name;  
+   * transient int age;//Now it will not be serialized  
+	 public Student(int id, String name,int age) {  
+	  this.id = id;  this.name = name;  this.age=age;  
+	 } }  
+
+	import java.io.*;  
+	class PersistExample{  
+	 public static void main(String args[])throws Exception{  
+	  Student s1 =new Student(211,"ravi",22); //creating object  
+	  //writing object into file  
+	  FileOutputStream f=new FileOutputStream("f.txt");  
+	  ObjectOutputStream out=new ObjectOutputStream(f);  
+	  out.writeObject(s1);  
+	  out.flush();  out.close();  f.close();  System.out.println("success");  
+	 }  }  
+	 
+	 // code for deserialization.
+	 import java.io.*;  
+	 class DePersist{  
+	 public static void main(String args[])throws Exception{  
+	  ObjectInputStream in=new ObjectInputStream(new FileInputStream("f.txt"));  
+	  Student s=(Student)in.readObject();  
+	  System.out.println(s.id+" "+s.name+" "+s.age);  
+	  in.close();  
+	 }  
+	}  
+	Output : 211 ravi 0(default value)
+	
+   = whenever any final field/reference is evaluated as “constant expression“, it is serialized by JVM ignoring the presence of transient keyword.
+   - If you want to persist the state of non-serializable fields then use readObject() and writeObject() methods. 
+   
+		Example :
+	  * public final transient String confidentialInfo = &quot;password&quot;;
+		After serialize & de-serialize then, 
+		Output - password
+		
+----------------------------------------------------------------------------------------
+- hashcode 	
+	 = Whenever you implement equals, you MUST also implement hashCode	
+	 - Objects that are equal must have the same hash code
+	 - Unequal objects must have different hash codes – WRONG!
+	 - Objects with the same hash code must be equal – WRONG!
+
+- data structures used by set -> Map
+
+- Co-Variant variable
+  Based on return type, parent class method will be overriden 
+  
+- Object based languages (does not follow inheritence)
+	javascript, VBscript, etc
+ 
+- Order of execution 
+	1.) all static block
+	2.) (a.) all empty block, 
+		(b.) default constructor 
+		a & b are executed by number of objects created. Ex: 2 obj created, empty block & default constructor are executed for 2 times
+	3.) main method
+	
+	Example : 1 empty block, 1 static block, 1 default constructor , main method
+		public class Test {
+		{System.out.println("Empty Block");	}		--> Empty block
+		static {System.out.println("Static Block");};		--> Static block
+	 
+		public Test(String string, String string2) {		--> default constructor
+		 System.out.println("Default Constructor ");
+		}
+		public static void main(String [] args){		--> main method & codes (2 Objects created in main method)
+			 Test t1 = new Test("Om","Pravin");
+			 Test t2 = new Test("Om","Pravin");
+			....
+		}
+		
+	-- Output
+	Static Block
+	Empty Block
+	Default Constructor 
+	Empty Block
+	Default Constructor 
+	HashSet Object size --> 2
+	ArrayList Size --> 3
+	HashSet size --> 2
+	HashSet Total Size ---> 4
+  
+
+- Singleton class (Limitation of object creation)
+	Singleton pattern restricts the instantiation of a class and ensures that only one instance of the class exists in the java virtual machine.
+	The singleton class must provide a global access point to get the instance of the class. 
+	
+  - Usage :
+	Singleton pattern is used for db logging, drivers objects, caching and thread pool.
+	
+  -	Features :
+	Private constructor to restrict instantiation of the class from other classes.
+	Private static variable of the same class that is the only instance of the class.
+	Public static method that returns the instance of the class, this is the global access point for outer world to get the instance of the singleton class.
+	
+  -	Methods to implement singleton class :
+		Static block initialization
+		Lazy Initialization
+		Thread Safe Singleton
+		Using Reflection to destroy Singleton Pattern
+		Enum Singleton
+		Serialization and Singleton
+		Eager initialization
+		
+		1.) Static block
+			public class StaticBlockSingleton {
+			private static StaticBlockSingleton instance;			
+			private StaticBlockSingleton(){}			
+			//static block initialization for exception handling
+			static{
+				try{
+					instance = new StaticBlockSingleton();
+				}catch(Exception e){
+					throw new RuntimeException("Exception occured in creating singleton instance");
+				}
+			}
+			
+			public static StaticBlockSingleton getInstance(){
+				return instance;
+			}
+		}
+
+		2.) Lazy & 3.) Thread Safe Singleton
+			public class LazyInitializedSingleton {
+			private static LazyInitializedSingleton instance;			
+			private LazyInitializedSingleton(){}
+			
+			public static LazyInitializedSingleton getInstance(){		----> Lazy
+			public static synchronized LazyInitializedSingleton getInstance(){		----> Thread Safe Singleton
+				if(instance == null){
+					instance = new LazyInitializedSingleton();
+				}
+				return instance;
+			}
+		}
+
+		4.) Enum 
+			 - enum value is instantiated only once in a Java program
+			 - Since Java Enum values are globally accessible, so is the singleton.
+			 
+			public enum EnumSingleton {
+			INSTANCE;			
+			public static void doSomething(){
+				//do something
+			}
+		}
+	
+  - Methods to create more than 1 instance in singleton class :
+	Cloneable (implements cloneable interface -> override clone() method)
+	Reflextion
+	
+	Example :
+	- Main file 
+		package com.TestJava;
+		public class Collect {
+		public static void main(String[] args) throws CloneNotSupportedException {
+			SingletonClass sc = SingletonClass.getInstance();
+	**		SingletonClass sc1 = (SingletonClass) sc.clone();
+		 }
+		}
+	
+	- Singletonclass file
+		package com.TestJava;
+		public class SingletonClass implements Cloneable {
+		@Override
+	**	protected Object clone() throws CloneNotSupportedException {
+			return new SingletonClass();
+		}
+
+		private static SingletonClass singletonClass ;
+		public static SingletonClass getInstance() {
+			if (singletonClass == null) {
+				singletonClass = new SingletonClass();
+				System.out.println("Singleton class");
+			}
+			return singletonClass;
+		}
+	}
+------------------------------------------------- March 21 ---------------------------------
+- Garbage 
+		Garbage collection is an automatic process
+		request it by calling System.gc() or Runtime.gc()
+		
+- Java 
+	Java is a program that is being written in Java and being read by the Java virtual machine.
+- All wrapper classes in java.lang are immutable
+- The Vector class provides the capability to implement a growable array of objects
+- The readLine() method returns null when it has reached the end of a file
+
+- Clipping is the process of confining paint operations to a limited area or shape
+- The setLayout() method is used to specify a container's layout.
+- The Panel and Applet classes use the FlowLayout as their default layout.
+- The Canvas, Frame, Panel, and Applet classes support painting.
+- Unicode requires 16 bits and ASCII require 7 bits
+- preemptive scheduling and time slicing
+	- Under preemptive scheduling, the highest priority task executes until it enters the waiting or dead states or 
+		a higher priority task comes into existence. 
+	- a task executes for a predefined slice of time and then reenters the pool of ready tasks. 
+		The scheduler then determines which task should execute next, based on priority and other factors.
+
+- Access Modifiers
+	public -> CAN be accessed from any packages(both outside & inside packages).
+	protected -> CAN be accessed from ‘same package’ and a subclass existing in any package can access.
+	default -> CAN be accessed within package only
+	private -> CAN be accessed within class only
+		
+- private synchronized int e;
+	Error -> Illegal modifier for the field e; 
+	= only public, protected, private, static, final, transient & volatile are permitted
+	
+- Formal and Actual Parameters
+	formal parameter — the identifier used in a method to stand for the value that is passed into the method by a caller.
+		For example, amount is a formal parameter of processDeposit
+	actual parameter — the actual value that is passed into the method by a caller.
+		For example, the 200 used when processDeposit is called is an actual parameter. Actual parameters are often called arguments
+
+- Thread 
+	- The start() method causes this thread to begin execution
+	- start(), run(), stop(), sleep() are defined by the Thread class.
+	- wait(), notify() & notifyAll() are methods of the Object class.
+	= The Runnable interface only contains 1 method, the void run() method
+	= Either of the two events (notification or wait time expiration) will make the thread become a candidate for running again.
+	
+	- Blocking methods in Java 
+		Method which block the current executing thread until there operation finished.
+		InputStream read() method which blocks until all data from InputStream(file) has been read completely.
+		
+		Ex: public static void main(String args[]) throws FileNotFoundException, IOException  {
+			  System.out.println("Calling blocking method in Java");
+		***	  int input = System.in.read();
+			  System.out.println("Blocking method is finished");
+			}  
+	- Use call-back functions to process result of a blocking call.
+	  Use timeout while calling blocking method.
+
+- Rules for Overriding
+	1.) Arguments -> Same arguments as in overriding method for overriden method(child class)
+	2.) Return Type -> Same return type or sub-return type of overriding method for overriden method(child class)
+	3.) Access Modifiers 
+		= Cannot reduce the visibility of the inherited method than parent method
+   	    - Access modifiers should not restrictive than in overriding method(parent class)
+		= order of visibility from high priority -> public, protected, default, private
+	   	Ex : Parent class have private mthd -> Child class have private/default/protected/public mthd
+			 Parent class have default modifier mthd -> Child class have default/protected/public mthd
+			 Parent class have protected mthd -> Child class have protected/public mthd
+			 Parent class have public mthd -> Child class must have public mthd only(not of default/private/protected)
+    4.) Non access modifiers - static & final
+		- private, static & final method can't be overrided.
+			- static & final method can't be overrided, it shows an error. 
+			- private method also can't be overrided, but it can't shows error. print the parent class method value, not child class value.
+		- But, Overriden method (child mthd) can be final, but not as static
+		- but static method can be replaced
+		
+- Shallow & Deep Copy in clone() method
+	The default behavior of an object’s clone() method automatically yields a shallow copy. 
+	So to achieve a deep copy the classes must be edited or adjusted.
+	
+	- Shallow Copy 
+	  Generally clone method of an object, creates a new instance of the same class and copies all the fields to the new instance and returns it.
+	- Deep Copy
+	  When the copied object contains some other object its references are copied recursively in deep copy.
+	  Ex : Serialization
+	  ----------------------------------------------------------------------------------------------------------------------------
+					Shallow Copy											|							Deep Copy
+	  ----------------------------------------------------------------------------------------------------------------------------
+	  Cloned Object and original object are not 100% disjoint.				|	Cloned Object and original object are 100% disjoint.
+	  Any changes made to cloned object will be reflected in original object|   Any changes made to cloned object will not be reflected in 
+			or vice versa.													|		original object or vice versa.
+	  Default version of clone method creates the shallow copy of an object.|	To create the deep copy of an object, you have to override clone method.
+	  Shallow copy is preferred if an object has only primitive fields.		|	Deep copy is preferred if an object has references to other objects as fields.
+	  Shallow copy is fast and also less expensive.							|	Deep copy is slow and very expensive.
+	  ----------------------------------------------------------------------------------------------------------------------------
+
+- Binding (http://javaconceptoftheday.com/static-binding-and-dynamic-binding-in-java/)
+		DEF - Binding refers to the link between method call and method definition. 
+		
+		2 Types of binding :
+		   - static binding 
+				Static binding is a binding which happens during compilation. 
+				It is also called early binding because binding happens before a program actually runs.
+				
+		   - dynamic binding
+				Dynamic binding is a binding which happens during run time.
+				It is also called late binding because binding happens when program actually is running.
+			----------------------------------------------------------------------------------------------------------------------------	
+					Static Binding									 |				Dynamic Binding
+			----------------------------------------------------------------------------------------------------------------------------
+			It is a binding that happens at compile time.			 |	It is a binding that happens at run time.
+			Actual object is not used for binding.					 |	Actual object is used for binding.
+			It is also called early binding because binding happens  |  It is also called late binding because binding happens at run time.
+						during compilation.	                         |
+			Method overloading is the best example of static binding.|	Method overriding is the best example of dynamic binding.
+			Private, static and final methods show static binding. 	 | 	Other than private, static and final methods show dynamic binding. 
+				Because, they can not be overridden.				 | 		Because, they can be overridden.
+			----------------------------------------------------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------- March 22 -----------------------------------------------------
+- Identifier
+	$7 is valid identifier. Identifiers must start with a letter, a currency character ($), or underscore ( _ ). 
+	Identifiers cannot start with a number. You can't use a Java keyword as an identifier
+			
+= If you create object of subclass with reference of super class like ( A a = new B();) then subclass method and super class variable 
+	will be executed. 
+	Ex :
+		public class A {int i=10; void s (){Sysout.("Super class")}}
+		class B extends A {int i=12; void s (){Sysout.("Child class")}}
+		 a.s(); a.i; 		output -> Child class 10
+= Constructor of class B call their superclass constructor of class A (public A()) , which execute first, and that constructors can be overloaded.
+	Then come to constructor of class B (public B (int i)). 		
+	
+- The overriding method can throw any unchecked (runtime) exception, regardless of exception thrown by overridden method.
+- static variables are not Serializable. 
+
+- Thread 
+	t.run() Legal, but does not start a new thread , it is like a method call of class Test BUT
+	t.start() create a thread and call run() method.
+	Ex :
+	public class Threadss extends Thread {
+	  public static void main(String argv[]){
+	     Threadss t = new Threadss();
+		 t.run();
+		 t.start();
+		 }
+	  public void run(){
+		 System.out.println("run-test");
+		 }
+		 Output -> run-test
+				   run-test
+		
+	= Once a thread has been started, it can never be started again. 2nd time t.start() throws java.lang.IllegalThreadStateException.
+	= Compilation succeed but Runtime Exception
+	  Ex :
+	  A a = new A();
+	  Thread t = new Thread(a);
+	  t.start();
+	  t.start();
+
+   =  A static synchronized method and a non static synchronized method will not block each other
+
+- enum (As an enum cannot be instantiated using the new operator)
+	public enum Test { BREAKFAST(7, 30), LUNCH(12, 15), DINNER(19, 45);
+	Test t = new BREAKFAST; ---> wrong
+	Test t = BREAKFAST;  ---> correct
+	
+- Collection	
+	- If the show method signature is public static void show(Queue<String> q) than you can't add Integer, Only String allowed. 
+		But public static void show(Queue q) is untyped Queue so you can add Integer. 	
+		poll() Retrieves and removes the head of this queue, or returns null if this queue is empty. 	
+	
+	- Without generics, the compiler does not know what type is appropriate for this TreeSet, so it allows everything to compile.
+		But at runtime the TreeSet will try to sort the elements as they are added, and when it tries to compare an Integer with a String it will
+		throw a ClassCastException. 
+		
+	- Constructs an empty list with an initial capacity of ten. */ public ArrayList() { this(10); } 
+	
+- By placing a zero in front of the number is an integer in octal form. 010 is in octal form so its value is 8	
+- byte b = 6; 
+	cannot convert from int to byte for b = b+7; But b += 7; // No problem because +=, -=, *=, and /= will all put in an IMPLICIT CAST. 
+	b += 7 is same as b = (byte)b+7
+- x *= 3 + 7; is same as x = x * (3 +7) = 5 * (10) = 50 because EXPRESSION ON THE RIGHT IS ALWAYS PLACED INSIDE PARENTHESES. 
+- 	int a =5 , b=6, c =7;
+	System.out.println("Value is "+ b +c);
+  If the left hand operand is not a String then + operator treat as plus BUT if left hand operand is a String then + perform String concatenation. 
+
+- Assert
+	Syntax of an assert statement is as follow (short version):
+	assert expression1;
+		or (full version):
+	assert expression1 : expression2; 
+	Where:
+		expression1 must be a boolean expression.
+		expression2 must return a value (must not return void).
+	
+- Inner Class 
+		class TestMemberOuter1{  
+		  private int data=30;  
+		  class Inner{  
+		   void msg(){System.out.println("data is "+data);}  
+		  }  
+		 public static void main(String args[]){  
+		  TestMemberOuter1 obj=new TestMemberOuter1();  
+	***	  TestMemberOuter1.Inner in=obj.new Inner();  
+		  in.msg();  
+		 }  
+		} 
+
+- javac -d classes src/Test.java
+	The -d option lets you tell the compiler in which directory to put the .class file it generates (d for destination) 
+- java Test Test1
+	You must specify exactly one class file to execute. If more than one then first one will be executed	
+	

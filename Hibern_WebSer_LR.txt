@@ -1,0 +1,700 @@
+﻿-------------------------------------- Spring Hibernate --------------------------------------------
+
+Hibernate Questions 
+http://career.guru99.com/hibernate-interview-questions/
+
+- Hibernate
+	Tool used to map plain old Java objects to relational database tables using (XML) configuration files
+	open-source and lightweight ORM tool that is used to store, manipulate and retrieve data from the database
+
+- The most common methods of Hibernate configuration are:
+	Programmatic configuration
+	XML configuration (hibernate.cfg.xml)
+	
+ = hibernate.cfg.xml
+    <hibernate-configuration>
+	 <session-factory>
+ 
+		<!-- Related to the connection START -->
+		<property name="connection.driver_class">Driver Class Name </property>
+		<property name="connection.url">URL </property>
+		<property name="connection.user">user </property>
+		<property name="connection.password">password</property>
+		<!-- Related to the connection END -->
+		 
+		<!-- Related to hibernate properties START -->
+		<property name="show_sql">true/false</property>
+		<property name="dialet">Database dialet class</property>
+		<property name="hbm2ddl.auto">create/update or what ever</property>
+		<!-- Related to hibernate properties END-->
+		 
+		<!-- Related to mapping START-->
+		<mapping resource="hbm file 1 name .xml" / >
+		<mapping resource="hbm file 2 name .xml" / >
+		<!-- Related to the mapping END -->
+	 
+	 </session-factory>
+	</hibernate-configuration>
+
+
+ = hibernate mapping file 
+   hbm.xml
+    Hibernate mapping file tells Hibernate which tables and columns to use to load and store objects.
+	Example :::
+    <hibernate-mapping>
+   	 <class name="POJO class name" table="table name in database">
+		<id name="variable name" column="column name in database" type="java/hibernate type" />
+		<property name="variable1 name" column="column name in database" type="java/hibernate type" />
+		<property name="variable2 name" column="column name in database" type="java/hibernate type" />
+	 </class>
+	</hibernate-mapping>
+  
+- ORM (Object/Relational mapping)
+	It is a programming strategy to map object with the data stored in the database. 
+	It simplifies data creation, data manipulation and data access.
+	
+	ORM Frameworks :
+		Hibernate
+		Enterprise JavaBeans Entity Beans
+		Java Data Objects
+		Castor
+		TopLink
+		Spring DAO
+
+= The general flow of Hibernate communication with RDBMS is :
+	1.) Load the Hibernate configuration file and create configuration object. It will automatically load all hbm mapping files
+	2.) Create session factory from configuration object
+	3.) Get one session from this session factory
+	4.) Create HQL Query
+	5.) Execute query to get list containing Java objects
+	
+- The core interfaces of Hibernate framework are:
+		Configuration
+		Session
+		SessionFactory
+		Query & Criteria
+		Transaction
+	Using these interfaces, you can store and retrieve persistent objects and control transactions.
+	
+	- Configuration Interface -
+		Configuration interface of hibernate framework is used to configure hibernate.
+		Mapping documents of hibernate are located using this interface.
+		It’s also used to bootstrap hibernate.
+	
+	- Session interface -
+	  It maintains a connection between hibernate application and database.
+	  It provides methods to store, update, delete or fetch data from the database such as persist(), update(), delete(), load(), get() etc.
+	  Session is not a thread-safe object.
+	  It allows you to create query objects to retrieve persistent objects.
+
+		Session session = sessionFactory.openSession();
+		
+	  Session interface role:
+		Wraps a JDBC connection
+		Factory for Transaction
+		Holds a mandatory (first-level) cache of persistent objects, used when navigating the object graph or looking up objects by identifier
+		
+	- SessionFactory Interface- 
+		SessionFactory provides the instance of Session. It is a factory of Session.
+		It holds the data of second level cache
+		SessionFactory is a thread-safe object
+	
+		SessionFactory sessionFactory = configuration.buildSessionFactory();
+
+	 =  To create a session factory in hibernate, an object of configuration is created first which refers to the path of configuration file 
+		and then for that configuration, session factory is created as given in the example below:
+         Ex :
+			Configuration config = new Configuration();
+			config.addResource(&amp;amp;quot;myinstance/configuration.hbm.xml&amp;amp;quot;);
+			config.setProperties( System.getProperties() );
+			SessionFactory sessions = config.buildSessionFactory();
+			
+		-------------------------------------------------------------------------------------
+							First Level Cache						Second Level Cache
+		-------------------------------------------------------------------------------------
+		1)	First Level Cache is associated with Session.	Second Level Cache is associated with SessionFactory.
+		2)	It is enabled by default.						It is not enabled by default.
+		-------------------------------------------------------------------------------------
+		
+		Hibernate second level cache can be disabled using any of the following ways:
+			a. By setting use_second_level_cache as false.
+			b. By using CACHEMODE.IGNORE
+			c. Using cache provider as org.hibernate.cache.NoCacheProvider
+
+		-------------------------------------------------------------------------------------
+							get()				  |   				load()
+		-------------------------------------------------------------------------------------
+		1)	Returns null if object is not found.  |	Throws ObjectNotFoundException if object is not found.
+		2)	get() method always hit the database. |	load() method doesn't hit the database.
+		3)	It returns real object not proxy.	  |	It returns proxy object.	
+		-------------------------------------------------------------------------------------
+			get() -> return null if there is no matching database row.
+
+		-----------------------------------------------------------------------------------------------
+				update() method													merge() method
+		-----------------------------------------------------------------------------------------------
+		1)	Update means to edit something.								Merge means to combine something.
+		2)	update() should be used if session doesn't contain 
+			an already persistent state with same id.It means update
+			should be used inside the session only. After closing the
+			session it will throw error.								merge() should be used if you don't know the state of the session,
+																		make modification at any time.
+		-----------------------------------------------------------------------------------------------
+	
+	- Criteria -
+		 retrieve entities through criteria object composition.
+
+	- Transactions -
+		With hibernate 3.2, default transaction factory is JDBCTransactionFactory
+		
+		Example ::
+			Configuration cfg = new Configuration();
+				cfg.addResource(&amp;amp;quot;myinstance/configuration.hbm.xml&amp;amp;quot;);
+				cfg.setProperties( System.getProperties() );
+			SessionFactory factory = cfg.buildSessionFactory();  
+			Session session1 = factory.openSession();  
+			   
+			Employee e1 = (Employee) session1.get(Employee.class, Integer.valueOf(101));//passing id of employee  
+			session1.close();  
+			   
+			e1.setSalary(70000);  
+			   
+			Session session2 = factory.openSession();  
+			Employee e2 = (Employee) session1.get(Employee.class, Integer.valueOf(101));//passing same id  
+			  
+			Transaction tx=session2.beginTransaction();  
+			session2.merge(e1);  
+			  
+			tx.commit();  
+			session2.close();  
+
+- Callback Interface (receiving event from objects, when obj is loaded, deleted, etc)
+	Callback interfaces of hibernate are useful in receiving event notifications from objects. 
+	For example, when an object is loaded or deleted, an event is generated and notification is sent using callback interfaces.
+
+- getCurrentSession() and openSession() in Hibernate ?
+   - getCurrentSession()
+    = Gets currentsession tat hibernate binds, else no session means - it creates a new session & stores it for future use.
+	  The "current session" refers to a Hibernate Session bound by Hibernate behind the scenes, to the transaction scope.
+	  getCurrentSession() is flushed and closed automatically.
+	  
+   - openSession()
+	 = opens & manages a new session
+	 - It does not flush and close() automatically. 
+   
+- Hibernate simplifies:
+	Saving and retrieving your domain objects
+	Making database column and table name changes
+	Centralizing pre save and post retrieve logic
+	
+  = some key benefits of using Hibernate template:
+	a. Session closing is automated.
+	b. Interaction with hibernate session is simplified.
+	c. Exception handling is automated.
+	
+  = benefits are of hibernate over JDBC?
+	- Hibernate can be used seamlessly with any type of database as its database independent
+		while in case of JDBC, developer has to write database specific queries.
+	- Hibernate supports Query cache. JDBC you need to implement your java cache
+	- As Hibernate is set of Objects.You can treat TABLE as a Object
+		In case of JDBC you need to learn SQL. 
+    - In case of hibernate, there is no need to create connection pools as hibernate does all connection handling automatically
+		while in case of JDBC, connection pools need to be created.
+	
+	=  Session.connection() method to get JDBC Connection.
+	
+- The ORM levels are:
+	Pure relational (stored procedure.)
+	Light objects mapping (JDBC)
+	Medium object mapping
+	Full object Mapping (composition,inheritance, polymorphism, persistence by reachability)
+
+-  3 states of object (instance) in hibernate.
+	a.) Transient
+		= just created but has no primary key (identifier) and not associated with session.
+		- If an instance is not associated with any persistent context and also, it has never been associated with any persistent context
+	b.) Persistent
+		= session is open, and you just saved the instance in the database or retrieved the instance from the database.
+	c.)	Detached (After closing session1, e1 is in detached state, session is closed)
+		an instance was earlier associated with some persistent context (e.g. a table) and is no longer associated
+
+		
+	 - Object identification can be done in hibernate in following three ways:
+		a. Using Object Identity: Using == operator.
+		b. Using Object Equality: Using equals() method.
+		c. Using database identity: Relational database objects can be identified if they represent same row.
+
+	 - Version property 
+		It is used in hibernate to know whether an object is in transient state or in detached state.
+      	   
+     - States of beans   
+		 1. Transient 
+		  Methods to move persistent state -> persist(), merge(), save(), SaveOrUpdate()
+			
+			- save(returns identifier) & persist(void) & saveOrUpdate()
+			  session.save() : Save does an insert and will fail if the primary key is already persistent. 
+
+			  session.saveOrUpdate() : saveOrUpdate does a select first to determine if it needs to do an insert or an update. 
+			  Insert data if primary key not exist otherwise update data. 
+
+			  session.persist() : Does the same like session.save(). 
+			  But session.save() return Serializable object but session.persist() return void. 
+				 session.save() returns the generated identifier (Serializable object) and session.persist() doesn't. 
+					 
+			    save -> returns the identifier (Serializable) of the instance.
+				persist -> return nothing because its return type is void.				
+			
+		2. Persistent
+		   Methods to move Transient state -> delete(), remove()
+		   Methods to move Detached state -> evict(Obj) -> move only one bean, clear() -> moves all beans to Detached state.
+
+		3. Detached
+		   Methods to move Persistent state -> merge(), lock(), update(), SaveOrUpdate()
+			lock() ->  // reattaches, but does not save state other can save & reattach/does n't chk for db sync
+		
+		==	The session.lock() method simply reattaches the object to the session without checking or updating the database
+			on the assumption that the database in sync with the detached object. 
+		= refresh()
+			It is possible to re-load an object and all its collections at any time, using the refresh() method. 
+		
+- How to prevent concurrent update in Hibernate?
+	 = version checking used in hibernate when more then one thread trying to access same data. 
+       On the time of updation just fetch the version number and match with your version number ( on the time of fetching). 
+
+- Hibernate Proxy  
+	By default Hibernate creates a proxy for each of the class you map in mapping file. This class contain the code to invoke JDBC.
+	This class is created by hibernate using CGLIB. 
+	Proxies are created dynamically by subclassing your object at runtime. 
+	The subclass has all the methods of the parent, and when any of the methods are accessed, the proxy loads up the real object from the DB
+	and calls the method for you.
+
+- lazy loading in hibernate?
+	It loads the child objects on demand.
+	Since Hibernate 3, lazy loading is enabled by default, you don't need to do lazy="true".
+	--> It means not to load the child objects when parent is loaded.
+	
+	= Lazy fetching decides whether to load child objects while loading the Parent Object. 
+	  Lazy = true (means not to load child) 
+	  By default the lazy loading of the child objects is true. 
+	  This make sure that the child objects are not loaded unless they are explicitly invoked in the application by calling getChild() method on parent.
+	 
+	example --
+	If you have a TABLE ? EMPLOYEE mapped to Employee object and contains set of Address objects. 
+		Parent Class : Employee class 
+		Child class : Address Class 
+		
+		public class Employee { 
+		private Set address = new HashSet(); // contains set of child Address objects 
+		public Set getAddress () { 
+		return address; 
+		} 
+		public void setAddresss(Set address) { 
+		this. address = address; 
+		} 
+		} 
+		
+		In the Employee.hbm.xml file 
+		<set name="address" inverse="true" cascade="delete" lazy="false"> 
+		<key column="a_id" /> 
+		<one-to-many class="beans Address"/> 
+		</set> 
+		
+		In the above configuration. 
+		If lazy="false" : - when you load the Employee object that time child object Adress is also loaded and set to setAddresss() method. 
+	->  If you call employee.getAdress() then loaded data returns.No fresh database call. 
+
+		If lazy="true" :- This the default configuration. If you don?t mention then hibernate consider lazy=true. 
+		when you load the Employee object that time child object Adress is not loaded. You need extra call to data base to get address objects. 
+	->	If you call employee.getAdress() then that time database query fires and return results. Fresh database call. 
+
+- Initialization :
+    To increase the performance while retrieving records from a database table, Hibernate uses two styles
+	– Eager Initialization and Lazy Initialization.
+	1. Eager initialization
+		the object is created in the program execution, in a normal way, which sometimes the programmer may not use it in the program.
+		This looks waste of memory and processor time.
+		
+    2. Lazy Initialization
+	     if the object is created at runtime, only when the programmer requires is known as lazy initialization.
+	
+		Ex :
+		public class Demo
+		{
+		  private Player newPlayer = new Player();         // object is created well in advance --> Eager Initialize
+			  
+		  public Player getPlayer()
+		  {
+		    if(newPlayer == null)				--> Lazy Initialize starts
+			{
+			  newPlayer = new Player();          // object is created when asked
+			}									--> Lazy Initialize Ends
+			return newPlayer;
+		  }
+		  public static void main(String args[])
+		  {
+			Demo d1 = new Demo();
+			Player p1 = d1.getPlayer();
+		  }
+		}
+	= Also note that @OneToMany and @ManyToMany associations are defaulted to LAZY loading; 
+				and @OneToOne and @ManyToOne are defaulted to EAGER loading.
+				
+		To enable lazy loading explicitly you must use "fetch = FetchType.LAZY" on a association
+		Ex: 
+			@OneToMany( mappedBy = "category", fetch = FetchType.LAZY )
+			private Set<ProductEntity> products; 
+	
+- Ways tat objects can be fetched from database in hibernate?
+	Using Standard SQL
+	Using HQL
+	Using identifier
+	Using Criteria API
+
+	Following fetching strategies are available in hibernate:
+	1. Join Fetching
+	2. Batch Fetching
+	3. Select Fetching
+	4. Sub-select Fetching
+
+-  two types of collections in hibernate?
+	Following are the two types of collections in hibernate:
+		a. Sorted Collection
+		b. Order Collection
+	
+- Collection types in Hibernate ?
+	Bag
+	Set
+	List
+	Array
+	Map
+	
+- 4 types of association mapping in hibernate.
+	One to One (Minimum 2 tables need. Ex : pravin have unique Id :: Id can assign to only one person)
+	One to Many (Minimum 2 tables need. Ex : pravin have lot of certificate :: 10th 12th BE ME)
+	Many to One (Minimum 2 tables need. Ex : om pravin, pravin kumar, pandey pravin :: All pravin have same address - 22 Raja st, Erode)
+	Many to Many (Minimum 3 tables needed)
+		
+
+- HQL - the Hibernate query Language (HQL), is an object-oriented extension to SQL.
+		HQL is the query language used in Hibernate which is an extension of SQL.
+
+= How do you map Java Objects with Database tables?
+  - First we need to write Java domain objects (beans with setter and getter).
+  - Write hbm.xml, where we map java class to table and database columns to Java class variables.
+	
+	<hibernate-mapping>
+	<class name="com.test.User"  table="user">
+	<property  column="USER_NAME" length="255"  name="userName" not-null="true"  type="java.lang.String"/>
+	<property  column="USER_PASSWORD" length="255"  name="userPassword" not-null="true"  type="java.lang.String"/>
+	</class>
+	</hibernate-mapping>
+
+= define sequence generated primary key in hibernate?
+  - Using <generator> tag.
+	Example:-
+	<id column="USER_ID" name="id" type="java.lang.Long"> 
+	   <generator class="sequence"> 
+		 <param name="table">SEQUENCE_NAME</param>
+	   <generator>
+	</id>
+
+= invoke stored procedures in hibernate
+	[xml]
+
+	<sql-query name=”getStudents” callable=”true”>
+	<return alias=”st” class=”Student”>
+		<return-property name=”std_id” column=”STD_ID”/>
+		<return-property name=”s_name” column=”STD_NAME”/>
+		<return-property name=”s_dept” column=”STD_DEPARTMENT”/>
+	{ ? = call selectStudents() }
+	</return>
+	</sql-query>
+
+	[/xml]
+
+= see hibernate generated SQL on console
+	We need to add following in hibernate configuration file to enable viewing SQL on the console for debugging purposes:
+
+	[xml]
+	<property name=”show_sql”>true</property>
+	[/xml]
+
+- <property name="hibernate.cache.use_query_cache">true</property>
+	
+- If you mark a class as mutable="false",class will be treated as an immutable class. 
+	By default, it is mutable="true".
+
+- Native sql query
+  execute database specific queries that are not supported by Hibernate API such as query hints or the CONNECT keyword in Oracle Database.
+	
+- Dirty Checking
+	= calls update statement automatically on the objects that are modified in a transaction.
+	- State of object changes during transaction, then it will updated in db. Time saving
+	- Dirty checking feature of hibernate updates only those fields which require a change while keeps others unchanged.
+
+- Derived Properties
+	Derived properties are those properties which are not mapped to any columns of a database table.
+	Such properties are calculated at runtime by evaluation of any expressions.
+
+- list() and iterate()
+	If instances are already be in the session or second-level cache iterate() will give better performance. 
+	If they are not already cached, iterate() will be slower than list() and might require many database hits for a simple query.
+
+- Some of the design patterns used in Hibernate Framework are:
+	Domain Model Pattern – An object model of the domain that incorporates both behavior and data.
+	Data Mapper – A layer of Mappers that moves data between objects and a database while keeping them independent of each other and the mapper itself.
+	Proxy Pattern for lazy loading
+	Factory pattern in SessionFactory
+	
+Other Key Points :
+
+access ='field' //Bypass setter mthd
+show_sql = 'true'
+callable = 'true'
+mutable = 'false'
+<property name="hibernate.cache.use_query_cache">true</property>
+	Query query = session.createQuery("from Employee");
+	query.setCacheable(true);
+	query.setCacheRegion("ALL_EMP");
+
+- By mapping the property with access="field" in Hibernate metadata. This forces hibernate to bypass the setter method and 
+	access the instance variable directly while initializing a newly loaded object.	
+- SQL on Console --> <property name=”show_sql”>true</property>
+- SessionFactory.getStatistics()
+- Generator can also be used to specify how primary key is being created in the database.
+- use_second_level_cache as false.
+- If we don’t want an application to update or delete objects of a class in hibernate,
+	we can make the class as immutable by setting mutable=false
+
+- integrate Hibernate with Servlet or Struts2 web applications?
+	Hibernate integration with Servlet or Struts2 needs to be done using ServletContextListener.
+
+- use application server JNDI DataSource with Hibernate framework?
+  we need is to remove all the database specific properties and use below property to provide the JNDI DataSource name.
+
+  <property name="hibernate.connection.datasource">java:comp/env/jdbc/MyLocalDB</property>
+	
+
+Object states
+ http://courses.coreservlets.com/Course-Materials/pdf/hibernate/05-hibernate-Object_Lifecycle_Persistence_and_Session_Management.pdf
+Mappings/Associations
+ http://www.mkyong.com/hibernate/hibernate-one-to-one-relationship-example/
+--- Easy to learn 
+ http://www.techfaq360.com/hibernate_interview_questions.jsp?qid=370
+ 
+------------------------------------------ Spring Hibernate ------------------------------------------
+
+
+
+----------------------------------------------- Web Services -----------------------------------------
+SOAP - (Simple Object Access Protocol) 
+Def-
+- SOAP provides the envelope for sending Web Services messages over the Internet/Internet. It is part of the set of standards specified by the W3C.
+  SOAP is an alternative to Representational State Transfer (REST) and JavaScript Object Notation (JSON).
+
+- A SOAP message is an ordinary XML document containing the following elements:
+
+	Element		Description									Required
+	Envelope	Identifies the XML document as a SOAP message.					Yes
+	Header		Contains header information.							No
+	Body		Contains call, and response information.					Yes
+	Fault		Provides information about errors that occurred while processing the message.	No
+
+- SOAP envelope contains two parts:
+	1.) An optional header providing information on authentication, encoding of data, or how a recipient of a SOAP message should process the message.
+	2.) The body that contains the message. These messages can be defined using the WSDL specification.
+
+-It uses XML Information Set for its message format(Bcz xml is Open Source, Serialized as XML)
+
+-SOAP can operate over any transport protocol such as HTTP, SMTP, TCP, UDP, or JMS
+
+-Starting with SOAP Version 1.2 (Version i used 4.5.0)
+
+-SOAP has three major characteristics:
+	extensibility (security and WS-routing are among the extensions under development)
+	neutrality (SOAP can operate over any transport protocol such as HTTP, SMTP, TCP, UDP, or JMS)
+	independence (SOAP allows for any programming model)
+
+-Example of what SOAP procedures can do, 
+	an application can send a SOAP request to a server that has web services enabled—such as a real-estate price database—with the parameters for a search. 
+	The server then returns a SOAP response (an XML-formatted document with the resulting data), e.g., prices, location, features. 
+    Since the generated data comes in a standardized machine-parsable format, the requesting application can then integrate it directly.
+
+-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+   <soapenv:Header>
+	 <wsse:Security soapenv:mustUnderstand="1" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+         <wsse:UsernameToken wsu:Id="UsernameToken-3" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+            <wsse:Username>BRKRPRTUSR</wsse:Username>
+            <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">BRKRPRTTSTRGN</wsse:Password>
+         </wsse:UsernameToken>
+      </wsse:Security>
+      <v2:ESBHeader xmlns:v2="http://wellpoint.com/esb/header/v2">
+         <v2:srvcName>Broker</v2:srvcName>
+         <v2:srvcVersion>1.0</v2:srvcVersion>
+         <v2:operName>BrokerInquiry</v2:operName>
+         <v2:senderApp>WBS</v2:senderApp>
+         <v2:transId>12345</v2:transId>
+      </v2:ESBHeader>
+   </soapenv:Header>
+
+   <soapenv:Body>
+      <v1:getSummaryRequest xmlns:v1="http://wellpoint.com/schema/getSummaryRequest/v1">
+         <v11:brokerIdentifier xmlns:v11="http://wellpoint.com/schema/Broker/v1">558455356</v11:brokerIdentifier>
+      </v1:getSummaryRequest>
+   </soapenv:Body>
+
+</soapenv:Envelope>
+
+
+http://www.service-architecture.com/articles/web-services/soap.html
+https://en.wikipedia.org/wiki/SOAP
+
+
+----------------------------------------------------------------------------------------------------------
+
+
+
+------------------------------------------------------ Liferay -------------------------------------------
+	Liferay (web application framework, free & Open Source, Java based, 1 IDE & 1 Server enough to configure liferay)
+ - Liferay Portal is a web platform with features commonly required for the development of websites and portals.
+ - Liferay includes a built-in web content management system allowing users to build websites and portals as an assembly of themes, pages,
+    portlets/gadgets and a common navigation
+ - Liferay Portal is Java-based and runs on any computing platform capable of running the Java Runtime Environment and an application server.
+ - free and open source enterprise portal
+ 
+   liferay-portal-6.1.20-ee-ga2-20120731110418084.war 
+   To enable connectivity to Database, Setup JDBC Provider & Data source
+  - Install the following war files (by pasting the files under liferay’s deploy folder):
+	a.	Tabbed portlet – Tabsnavigation.war
+	b.	EQP Portlet Project – eqp-portlet-war.war
+	c.	Wellpoint Theme – ui-ehb-theme.war
+
+   
+ - Liferay War starts, you can find the following folders/files created under your Liferay Home Directory:
+	Deploy
+	Data
+	Logs
+	portal-setup-wizard.properties // if it is not there leave it.
+ -----------------------------
+ Mian Links - http://www.opensource-techblog.com/2012/09/spring-mvc-portlet-in-liferay.html
+				http://www.opensource-techblog.com/2012/07/create-liferay-portlet.html
+				
+ --- Spring MVC Portlet in Liferay ---
+ 
+ a.) Create Liferay Portlet from Liferay IDE
+ - Start eclipse and click on File->New->Project. 
+   Then select Liferay Project under Liferay category and click on Next button.
+   
+ b.) Plugin Type in Liferay Project
+	 Portlet - Create a web application using the portlet framework
+	 Hook - Override or extend Liferay default behaviour and functionality
+	 Layout - Create a new custom layout for liferay pages.
+	 Theme - Build a custom look and feel for the portal.
+	 
+ c.) Configuration files are stored under docroot/WEB-INF folder. 
+  - These configuration files are comprises of standard JSR-286 portlet configuration file portlet.xml and 
+  - other three liferay specific configuration files as below
+
+   1.) liferay-display.xml:- This file describes the category of portlet, which will be appear under Add menu. (from top bar after login as Liferay Admin).
+   2.) liferay-portlet.xml:- This file describes some additional liferay specific feature on top of JSR-286.  
+		= Ex. We can declare the portlet as instantiable from this file. Instantiable means we can place more than one portlet instance on same page.
+   3.) liferay-plugin-package.properties:- We can configure dependency Jars and TLDs through this file.	 
+   
+   liferay-display.xml
+	   <display>
+		<category name="EQPGroup">
+			<portlet id="EQPGroupList"></portlet>
+			<portlet id="EQPQuotePortlet"></portlet>
+			<portlet id="EQPEnrollmentListPortlet"></portlet>
+			<portlet id="EQPEnrollmentDetailPortlet"></portlet> 
+			<portlet id="EQPRenewalListPortlet"></portlet>
+			<portlet id="EQPRenewalDetailPortlet"></portlet>    
+			<portlet id="EQPAdminFeatures"></portlet>
+			<portlet id="EQPInternalReports"></portlet>
+		 </category>
+		</display>
+
+   liferay-portlet.xml	
+	 <?xml version="1.0" encoding="UTF-8"?>
+	 <!DOCTYPE liferay-portlet-app PUBLIC "-//Liferay//DTD Portlet Application 5.2.0//EN" "http://www.liferay.com/dtd/liferay-portlet-app_5_2_0.dtd">
+		<liferay-portlet-app>
+		<portlet>
+			<portlet-name>EQPGroupList</portlet-name>
+			<icon>/icon.png</icon>
+			<instanceable>true</instanceable>
+			<header-portlet-css>/css/main.css</header--portlet-css>
+			<footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
+		</portlet>
+		....
+		....
+		<portlet> 
+			<portlet-name>EQPEnrollmentListPortlet</portlet-name>
+			<icon>/icon.png</icon>
+			<instanceable>true</instanceable>
+			<header-portlet-css>/css/main.css</header--portlet-css>
+			<footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
+		</portlet>
+		<portlet>
+			<portlet-name>EQPInternalReports</portlet-name>
+			<icon>/icon.png</icon>
+			<instanceable>true</instanceable>
+			<header-portlet-css>/css/main.css</header--portlet-css>
+			<footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
+		</portlet>
+		<role-mapper>
+			<role-name>administrator</role-name>
+			<role-link>Administrator</role-link>
+		</role-mapper>
+		<role-mapper>
+		  <role-name>user</role-name>
+		  <role-link>User</role-link>
+		</role-mapper>
+	 </liferay-portlet-app>
+	 
+	portlet.xml
+    portlet-name:- Unique name of portlet across.In liferay portal its also refered as portlet-id.
+	display-name:- Short name of portlet that will be used by tool. Its not required to be unique.
+	portlet-class:- fully qualified portlet class name.
+	init-param:- Just like servlet, we can pass init param for portlet.
+	expiration-cache:- defines time in second after which portlet output expires. -1 means never expire.
+	supports:- support mime type.
+	portlet-info:- define portlet information.
+	security-role-ref:-will define which role can access this portlet.
+	
+      <?xml version="1.0"?>
+	  <portlet-app xmlns="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd"
+		version="2.0">
+		<portlet>
+			<portlet-name>EQPInternalReports</portlet-name>
+			<display-name>EQPInternalReports</display-name>
+			<portlet-class>org.springframework.web.portlet.DispatcherPortlet</portlet-class>
+			<init-param>
+				<name>contextConfigLocation</name>
+				<value>/WEB-INF/EQPInternalReports.xml</value>
+			</init-param>
+			<supports>
+				<mime-type>text/html</mime-type>
+				<portlet-mode>view</portlet-mode>
+			</supports>
+			<portlet-info>
+				<title>EQPInternalReports</title>
+				<short-title>EQPInternalReports</short-title>
+			</portlet-info>
+		</portlet>
+	  </portlet-app>
+	  
+	- DataSource path pointing steps 
+		Servers -> Application servers > server1 > Process definition > Java Virtual Machine > Custom properties 
+			Name -  	eha.base.path 	
+			Value -     D:\wsapps_new\eha\deployment  
+	
+	- DataSource Defining steps
+		Resources -> JDBC -> Data Sources -> New -> 1.) DB name & URL, 2.) MYSQL/Oracle/any other DBs 3.) PC name & Host name 4.) Finish
+		
+   ------------------------------------------------------ Liferay -------------------------------------------
+   
+	

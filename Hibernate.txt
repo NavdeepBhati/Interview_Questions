@@ -1,0 +1,95 @@
+hibernate
+
+---Table Per Hierarchy
+	--Creates single table including parent
+	-- You need to use @Inheritance(strategy=InheritanceType.SINGLE_TABLE), @DiscriminatorColumn and @DiscriminatorValue annotations for mapping table per hierarchy strategy.
+	
+		@Entity  
+		@Table(name = "employee101")  
+		@Inheritance(strategy=InheritanceType.SINGLE_TABLE)  
+		@DiscriminatorColumn(name="type",discriminatorType=DiscriminatorType.STRING)  
+		@DiscriminatorValue(value="employee")  
+		  
+		public class Employee {  
+		@Id  
+		@GeneratedValue(strategy=GenerationType.AUTO)  
+			  
+		@Column(name = "id")  
+		private int id;  
+		  
+		@Column(name = "name")  
+		private String name;  
+
+https://www.javatpoint.com/hibernate-table-per-hierarchy-using-annotation-tutorial-example
+
+---Table Per Concrete
+	--creates 2+ tables. Duplicate column of parent would be in child table. 
+	
+	--@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) specifies that we are using table per concrete class strategy. It should be specified in the parent class only.
+
+	--@AttributeOverrides defines that parent class attributes will be overriden in this class. In table structure, parent class table columns will be added in 
+		the subclass table.		
+	
+	https://www.javatpoint.com/hibernate-table-per-concrete-class-using-annotation-tutorial-example	
+
+---Table Per Subclass
+	--creates 2+tables. Parent primary key would be shared in child table (child will not have personal primar key )
+	--We need to specify @Inheritance(strategy=InheritanceType.JOINED) in the parent class and @PrimaryKeyJoinColumn annotation in the subclasses.
+	
+---Merge vs Update 
+	http://www.onlinetutorialspoint.com/hibernate/difference-between-update-vs-merge-example.html
+	--Both update() and merge() methods in hibernate are used to convert the object which is in detached state into persistence state.
+	--When we call update() method, if the object already existed in cache update() method will throw exception where as merge() method copies the changes in   
+	  to cache.
+	  
+	    Session session2 = factory.openSession();
+        Student student2 = session2.get(Student.class, 111);
+        Transaction tx = session2.beginTransaction();
+ 
+        session2.update(student); // throw exception NonUniqueObjectException
+        session2.merge(student);  // works fine
+
+		  tx.commit();
+	  
+	--Hibernate merge can be used to update existing values, however this method create a copy from the passed entity object and return it. The returned object 
+	  is part of persistent context and tracked for any changes, passed object is not tracked  
+		Employee emp4 = (Employee) session.merge(emp);
+		
+	--Trying to call update on a transient instance will result in an exception. The following will not work:
+
+			Person person = new Person();
+			person.setName("John");
+			session.update(person); // PersistenceException!  
+			
+			
+---Getsession vs open session
+            Parameter                openSession                                          getCurrentSession
+		Session object         -It always create new Session object            -It creates a new Session if not exists , else use same session which is in 		
+																				current hibernate context
+		Flush and close        -You need to explicitly flush and               -You do not need to flush and close session objects, it will be automatically 
+		                        close session objects                           taken care by Hibernate internally
+		Performance            -In single threaded environment , It is   	   -In single threaded environment , It is faster than getOpenSession
+								slower than getCurrentSession
+		Configuration		   -You do not need to configure any property 	   -You need to configure additional property
+								to call this method           					“hibernate.current_session_context_class”  to call getCurrentSession method, 
+																				 otherwise it will throw exceptions.  
+
+---Save vs persist
+https://www.journaldev.com/3481/hibernate-session-merge-vs-update-save-saveorupdate-persist-example
+   -Save
+	--As the method name suggests, hibernate save() can be used to save entity to database. We can invoke this method outside a transaction, that’s why I don’t like this method to save data. If we use this without transaction and we have cascading between entities, then only the primary entity gets saved unless we flush the session.
+	--We should avoid save outside transaction boundary, otherwise mapped entities will not be saved causing data inconsistency.
+	--Hibernate save method returns the generated id immediately, this is possible because primary object is saved as soon as save method is invoked.
+	--If there are other objects mapped from the primary object, they gets saved at the time of committing transaction or when we flush the session.
+	
+  -Persist
+	--Hibernate persist is similar to save (with transaction) and it adds the entity object to the persistent context, so any further changes are tracked. If the object properties are changed before the transaction is committed or session is flushed, it will also be saved into database.
+
+   --Second difference is that we can use persist() method only within the boundary of a transaction, so it’s safe and takes care of any cascaded objects.
+
+   --Finally, persist doesn’t return anything so we need to use the persisted object to get the generated identifier value.
+																					 
+
+
+		
+	

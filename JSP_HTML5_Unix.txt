@@ -1,0 +1,109 @@
+
+----------------------------------------------------------------- JSP --------------------------------------------------------
+
+JSP
+	JavaServer Pages (JSP) is a technology for developing web pages that support dynamic content
+	
+- Lifecycle of jsp
+		Initialization: jspInitnit()
+			When a container loads a JSP it invokes the jspInit() method
+		Execution: _jspService() --> can't override so only _ bfr method
+			The _jspService() method of a JSP is invoked once per a request and is responsible for generating the response for that request and 
+			this method is also responsible for generating responses to all seven of the HTTP methods ie. GET, POST, DELETE etc
+		Cleanup : jspDestroy()
+		
+- Types directive tags are as follows:
+		<%@ page ... %> : Defines page-dependent attributes, such as scripting language, error page, and buffering requirements.
+		<%@ include ... %> : Includes a file during the translation phase.
+		<%@ taglib ... %> : Declares a tag library, containing custom actions, used in the page.
+		
+- JSP Actions :
+	You can dynamically insert a file, reuse JavaBeans components, forward the user to another page, or generate HTML for the Java plugin
+	Its syntax is as follows:
+	<jsp:action_name attribute="value" />
+	
+	Some actions :
+	jsp:include, jsp:useBean,jsp:setProperty,jsp:getProperty, jsp:forward,jsp:plugin,jsp:element, jsp:attribute, jsp:body, jsp:text
+	
+- Literals 
+	Literals are the values, such as a number or a text string
+		Boolean: true and false
+		Integer: as in Java
+		Floating point: as in Java
+		String: with single and double quotes; " is escaped as \", ' is escaped as \', and \ is escaped as \\.
+		Null: 
+		
+- Implicit Objects
+	JSP Implicit Objects are the Java objects/pre-defined variables
+		
+	Types :
+	request,response,out,session,application,config,pageContext,page, Exception
+
+	out     ->  used to send content in a response.
+	session -> used to track client session between client requests
+	
+- differ betw <jsp:forward page = ... > and response.sendRedirect(url)?
+	The <jsp:forward> element forwards the request object containing the client request information from one JSP file to another file.
+	The target file can be an HTML file, another JSP file, or a servlet
+	
+	sendRedirect sends HTTP temporary redirect response to the browser, and browser creates a new request to go the redirected page.
+	
+- JSP filters 
+	JSP Filters are Java classes that can be used in JSP Programming
+	Purposes :
+		To intercept requests from a client before they access a resource at back end.
+		To manipulate responses from server before they are sent back to the client.
+
+key points :
+- The JSTL formatting tags are used to format and display text, the date, the time, and numbers for internationalized Web sites.	
+	
+----------------------------------------------------------------- JSP -----------------------------------------------------------
+	
+	
+----------------------------------------------------------------- HTML 5 --------------------------------------------------------
+- HTML elements & Tags
+	HTML elements communicate to the browser how to render text. 
+	When surrounded by angular brackets <> they form HTML tags. 	
+	
+- Semantic HTML
+	tags like <b></b> for bold, and <i></i> for italic 
+	   should not be used, reason being they just represent formatting, and provide no indication of meaning
+	   
+	 <strong></strong> and <em></em>. 
+	 These tags will have the same bold and italic effects, while demonstrating meaning and structure.
+	
+- A <div> is a generic container element for grouping and styling, 
+  whereas a <frame> creates divisions within a web page and should be used within the <frameset> tag.	
+  Bulleted lists use the <ul> tag, which stands for “unordered,” whereas <ol> is used to create an ordered list.
+  
+  <Canvas> is an element that manipulates two-dimensional (2D) pixels while Scalable Vector Graphics works in 2D and three-dimensional (3D) vectors.
+  The Scalable Vector Graphics (SVG) is an XML-based image format that is used to define two-dimensional vector based graphics for the Web
+  
+- some new input attributes in HTML5?
+	datalist, datetime, output, keygen, date, month, week, time, number, range, email, and url
+	
+----------------------------------------------------------------- HTML 5 --------------------------------------------------------	
+	
+
+----------------------------------------------------------------- Queries --------------------------------------------------------	
+General -
+	select [DISTINCT]	(*,clmn_name [alias]) from table_name;
+	
+Remove Duplicates without distinct
+	select clmn_name from table_name group by clmn_name;
+	
+Rownum
+    select rownum, empno, ename  from emp
+
+NVL -> replace null value with given value
+		NVL(value, replace value)
+
+----------------------------------------------------------------- Queries --------------------------------------------------------	
+
+
+--------------------------------------------------------------- Unix Commands ----------------------------------------------------
+		
+https://www.tjhsst.edu/~dhyatt/superap/unixcmd.html		
+
+	
+	

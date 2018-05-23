@@ -1,0 +1,238 @@
+ ---SPring-----------------
+
+---Spring comprises of seven modules.
+
+	 1.The Core container module
+	 2.Application context module
+	 3.AOP module (Aspect Oriented Programming)
+	 4.JDBC abstraction and DAO module
+	 5.O/R mapping integration module (Object/Relational)
+	 6.Web module
+	 7.MVC framework module
+
+		1.The core container:
+			The core container provides the essential functionality of the Spring framework. A primary component of the core container is the BeanFactory, an implementation of the Factory pattern. The BeanFactory applies the Inversion of Control (IOC) pattern to separate an application's configuration and dependency specification from the actual application code.
+
+		2.Spring context:
+			The Spring context is a configuration file that provides context information to the Spring framework. The Spring context includes enterprise services such as JNDI, EJB, e-mail, internalization, validation, and scheduling functionality.
+
+		3.Spring AOP:
+			The Spring AOP module integrates aspect-oriented programming functionality directly into the Spring framework, through its configuration management feature. As a result you can easily AOP-enable any object managed by the Spring framework. The Spring AOP module provides transaction management services for objects in any Spring-based application. With Spring AOP you can incorporate declarative transaction management into your applications without relying on EJB components.
+
+		4.Spring DAO:
+			The Spring JDBC DAO abstraction layer offers a meaningful exception hierarchy (DataAccessException) for managing the exception handling and error messages thrown by different database vendors. The exception hierarchy simplifies error handling and greatly reduces the amount of exception code you need to write, such as opening and closing connections. Spring DAO's JDBC-oriented exceptions comply to its generic DAO exception hierarchy.
+
+		5.Spring ORM:
+			The Spring framework plugs into several ORM frameworks to provide its Object Relational tool, including JDO, Hibernate, and iBatis SQL Maps. All of these comply to Spring's generic transaction and DAO exception hierarchies.
+
+		6.Spring Web module:
+			The Web context module builds on top of the application context module, providing contexts for Web-based applications. As a result, the Spring framework supports integration with Jakarta Struts. The Web module also eases the tasks of handling multi-part requests and binding request parameters to domain objects.
+
+		7.Spring MVC framework:
+			The Model-View-Controller (MVC) framework is a full-featured MVC implementation for building Web applications. The MVC framework is highly configurable via strategy interfaces and accommodates numerous view technologies including JSP, Velocity, Tiles, iText, and POI.
+
+---DI and IOC 
+	--Dependency Injection is a design pattern on which dependency of object (in this case AuditDAO is a dependency for AuditServiceImpl Object) is injected by 
+	  framework rather than created by Object itself. 
+	--Dependency Injection reduces coupling between multiple object as its dynamically injected by framework. One of the implementation of DI is Inversion of   
+	  Control (IOC) on which framework like Spring controls object’s dependency. There are mainly two types of Dependency Injection: Constructor Injection and Setter Injection.
+	  
+	--Issues without DI (Implementing using new key word)
+		-No sharing of dependent object i.e. every time new obj is created in composition.
+		-Closely copule i.e. if the constructor of dependent obj changes, it will break the code.
+		-No easy testing as it is difficult to mock the object used with nw keyword, we have to rely on actual implementation of the method.
+		
+	--Benefits of DI 
+		- Reduce coupling
+		- Improves testability
+		- Flexibility
+		
+----ApplicationContext
+
+	--->Major Types of ApplicationContext
+		
+			 -AnnotationConfigApplicationContext—Loads a Spring application context from one or more Java-based configuration classes -AnnotationConfigWebApplicationContext—Loads a Spring web application context from one or more Java-based configuration classes -ClassPathXmlApplicationContext—Loads a context definition from one or more XML files located in the classpath, treating context-definition files as 	 class-  path resources
+			 -FileSystemXmlApplicationContext—Loads a context definition from one or more XML files in the filesystem 
+			 -XmlWebApplicationContext—Loads context definitions from one or more XML files contained in a web application
+
+----Constructor Arg
+		
+		To avoid confusion use name or index attribute
+		-Example
+			<bean id="sequenceGenerator"    class="com.apress.springrecipes.sequence.SequenceGenerator">
+				<constructor-arg name="initial" value="100000" />  
+				<constructor-arg name="suffix" value="A" />    
+				<property name="prefix" value="30" />
+			</bean>
+
+			<bean id="sequenceGenerator"    class="com.apress.springrecipes.sequence.SequenceGenerator">
+				<constructor-arg type="int" index="0" value="100000" />  
+				<constructor-arg type="java.lang.String" index="1" value="A" /> 
+				<property name="prefix" value="30" /> 
+			</bean>
+			
+----Use Properties File data to Setup POJO Instantiation Values
+			
+		--Use this config to use properties files
+			<bean id="discountPropertyConfigurer" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer"> 
+				<property name="location">
+					<value>classpath:discounts.properties</value> 
+				</property> 
+				<property name="ignoreResourceNotFound" value="true"/>  
+				<property name="ignoreUnresolvablePlaceholders" value="true"/>
+			</bean>
+		-Usage <property name="discount" value="${specialcustomer.discount:0}" />	
+		
+----Autowiring Bean Scopes
+
+		--Scope Description
+			-singleton 		:-Creates a single bean instance per Spring IoC container 
+			-prototype 		:-Creates a new bean instance each time when requested
+			-request   		:-Creates a single bean instance per HTTP request; only valid in the context of a web application 
+			-session   		:-Creates a single bean instance per HTTP session; only valid in the context of a web application
+			-globalSession  :-Creates a single bean instance per global HTTP session; only valid in the context of a portal application
+
+---Bean LifeCycle
+	--Initialization methods(@PostConstruct)
+		-Implementing the class with InitializingBean interface having 'void afterPropertiesSet() throws Exception' method.
+		 or specify in xml using init-method keyword.
+	
+	--Destroying methods(@PreDestroy)
+		-Implementing the class with DisposableBean  interface having 'void destroy() throws Exception' method
+		 or specify in xml using destroy-method keyword.
+	
+	--BeanPostProcessor Interface 
+		-It consists two methods
+			1)public Object postProcessBeforeInitialization(Object bean, String beanName) 
+			2)public Object postProcessAfterInitialization(Object bean, String beanName) 
+	--To use the shutdown method use registerShutdownHook method.
+	   -This will ensures a graceful shutdown and calls the relevant destroy methods.
+			 AbstractApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");
+    	     context.registerShutdownHook();
+
+			
+			
+----Depends on attribute
+
+		--As an application’s POJOs grow, so does the number of POJO initializations. This can create race conditions if POJOs reference one another and are spread out in different configuration files. What happens if bean ‘C’ requires the logic in bean ‘B’ and bean ‘F’? If bean ‘C’ is detected first and Spring hasn’t initialized bean ‘B’ and bean ‘F’, you’ll get an error which can be hard to detect.
+
+		--To ensure that certain POJOs are initialized before other POJOs and to get a more descriptive error in case of a failed initialization process, Spring offers the depends-on attribute. The depends-on attribute ensures a given bean is initialized before another bean. 
+			
+			<bean id="sequenceGenerator" class="com.apress.springrecipes.sequence.SequenceGenerator" autowire="byType" depends-on="datePrefixGenerator">  
+			<property name="initial" value="100000" />
+			<property name="suffix" value="A" />
+			</bean>
+		-- @Configuration
+		   public class SequenceConfiguration {
+		   @Bean    
+		   @DependsOn("datePrefixGenerator")  
+		   public SequenceGenerator sequenceGenerator(){ }
+			
+----Set Profiles for different env.
+	--Example
+		-<beans profile='spring'>
+			<bean id="aaa" class="com.apress.springrecipes.shop.Battery">   
+				<property name="name" value="AAA" /> 
+				<property name="price" value="2.5" /> 
+			</bean> 
+			<bean id="cdrw" class="com.apress.springrecipes.shop.Disc">   
+				<property name="name" value="CD-RW" />    
+				<property name="price" value="1.5" />
+		  </beans>
+		-Use @Profile over configuration class	
+	--Avtivate the profile programmatically
+		-GenericXmlApplicationContext ApplicationContext context = new GenericXmlApplicationContext();  
+     		context.getEnvironment().setActiveProfiles("global","summer"); 
+	        context.load("beans.xml");
+			context.refresh(); 
+			
+	--Avtivate the profile on web.xml
+		-<servlet>
+				<servlet-name>dispatcher</servlet-name>
+				<servlet-class>   org.springframework.web.servlet.DispatcherServlet </servlet-class>
+			<init-param>  
+				<param-name> spring.profiles.active</param-name>  
+				<param-value>winter</param-value>
+			</init-param>
+		</servlet>
+
+	--To set default profile use setDefaultProfiles() or  spring.profiles.default in web.xml
+	
+----Use  @Autowired(required=false) when you dont want exception  if spring fails to find the bean.
+
+----Use @Primary when deagul implementation is to be used fr autowiring interface.
+
+----When multiple java config files are used without any xml use :-
+		-AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();  
+		 context.register({"SequenceConfiguration.class","PrefixConfiguration.class"}); 
+		 context.refresh();
+		-Or use 
+			@Configuration
+			@Import(PrefixConfiguration.class)
+			
+----@Resource annotation provides the same functionality as putting together the @Autowired annotation and @Qualifier annotation.
+		-Precedence of @Resuorce
+			Match by Name
+			Match by Type
+			Match by Qualifier
+			
+----@Inject annotation attempts to autowire by type
+		-recedence of @Inject 	
+			Match by Type
+			Match by Qualifier
+			Match by Name
+			
+----To read from properties file
+		-@Configuration
+		 @PropertySource("classpath:discounts.properties") 
+	      public class ShopConfiguration {
+		  private @Value("${specialcustomer.discount:0}") double specialCustomerDiscountField;       
+		  ...
+		 - Default value  @Value("${key:default_value}") 	  
+		 
+---- BeanPstProcessor
+		-To write a bean post processor a class has to implement BeanPostProcessor. When Spring detects a bean that implements this class, it applies the  postProcessBeforeInitialization() and postProcessAfterInitialization() methods to all bean instances managed by Spring. You can implement any logic you wish in these methods, to either inspect, modify, or verify the status of a bean		 
+
+		-Both the postProcessBeforeInitialization() and postProcessAfterInitialization() methods must return an instance of the bean being processed. However, this also means you can even replace the original bean instance with a brand-new instance in your bean post processor.
+
+----AspectJ  to activate AspectJ in your bean configuration file: <aop:aspectj-autoproxy>. REF, 3-12 & 3-15 Pg.178.
+	-Use @Order(int val) when multiple aspect are in use.
+	
+---- To extend more than one class using AOP proxy class REF 3-19 Pg.197
+
+----To add the spring dependency inthe object created by new keyword use @Configurable annotation 
+	-Ref:-   https://tamasgyorfi.net/2013/11/13/spring-dependency-injection-configurable/
+	
+	
+----To add more then one config file(i.e. other than dispatcher-servlet) in spring web use contextConfiguration 	
+		The other config files are called as root Config files & dipactcher Servlet is known as Servlet Config File
+		<web-app ...>   
+			<context-param> 
+				<param-name>contextConfigLocation</param-name>  
+				<param-value>/WEB-INF/court-service.xml</param-value>  
+			</context-param> 
+			<listener>  
+				<listener-class> org.springframework.web.context.ContextLoaderListener</listener-class> 
+			</listener> 
+	... </web-app>
+	
+---- Annotation appraoch
+		public class CourtApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer { 
+			@Override
+			protected Class<?>[] getRootConfigClasses() { 
+				return new Class<?>[] {ServiceConfiguration.class};    } 
+			@Override
+			protected Class<?>[] getServletConfigClasses() {  
+				return new Class<?>[] {WebConfiguration.class};    } 
+			@Override 
+			protected String[] getServletMappings() {  
+				return new String[] {"/", "/welcome"};    } 
+		} 
+		
+		The WebConfig file is 
+			@Configuration
+			@EnableWebMvc
+			@ComponentScan("com.apress.springrecipes.court.web")
+			public class WebConfiguration { ... }
+
+			

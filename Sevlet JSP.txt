@@ -1,0 +1,406 @@
+Servlet
+
+---Servlet Life Cycle
+
+		Servlet class is loaded.
+		Servlet instance is created.
+		init method is invoked.   --Only once
+		service method is invoked.
+		destroy method is invoked. --Only once
+	
+
+---Hierarchy
+		Servlet Interface
+			|
+			|
+		Generic Servlet Class
+			|
+			|
+		HttpServlet Class
+		
+---By default server looks for the welcome file in following order:
+	
+		--	welcome-file-list in web.xml
+		--	index.html
+		--	index.htm
+		--	index.jsp
+		--	If none of these files are found, server renders 404 error.
+		
+---RequestDispatcher 		
+	--The RequestDispatcher interface provides the facility of dispatching the request to another resource it may be html, servlet or jsp.
+	
+	--Two methods
+		1.public void forward(ServletRequest request,ServletResponse response)throws ServletException,java.io.IOException:Forwards a request from a servlet to another resource (servlet, JSP file, or HTML file) on the server.
+		2.public void include(ServletRequest request,ServletResponse response)throws ServletException,java.io.IOException:Includes the content of a resource (servlet, JSP page, or HTML file) in the response.
+		
+	--Example
+			RequestDispatcher rd=request.getRequestDispatcher("servlet2");  //	servlet2 is the url-pattern of the second servlet  
+			rd.forward(request, response);//method may be include or forward  
+			
+---Explanation:
+
+---Difference between forward() vs include() method
+	  --To understand the difference between these two methods, lets take an example: Suppose you have two pages X and Y. In page X you have an include tag, 
+		this means that the control will be in the page X till it encounters include tag, after that the control will be transferred to page Y. At the end of the processing of page Y, the control will return back to the page X starting just after the include tag and remain in X till the end.
+		In this case the final response to the client will be send by page X.
+
+	  --Now, we are taking the same example with forward. We have same pages X and Y. In page X, we have forward tag. In this case the control will be in 
+		page X till it encounters forward, after this the control will be transferred to page Y. The main difference here is that the control will not return back to X, it will be in page Y till the end of it.
+		In this case the final response to the client will be send by page Y.
+			
+			
+			
+---SendRedirect 
+	--The sendRedirect() method of HttpServletResponse interface can be used to redirect response to another resource, it may be servlet, jsp or html file.
+	--It accepts relative as well as absolute URL.
+	--It works at client side because it uses the url bar of the browser to make another request. So, it can work inside and outside the server.
+	
+	--Example
+		response.sendRedirect("http://www.javatpoint.com");  
+		
+		
+---Difference between forward() and sendRedirect() method
+
+			forward() method														sendRedirect() method
+		The forward() method works at server side.									The sendRedirect() method works at client side.
+		It sends the same request and response objects to another servlet.			It always sends a new request.
+		It can work within the server only.											It can be used within and outside the server.
+		Example: request.getRequestDispacher("servlet2").forward(request,response);	Example: response.sendRedirect("servlet2");
+		
+---ServletConfig 
+		--An object of ServletConfig is created by the web container for each servlet. This object can be used to get configuration information from web.xml file.
+		
+			<web-app>  
+			  <servlet>  
+				......  
+				  
+				<init-param>  
+				  <param-name>parametername</param-name>  
+				  <param-value>parametervalue</param-value>  
+				</init-param>  
+				......  
+			  </servlet>  
+			</web-app> 
+	--Example
+		ServletConfig config=getServletConfig();  
+		String driver=config.getInitParameter("driver");  
+		out.print("Driver is: "+driver);  
+		
+---ServletContext 
+	---An object of ServletContext is created by the web container at time of deploying the project. This object can be used to get configuration information 	
+		from web.xml file. There is only one ServletContext object per web application.
+		
+		<web-app>  
+		 ......  
+			  
+		  <context-param>  
+			<param-name>parametername</param-name>  
+			<param-value>parametervalue</param-value>  
+		  </context-param>  
+		 ......  
+		</web-app>  
+		
+		
+	-- Usage
+		The object of ServletContext provides an interface between the container and servlet.
+		The ServletContext object can be used to provide inter-application communication.
+
+	--Example	
+		ServletContext context=getServletContext();  
+		String driverName=context.getInitParameter("dname");  
+		pw.println("driver name is="+driverName);  	
+		
+---Cookies 
+	--A cookie is a small piece of information that is persisted between the multiple client requests.A cookie is a kind of information that is stored at client side.
+	--Example
+		Cookie ck=new Cookie("user","sonoo jaiswal");//creating cookie object  
+		response.addCookie(ck);//adding cookie in the response  
+
+---HttpSession
+	--container creates a session id for each user.The container uses this id to identify the particular user.
+
+	1.public HttpSession getSession():Returns the current session associated with this request, or if the request does not have a session, creates one.
+	2.public HttpSession getSession(boolean create):Returns the current HttpSession associated with this request or, if there is no current session and create is true, returns a new session.
+	
+---Event and Listener in Servlet
+	--Events are basically occurrence of something. Changing the state of an object is known as an event.
+	--We can perform some important tasks at the occurrence of these exceptions, such as counting total and current logged-in users, creating tables of the database at time of deploying the project, creating database connection object etc.
+	
+	--Example
+		-Event classes
+		  The event classes are as follows:
+
+			ServletRequestEvent
+			ServletContextEvent
+			ServletRequestAttributeEvent
+			ServletContextAttributeEvent
+			HttpSessionEvent
+			HttpSessionBindingEvent
+		-Event interfaces
+		  The event interfaces are as follows:
+
+		ServletRequestListener
+		ServletRequestAttributeListener
+		ServletContextListener
+		ServletContextAttributeListener
+		HttpSessionListener
+		HttpSessionAttributeListener
+		HttpSessionBindingListener
+		HttpSessionActivationListener
+
+---Servlet Filter
+	--A filter is an object that is invoked at the preprocessing and postprocessing of a request.
+	  It is mainly used to perform filtering tasks such as conversion, logging, compression, encryption and decryption, input validation etc.
+	 
+---Filter API
+	1) Filter interface
+			init(FilterConfig config)
+			doFilter(HttpServletRequest request,HttpServletResponse response, FilterChain chain)
+			destroy()
+	2) FilterChain interface
+		public void doFilter(HttpServletRequest request, HttpServletResponse response): it passes the control to the next filter or resource.
+		
+		
+		<web-app>  
+		  
+			<filter>  
+				<filter-name>...</filter-name>  
+				<filter-class>...</filter-class>  
+			</filter>  
+		   
+			<filter-mapping>  
+				<filter-name>...</filter-name>  
+				<url-pattern>...</url-pattern>  
+			</filter-mapping>  
+		  
+		</web-app>  		
+	 
+---Annotation	 
+		 If you use annotation, deployment descriptor (web.xml file) is not required. But you should have tomcat7 as it will not run in the previous versions of tomcat. @WebServlet annotation is used to map the servlet with the specified name
+		 
+		 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+												The JSP API
+												
+---The JSP API consists of two packages:
+
+		javax.servlet.jsp
+		javax.servlet.jsp.tagext												
+
+---Hierarchy
+		Servlet
+		  |
+		JSPPAGE
+		  |
+		HTTPJspPage  
+		
+---JSP Scriptlet tag (Scripting elements)
+
+	--The scripting elements provides the ability to insert java code inside the jsp. There are three types of scripting elements:
+
+		1)scriptlet tag
+			A scriptlet tag is used to execute java source code in JSP. Syntax is as follows:
+			<% out.print("welcome to jsp"); %>  
+
+
+		
+		2)expression tag
+				-The code placed within JSP expression tag is written to the output stream of the response. So you need not write out.print() to write data. 
+				   It  is mainly used to print the values of variable or method.
+				-The jsp scriptlet tag can only declare variables not methods.	
+			<%=  statement %>  // No need of semicolon
+
+			
+		3)declaration tag		
+			The jsp declaration tag can declare variables as well as methods.
+			<%!  field or method declaration %>  
+			<%!   int cube(int n){  return n*n*n*;  }  %> 
+			
+---JSP Implicit Objects
+	--There are 9 jsp implicit objects. These objects are created by the web container that are available to all the jsp pages.
+
+				Object			Type
+				out				JspWriter					PrintWriter out=response.getWriter();  
+				request			HttpServletRequest			String name=request.getParameter("uname");  
+				response		HttpServletResponse			response.sendRedirect("http://www.google.com");  
+				config			ServletConfig				String driver=config.getInitParameter("dname");  
+				application		ServletContext				String driver=application.getInitParameter("dname");  
+				session			HttpSession					String name=(String)session.getAttribute("user");  
+				pageContext		PageContext
+				page			Object
+				exception		Throwable
+				
+		-PageContext		
+			Available scope
+				page
+				request
+				session
+				application
+				
+			-Example:- pageContext.setAttribute("user",name,PageContext.SESSION_SCOPE);  
+		-exception
+			-This object can be used to print the exception. But it can only be used in error pages
+
+				<%@ page isErrorPage="true" %>  
+				<html>  
+				<body>  
+				  
+				Sorry following exception occured:<%= exception %>  
+				  
+				</body>  
+				</html>  		
+
+---JSP directives
+		The jsp directives are messages that tells the web container how to translate a JSP page into the corresponding servlet.
+		
+			<%@ directive attribute="value" %>  
+
+		--There are three types of directives:
+
+			1)page directive (13 types)
+				<%@ page attribute="value" %>  
+		
+				Attributes of JSP page directive
+						a)import
+							The import attribute is used to import class,interface or all the members of a package.It is similar to import keyword in java class or interface.
+								<%@ page import="java.util.Date" %>  
+
+								
+						b) contentType
+							The contentType attribute defines the MIME(Multipurpose Internet Mail Extension) type of the HTTP response.The default value is "text/html;charset=ISO-8859-1".
+								<%@ page contentType=application/msword %>  
+
+						c) extends
+							The extends attribute defines the parent class that will be inherited by the generated servlet.It is rarely used.
+
+						d)info
+							This attribute simply sets the information of the JSP page which is retrieved later by using getServletInfo() method of Servlet interface.
+								<%@ page info="composed by Sonoo Jaiswal" %>  
+	
+						e) buffer
+							The buffer attribute sets the buffer size in kilobytes to handle output generated by the JSP page.The default size of the buffer is 8Kb.
+								<%@ page buffer="16kb" %>  
+
+
+						f)language
+							The language attribute specifies the scripting language used in the JSP page. The default value is "java".
+
+
+						g)isELIgnored
+							We can ignore the Expression Language (EL) in jsp by the isELIgnored attribute. By default its value is false i.e. Expression Language is enabled by default. We see Expression Language later.
+								<%@ page isELIgnored="true" %>//Now EL will be ignored  
+
+						h)isThreadSafe
+							The value of isThreadSafe value is true.If you make it false, the web container will serialize the multiple requests, i.e. it will wait until the JSP finishes responding to a request before passing another request to it.If you make the value of isThreadSafe attribute like:
+								<%@ page isThreadSafe="false" %>
+						
+						i)autoFlush
+						j)session
+						k)pageEncoding
+						l)errorPage
+							The errorPage attribute is used to define the error page, if exception occurs in the current page, it will be redirected to the error page.
+								<%@ page errorPage="myerrorpage.jsp" %>  
+
+
+						m)isErrorPage
+							The isErrorPage attribute is used to declare that the current page is the error page.
+								<%@ page isErrorPage="true" %>  
+
+	
+										
+				
+			2) include directive
+				The include directive is used to include the contents of any resource it may be jsp file, html file or text file. The include directive includes the original content of the included resource at page translation time (the jsp page is translated only once so it will be better to include static resource).
+
+					<%@ include file="header.html" %>  
+				Note: The include directive includes the original content, so the actual page size grows at runtime.
+
+	
+			3) taglib directive
+				The JSP taglib directive is used to define a tag library that defines many tags. We use the TLD (Tag Library Descriptor) file to define the tags. In the custom tag section we will use this tag so it will be better to learn it in custom tag.
+					<%@ taglib uri="http://www.javatpoint.com/tags" prefix="mytag" %>  
+
+---JSP Action Tags
+		The action tags are used to control the flow between pages and to use Java Bean. The Jsp action tags are given below.
+
+			JSP Action Tags				Description
+			jsp:forward				forwards the request and response to another resource.
+			jsp:include				includes another resource.
+			jsp:useBean				creates or locates bean object.
+			jsp:setProperty			sets the value of property in bean object.
+			jsp:getProperty			prints the value of property of the bean.
+			jsp:plugin				embeds another components such as applet.
+			jsp:param				sets the parameter value. It is used in forward and include mostly.
+			jsp:fallback			can be used to print the message if plugin is working. It is used in jsp:plugin.			
+					
+		--jsp:forward(with parameter)
+				<jsp:forward page="printdate.jsp" >  
+				<jsp:param name="name" value="javatpoint.com" />  
+				</jsp:forward>  
+				
+		--jsp:include			
+			The jsp:include action tag is used to include the content of another resource it may be jsp, html or servlet.
+				<jsp:include page="printdate.jsp" />  
+				
+		--jsp:useBean			
+			<jsp:useBean id="obj" class="com.javatpoint.Calculator"/>  
+				
+				<jsp:useBean id= "instanceName" scope= "page | request | session | application"   
+				class= "packageName.className" type= "packageName.className"  
+				beanName="packageName.className | <%= expression >" >  
+				</jsp:useBean>
+		--jsp:setProperty
+			The jsp:setProperty action tag sets a property value or values in a bean using the setter method.
+
+					<jsp:useBean id="u" class="org.sssit.User"></jsp:useBean>  
+					<jsp:setProperty property="*" name="u"/>  	
+					
+					
+--- Difference
+			    JSP include directive					JSP include action
+			-includes resource at translation time.	-includes resource at request time.
+			-better for static pages.				-better for dynamic pages.
+			-includes the original content in the   -calls the include method.
+			generated servlet.	
+			
+			
+---Expression Language (EL) in JSP
+		The Expression Language (EL) simplifies the accessibility of data stored in the Java Bean component, and other objects like request, session, application etc.
+			${ expression }  
+
+	--Example
+		index.jsp
+			<form action="process.jsp">  
+				Enter Name:<input type="text" name="name" /><br/><br/>  
+				<input type="submit" value="go"/>  
+			</form>  
+		process.jsp
+			Welcome, ${ param.name }  	
+
+---JSTL (JSP Standard Tag Library)
+	    The JSP Standard Tag Library (JSTL) represents a set of tags to simplify the JSP development.
+		For creating JSTL application, you need to load jstl.jar file.
+	
+	--Advantage of JSTL
+		Fast Developement JSTL provides many tags that simplifies the JSP.
+		Code Reusability We can use the JSTL tags in various pages.
+		No need to use scriptlet tag It avoids the use of scriptlet tag.
+		
+	--There JSTL mainly provides 5 types of tags:
+		1)Core tags  - The JSTL core tag provide variable support, URL management, flow control etc.
+		2)Function tags - The functions tags provide support for string manipulation and string length.
+		3)Formatting tags - The Formatting tags provide support for message formatting, number and date formatting etc. 
+		4)XML tags - The xml sql tags provide flow control, transformation etc.
+		5)SQL tags - he JSTL sql tags provide SQL support
+
+	Example 
+		<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+		<html>  
+			<head>  
+				<title>Tag Example</title>  
+			</head>  
+			<body>  
+				<c:out value="${'Welcome to javaTpoint'}"/>  
+			</body>  
+		</html>  

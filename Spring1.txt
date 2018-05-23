@@ -1,0 +1,913 @@
+-----------------------------------------------------------------------------
+-Spring Core
+-Spring MVC
+-Spring JDBC Template
+-Spring Batch
+-Web Services 
+Spring Integration
+Spring Hibernate
+
+
+
+Dhamu (Spring Questions)- https://www.javacodegeeks.com/2014/05/spring-interview-questions-and-answers.html
+http://www.tutorialspoint.com/spring/spring_interview_questions.htm
+http://javarevisited.blogspot.in/2011/09/spring-interview-questions-answers-j2ee.html
+--------------------------------------------------------------------------------------------
+
+-------------------------------------------------- Spring Core ------------------------------------
+
+ Compare to Struts, spring reduces the dependency between classes & we can configure classes from outside (i.e, controlling classes from outside)
+ by IOC & Dependency Injection
+
+- Benefits of Spring Framework
+	Lightweight: Spring is lightweight when it comes to size and transparency. The basic version of spring framework is around 2MB.
+	Inversion of control (IOC): Loose coupling is achieved in Spring, with the Inversion of Control technique. 
+								The objects give their dependencies instead of creating or looking for dependent objects.
+    Container: Spring contains and manages the life cycle and configuration of application objects.
+	MVC Framework: Spring’s web framework is a well-designed web MVC framework, which provides a great alternative to web frameworks.
+	Transaction Management: Spring provides a consistent transaction management interface that can scale down to a local transaction 
+							and scale up to global transactions (JTA).
+	Exception Handling: Spring provides a convenient API to translate technology-specific exceptions (thrown by JDBC, Hibernate, or JDO) into 
+						consistent, unchecked exceptions.
+								
+  - IOC or Dependency Injection is a Design Pattern
+  
+	------------------------------ Spring Container & Spring IoC/Dependency Injection ----------------		
+	
+= Container
+	= The fundamental functionality provided by the Spring Container is DEPENDENCY(OBJECT) INJECTION. 
+	= This container lets you inject required objects into other objects. This results in a design in which the Java class are not hard-coupled.
+	- The injection in Spring is either done via setter injection of via construction injection. (3rd type - Interface-based Injection)
+	= The Spring IoC is responsible for creating the objects,managing them (with dependency injection (DI)), wiring them together, configuring them,
+		as also managing their complete lifecycle.
+
+- 2 Types of Containers
+	BeanFactory (Interface)
+	ApplicationContext (Sub-Interface of BeanFactory)
+ 
+  a.) Bean Factory
+	  Def: BeanFactory is factory Pattern which is based on IOC design principles.
+	     = it is used to make a clear separation between application configuration and dependency from actual code.
+		 = preferred where the resources are limited like mobile devices
+		 
+	 XmlBeanFactory is one of the implementations of bean Factory is used to create bean instance defined in our XML file.
+	  Example :
+		BeanFactory factory = new XmlBeanFactory(new FileInputStream("beans.xml"));
+			Or
+		ClassPathResource resorce = new ClassPathResource("beans.xml"); 
+		XmlBeanFactory factory = new XmlBeanFactory(resorce);
+
+	 - The most commonly used BeanFactory implementation is the XmlBeanFactory class.
+	 - The most useful one is org.springframework.beans.factory.xml.XmlBeanFactory, which loads its beans based on the definitions contained in 
+		an XML file.
+	 - This container reads the configuration metadata from an XML file and uses it to create a fully configured system or application.
+	
+  b.) ApplicationContext Implementation Types
+	  Def : specific functionality such as the ability to resolve textual messages from a properties file and 
+			the ability to publish application events to interested event listeners
+	  
+    - WebApplicationContext
+		It's an extension of the plain ApplicationContext that has some extra features necessary for web applications.
+	- FileSystemXmlApplicationContext container (find the configuration xml file in any where of file system)
+		The full path of the XML bean configuration file must be provided to the constructor.
+	- ClassPathXmlApplicationContext container (find the configuration xml file path in class path variable)
+		need to set CLASSPATH properly because this container will look bean configuration XML file in CLASSPATH
+	
+  - Difference betw BeanFactory & ApplicationContext
+	- Application contexts provide a means for resolving text messages, a generic way to load file resources (such as images)
+	= operations on the container or beans in the container, which have to be handled in a programmatic fashion with a bean factory
+	  but handled declaratively(ANNOTATIONS OR XML BASED configuration) in an application context.
+	
+	    ----------------------------------------------------------------------------------------------------
+			ApplicationContext. 				                |			BeanFactory
+		----------------------------------------------------------------------------------------------------
+		Declarative way											|	programmatic fashion
+		Here we can have more than one config files possible  	|	In this only one config file or .xml file
+		Application contexts can publish events to beans that   | 
+			are registered as listeners 						|	Doesn’t support.
+		Support internationalization (I18N) messages			|	It’s not
+		Support application life-cycle events, and validation.	|	Doesn’t support.
+		Supports  many enterprise services such JNDI access,    | 
+			EJB integration, remoting							|	Doesn’t support.
+		----------------------------------------------------------------------------------------------------
+
+- Spring supports 2 types of transaction management:
+		a.) Programmatic transaction management: This means that you have managed the TRANSACTION WITH THE HELP OF PROGRAMMING. 
+			That gives you extreme flexibility, but it is difficult to maintain.
+		b.) Declarative transaction management: This means you separate transaction management from the business code.
+			You ONLY USE ANNOTATIONS OR XML BASED configuration to manage the transactions.
+
+= IoC/Dependency Injection
+	Inversion of control means now we have inverted the control of creating the object from our own using new operator to container or framework.
+	Now it’s the responsibility of container to create an object as required. 
+	We maintain one XML file where we configure our components, services, all the classes and their property.
+	We just need to mention which service is needed by which component and container will create the object for us. 
+	This concept is known as dependency injection because all object dependency (resources) is injected into it by the framework.
+
+	Dependency Injection design pattern allows us to remove the hard-coded dependencies and make our application loosely coupled, 
+		extendable and maintainable. 
+	Adv : Code reduction
+
+	Example:
+	<bean id="createNewStock" class="springexample.stockMarket.CreateNewStockAccont"> 
+        <property name="newBid"/>
+	</bean>
+  
+	In this example, CreateNewStockAccont class contain getter and setter for newBid and 
+		container will instantiate newBid and set the value automatically when it is used. 
+	This whole process is also called wiring in Spring and 
+		by using annotation it can be done automatically by Spring, refereed as auto-wiring of bean in Spring.
+
+- Dependency Injection
+	This concept says that you do not create your objects but describe how they should be created. 
+	You don’t directly connect your components and services together in code but describe which services are needed by which components 
+	in a configuration file. 
+	A container (the IOC container) is then responsible for hooking it all up.
+	
+	2 Types :
+	 a.) Constructor based dependency Injection
+		  Constructor-based DI is accomplished when the container invokes a class constructor with a number of arguments, 
+		  each representing a dependency on other class.
+		
+	 b.) Setter-based dependency injection
+		  Setter-based DI is accomplished by the container calling setter methods, on your beans after invoking a no-argument constructor 
+		  or no-argument static factory method to instantiate your bean.
+		 
+- We should note the difference in Beans.xml file defined in constructor-based injection and setter-based injection.
+	1.) The only difference is inside the <bean> element where we have used 
+		<constructor-arg> tags for constructor-based injection and 
+		<property> tags for setter-based injection.
+	
+	2.) passing a reference to an object, you need to use REF attribute of <property> tag and 
+		if you are passing a value directly then you should use VALUE attribute.
+	
+	The best solution is using constructor arguments for mandatory dependencies and setters for optional dependencies.
+	
+= Container can load/get Metadata/input by any of 3 types :
+	  XML based (xmlBeanFactory)
+	  Annotation based (from spring 2.5 version onwords)
+	  Java based (from spring 3 version onwords)
+		based on above iputs only, container can use either Constructor Injection or Setter Injection
+
+
+	------------------------------ Spring Beans, Definition, Lifecycle, Scope, Bean Wiring ----------------		
+	
+= Spring Beans (Spring beans are nothing but Plain old java object (POJO).
+	= The Spring Beans are Java Objects that form the backbone of a Spring application. 
+	= They are instantiated, assembled, and managed by the Spring IoC container. 
+	= These beans are created with the configuration metadata that is supplied to the container in the form of XML <bean/> definitions.
+	
+	- Beans defined in spring framework are singleton beans. 
+		There is an attribute in bean tag named "singleton" if specified true then bean becomes singleton and 
+		if set to false then the bean becomes a prototype bean. 
+		By default it is set to true. So, all the beans in spring framework are by default singleton beans.
+		
+= Spring Bean Definition Contain 
+	= contains all configuration metadata which is needed for the container
+	  A Spring Bean definition contains all configuration metadata which is needed for the container to know how to create a bean, 
+		its lifecycle details and its dependencies.
+
+= Bean lifecycle in Spring framework 
+		(Instantiate beans -> Populate properties ->Set Bean Name -> Set Bean factory -> 
+		  Pre Initialization -> Initialize beans -> Post Initialization -> Ready to use -> Destroy)
+		  
+	a.) The spring container finds the BEAN’S DEFINITION FROM THE XML FILE AND INSTANTIATES THE BEAN.
+	b.) Spring populates all of the properties as specified in the bean definition (DI).
+	c.) If the bean implements BeanNameAware interface, spring passes the bean’s id to setBeanName() method.
+	d.) If Bean implements BeanFactoryAware interface, spring passes the beanfactory to setBeanFactory() method.
+	e.) If there are any bean BeanPostProcessors associated with the bean, Spring calls postProcesserBeforeInitialization() method.
+	f.) If the bean implements IntializingBean, its afterPropertySet() method is called. 
+		If the bean has init method declaration, the specified initialization method is called.
+	g.) If there are any BeanPostProcessors associated with the bean, their postProcessAfterInitialization() methods will be called.
+	h.) If the bean implements DisposableBean, it will call the destroy() method.
+	
+- 2 important lifecycle methods used
+	1.) setup which is called when the BEAN IS LOADED IN TO THE CONTAINER. 
+	2.) teardown method which is called when the BEAN IS UNLOADED from the container.
+		
+- The bean tag has 2 important attributes
+    (init-method and destroy-method) with which you can define your own custom initialization and destroy methods. 
+	 There are also the correspondive annotations(@PostConstruct and @PreDestroy).
+				
+= Scope	
+	= all the beans in spring framework are by default singleton beans. The default scope of a Spring Bean is Singleton. 
+	= singleton beans are not thread-safe in Spring framework.
+	= declare a scope for the bean through the SCOPE ATTRIBUTE in the bean definition. 
+	- Types of Scope :
+		In singleton scope, Spring scopes the bean definition to a single instance per Spring IoC container.
+		In prototype scope, a single bean definition has any number of object instances.
+		In request scope, a bean is defined to an HTTP request. This scope is valid only in a web-aware Spring ApplicationContext.
+		In session scope, a bean definition is scoped to an HTTP session. This scope is also valid only in a web-aware Spring ApplicationContext.
+		In global-session scope, a bean definition is scoped to a global HTTP session. This is also a case used in a web-aware 
+			Spring ApplicationContext.
+	
+= Bean wiring 
+		when beans are combined together within the Spring container
+
+ - Auto wiring (Inspect the other bean without permission from injection tags)
+    == Spring is capable of automatically resolving dependencies at runtime. This automatic resolution of bean dependencies is also called autowiring.
+    = Autowiring enables the programmer to INJECT THE BEAN AUTOMATICALLY. We don't need to write explicit injection logic.
+		<bean id="emp" class="com.javatpoint.Employee" autowire="byName" />  
+		
+    - automatically let Spring resolve collaborators (other beans) for a bean by inspecting the contents of the BeanFactory 
+		without using <constructor-arg> and <property> elements.
+		
+  - different modes of auto wiring (byname -- match and wire its properties with the beans defined by the same names in the configuration file)
+	- no: This is default setting. Explicit bean reference should be used for wiring.
+	- byName: When autowiring byName, the Spring container looks at the properties of the beans on which autowire attribute is set to byName
+		in the XML configuration file. It then tries to match and wire its properties with the beans defined by the same names in the configuration file.
+	- byType: When autowiring by datatype, the Spring container looks at the properties of the beans on which autowire attribute is set to byType
+		in the XML configuration file. It then tries to match and wire a property if its type matches with exactly one of the beans name in
+		configuration file. If more than one such beans exist, a fatal exception is thrown.
+	- constructor: This mode is similar to byType, but type applies to constructor arguments. If there is not exactly one bean of the 
+		constructor argument type in the container, a fatal error is raised.
+	- autodetect: Spring first tries to wire using autowire by constructor, if it does not work, Spring tries to autowire by byType.
+	
+ - limitations with autowiring
+	- Overriding: You can still specify dependencies using <constructor-arg> and <property> settings which will always override autowiring.
+	- Primitive data types: You cannot autowire simple properties such as primitives, Strings, and Classes.
+
+ - Other points of wiring ::
+    Using @Qualifier in case of conflict
+    Making autowiring error safe using -> required=false
+    Excluding a bean from being available for autowiring -> autowire-candidate="false"
+   
+  ====== http://howtodoinjava.com/spring/spring-core/spring-beans-autowiring-concepts/
+	
+	--------------------------------- Other Features of Spring ----------------------------
+- Event Handling in spring
+	= Event handling in the ApplicationContext is provided through the ApplicationEvent class and ApplicationListener interface
+	
+	Examples :
+	ContextRefreshedEvent: This event is published when the ApplicationContext is either initialized or refreshed. 
+				This can also be raised using the refresh() method on the ConfigurableApplicationContext interface.
+	ContextStartedEvent: This event is published when the ApplicationContext is started using the start() method on the 
+		ConfigurableApplicationContext interface.You can poll your database or you can re/start any stopped application after receiving this event.
+	ContextStoppedEvent: This event is published when the ApplicationContext is stopped using the stop() method on the 
+		ConfigurableApplicationContext interface. You can do required housekeep work after receiving this event.
+	ContextClosedEvent: This event is published when the ApplicationContext is closed using the close() method on the 
+		ConfigurableApplicationContext interface. A closed context reaches its end of life; it cannot be refreshed or restarted.
+	RequestHandledEvent: This is a web-specific event telling all beans that an HTTP request has been serviced.
+
+- Aspect (set of Module for logging)
+	A module which has a set of APIs providing cross-cutting requirements.
+	For example, a logging module would be called AOP aspect for logging.
+	
+- Inner Bean
+	= When a bean is only used as a property of another bean it can be declared as an inner bean.
+	- Spring’s XML-based configuration metadata provides the use of <BEAN/> ELEMENT inside the <property/> or <constructor-arg/> elements
+	= An inner bean definition does not require a defined id or name; the container ignores these values
+	= Inner beans are always anonymous and they are always SCOPED AS PROTOTYPES.
+	
+- Spring offers the following types of collection configuration elements: (inject a Java Collection in Spring)
+	The <list> type is used for injecting a list of values, in the case that duplicates are allowed.
+	The <set> type is used for wiring a set of values but without any duplicates.
+	The <map> type is used to inject a collection of name-value pairs where NAME AND VALUE CAN BE OF ANY TYPE.
+	The <props> type can be used to inject a collection of name-value pairs where the NAME AND VALUE ARE BOTH STRINGS.
+	
+- inject null and empty string values in Spring - YES
+
+- proxy in spring
+	2 types :
+	  - Static proxy
+	  - Dynamic proxy
+		2 types of dynamic proxy 
+		  - JDBC proxy
+		  - CC
+
+Some of the important Spring Framework modules are:
+ Spring Context – for dependency injection.
+ Spring AOP – for aspect oriented programming.
+ Spring DAO – for database operations using DAO pattern
+ Spring JDBC – for JDBC and DataSource support.
+ Spring ORM – for ORM tools support such as Hibernate
+ Spring Web Module – for creating web applications.
+ Spring MVC – Model-View-Controller implementation for creating web applications, web services etc.
+
+-----------------------------	
+= Annotations in spring MVC
+	@Controller annotation
+		The @Controller annotation indicates that a particular class serves the role of a controller. 
+		Spring does not require you to extend any controller base class or reference the Servlet API.
+
+	@RequestMapping annotation
+		@RequestMapping annotation is used to map a URL to either an entire class or a particular handler method.
+			
+----------------------------
+= @Annotation based container configuration
+  Def : Instead of using XML to describe a bean wiring, the developer moves the configuration into the component class itself 
+		by using annotations on the relevant class, method, or field declaration.
+	
+  - Turn on annotation wiring
+	we must enable it in our Spring configuration file by configuring <context:annotation-config/> element.
+	
+  - Types of Annotation
+    @Required annotation (bean property must be populated at configuration time)
+	- This annotation simply indicates that the affected bean property must be populated at configuration time, 
+		through an explicit property value in a bean definition or through autowiring. 
+	- The container throws BeanInitializationException if the affected bean property has not been populated.
+	
+	@Autowired annotation
+	- The @Autowired annotation provides more fine-grained control over where and how autowiring should be accomplished.
+	- used to autowire bean on the setter method just like @Required annotation, on the constructor, on a property
+	
+	@Qualifier annotation
+	- When there are more than one beans of the same type and only one is needed to be wired with a property, the @Qualifier annotation 
+		is used along with @Autowired annotation to remove the confusion by specifying which exact bean will be wired.
+	
+ - Level of Annotations 
+   = (If the annotation is applied at both the class and the method level, the method value overrides if the two disagree.)
+   
+   - class level Annotate 
+	 @Controller
+	 
+	 @RequestMapping
+	 @RequestMapping allows you to specify the mode (EDIT, VIEW etc)
+	 @RequestMapping annotation maps portlet requests to appropriate handlers and handler methods.
+	 
+   - Method level Annotate
+	 @RenderMapping
+	 @RenderMapping is a method level annotation which is used to map render requests to render methods of handler class.
+	 @RenderMapping allows you to specify only the request parameters 
+	 
+	 @ActionMapping
+	 Action requests are used to perform an action such as modifying data, uploading a file etc.
+	 Each action request is followed by a render request
+	 
+	 @ResourceMapping
+	 Resource requests can be used to render other content types. 
+	 AJAX is a common use case for resource requests as they are suitable for returning JSON or XML for example
+ 	
+ = Annotations Definition 
+		(http://www.techferry.com/articles/spring-annotations.html)
+		http://javapapers.com/spring/spring-annotation-based-controllers/
+	@Component is a generic stereotype for any Spring-managed component.
+		@Repository, @Service, and @Controller are specializations of @Component
+		
+	- @Service
+		Annotate all your service classes with @Service. All your business logic should be in Service classes.
+	- @Repository
+		Annotate all your DAO classes with @Repository. All your database access logic should be in DAO classes.
+		
+	@Autowired -> Autowiring enables the programmer to INJECT THE BEAN AUTOMATICALLY.
+	@Resource (javax.annotation.Resource) annotation can be used for wiring by name
+	@Transactional -> Configure your transactions with @Transactional spring annotation.
+		Note: To activate processing of Spring's @Transactional annotation, 
+				use the <tx:annotation-driven/> element in your spring's configuration file.
+		- Transaction is read/write.
+		- Example :
+		  @Service
+		  public class CompanyServiceImpl implements CompanyService {
+		  @Autowired
+		  private CompanyDAO companyDAO;
+		 
+		  @Transactional
+		  public Company findByName(String name) {
+		 
+			Company company = companyDAO.findByName(name);
+			return company;
+		  }
+		  ...
+		}
+	
+	@Scope
+		@Component
+		@Scope("request") or @Scope("prototype")
+		public class ContactResource {
+		...
+		}
+	
+	@RequestParam (Pass request parameters to method variables)
+		You can bind request parameters to method variables using spring annotation @RequestParam.
+		Example :
+			public String hi(@RequestParam("name") String name, Model model) {
+			String message = "Hi " + name + "!";
+			model.addAttribute("message", message);
+			return "hi";
+			}
+	
+	@RequestHeader
+	use spring annotation @RequestHeader to bind request headers
+	Example :
+		@Controller
+		public class RequestHeaderExampleController
+		{
+			@RequestMapping(value = "/example", method = RequestMethod.GET)
+			public String  getHello(@RequestHeader ("host") String hostName,
+				@RequestHeader ("Accept") String acceptType,
+				@RequestHeader ("Accept-Language") String acceptLang,
+				@RequestHeader ("Cookie") String cookie,
+				@RequestHeader ("User-Agent") String userAgent)	{
+			System.out.println("Host : " + hostName);
+			System.out.println("Accept : " + acceptType);
+			System.out.println("Cookie : " + cookie);
+			System.out.println("User-Agent : " + userAgent);
+			return "example";
+			}
+
+	
+	@ModelAttribute
+	= An @ModelAttribute on a method argument indicates the argument should be retrieved from the model.
+	- Once present in the model, the argument's fields should be populated from all request parameters that have matching names.
+	  This is known as data binding in Spring MVC, a very useful mechanism that saves you from having to parse each form field individually.
+	
+	Example :
+		@Controller
+		@RequestMapping("/company")
+		public class CompanyController {
+	 
+		@Autowired
+		private CompanyService companyService;
+	 
+		@RequestMapping("/add")
+		public String saveNewCompany(@ModelAttribute Company company) {
+			companyService.add(company);
+		return "redirect:" + company.getName();
+			}
+		...
+		}
+		
+	@SessionAttributes
+		@SessionAttributes spring annotation declares session attributes. 
+		This will typically list the names of model attributes which should be transparently stored in the session,
+		
+	Spring Security Annotations
+	@PreAuthorize
+		Using Spring Security @PreAuthorize annotation, you can authorize or deny a functionality.
+		In our example below, only a user with Admin role has the access to delete a contact.
+			@Transactional
+			@PreAuthorize("hasRole('ROLE_ADMIN')")
+			public void removeContact(Integer id) {
+			  contactDAO.removeContact(id);
+			}
+
+--------------------------
+- Spring Java-Based Configuration
+	An example is the 
+	@Configuration annotation, that indicates that the class can be used by the Spring IoC container as a source of bean definitions. 
+	Another example is the
+	@Bean annotated method that will return an object that should be registered as a bean in the Spring application context.
+
+--------------------------		
+- spring has seven core modules
+      The Core container module
+      Application context module
+      AOP module (Aspect Oriented Programming)
+      JDBC abstraction and DAO module
+      O/R mapping integration module (Object/Relational)
+      Web module
+      MVC framework module
+
+- There are two ways to access Hibernate with Spring:
+	Inversion of Control with a Hibernate Template and Callback.
+	Extending HibernateDAOSupport and Applying an AOP Interceptor node.
+	
+- AOP (Aspect-oriented programming)
+	AOP, is a programming technique that allows programmers to modularize crosscutting concerns, 
+	or behavior that cuts across the typical divisions of responsibility, such as logging and transaction management.
+	
+	- Various features like Join point, Advice, Pointcut
+	
+		
+ http://www.vogella.com/tutorials/SpringDependencyInjection/article.html
+ http://www.mkyong.com/spring/spring-di-via-setter-method/
+ http://javapapers.com/spring/dependency-injection-di-with-spring/
+ 
+ --------------------------------------------------------------------------------------
+
+-------------------------------------------- Spring MVC -------------------------------
+************** http://www.beingjavaguys.com/2013/07/spring-jdbc-template-with-spring-mvc.html
+
+- B4 application starts, two files (web.xml & Config files) are scanned & load the contents frm tat files.
+	web.xml(deployment descriptor) & ServletName-servlet.xml/u can give new name & define path(Configuration files)
+	
+- Web.xml
+	- Welcome file (Request Page - index.jsp)
+			<welcome-file-list>
+			<welcome-file>index.jsp</welcome-file>
+			</welcome-file-list>
+	
+	-In this file, first we define the Servlet.Dispatcher class, bcz it only handles the spring-mvc architecture pattern
+		 <Servlet-class>org.springframework.servlet.Dispatcher</Servlet-class>
+		 <servlet>
+        <servlet-name>spring</servlet-name>
+        <servlet-class>
+            org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+		</servlet>
+	
+	- Mapping the URL pattern to appropriate Configuration files
+	  <servlet-mapping>
+        <servlet-name>spring</servlet-name>
+        <url-pattern>*.html</url-pattern>
+      </servlet-mapping>
+	  
+	-  Defining own cinfig files
+	   <servlet>
+		<servlet-name>jsphandler</servlet-name>
+		<servlet-class>
+			org.apache.cxf.transport.servlet.CXFServlet
+		</servlet-class>
+		<init-param>
+		<param-name>config-location</param-name>
+		<param-value>/WEB-INF/jsphandler-servlet.xml</param-value>    
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+		</servlet>
+		
+- Config files
+ 3 Components
+ - component-scan 
+	<context:component-scan
+        base-package="learn.controller.com" />
+ - bean
+ <bean id="viewResolver"
+        class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+        <property name="viewClass"
+            value="org.springframework.web.servlet.view.JstlView" />
+        <property name="prefix" value="/WEB-INF/jsp/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+ - <mvc-annotation driven>
+ 
+- Define a class as Controller class
+  - By using 2 components, we can define a class as controller class (@controller & @RequestMapping) 
+      @Controller
+		public class HelloWorldController {
+
+	  @RequestMapping("/hello")
+		public ModelAndView helloWorld() { ------ }
+		}
+		
+		Controller class return a ModelView Object, based on this object viewresolver will map to jsp/response page.
+
+- jars needed for spring-mvc
+  commons-logging-1.1.1.jar
+  spring-webmvc-3.1.2.RELEASE.jar
+  
+- To run application, we need 
+   JDK 1.5 & above
+   Tomcat 5.x above or any other container (Glassfish, JBoss, Websphere, Weblogic etc)
+   Eclipse 3.2.x above
+		
+http://www.raistudies.com/spring/spring-mvc/hello-world-example-spring-mvc-eclipse-annotation/
+http://www.java4s.com/spring-mvc/spring-mvc-execution-flow-diagram-spring-mvc-3-2-flow/
+http://www.mkyong.com/spring-mvc/spring-mvc-hello-world-example/
+http://viralpatel.net/blogs/spring-3-mvc-create-hello-world-application-spring-3-mvc/
+
+--------------------------------------------------------------------------------------------------------
+ 
+
+---------------------------------------------------- Spring Batch --------------------------------
+Spring Batch - Copying Data from one source to another
+-create a job to read data from a CSV File, process it, and write it to an XML file (JAXB).
+-build a service that imports data from a CSV spreadsheet, transforms it with custom code, and stores the final results in a database.
+-a job reading entries from a data base and generating an xml representation of it and then doing some clean-up.
+-Job composed of 2 steps: reading/writing and clean-up.
+Other Examples -
+ CSV File To MySQL database
+ XML File To MongoDB database
+ XML File To CSV File
+ MySQL Database To XML
+ with help of ItemReader, ItemProcessor, ItemWriter
+ 
+ Scheduler - Run batch job with scheduler frameworks.
+ JobLauncher - launching jobs with their job parameters
+ JobRepository - various objects in the framework require a JobRepository to store runtime information(Objects) related to the batch execution
+  
+ reader - The ItemReader that provides items for processing.(Read the contents from Source like Flat Files, XML, Databases)
+ ItemProcessor is optional, not required, since the item could be directly passed from the reader to the writer.
+ writer - The ItemWriter that processes the items provided by the ItemReader.(Write the contents to Designation)
+ transaction-manager - Spring's PlatformTransactionManager that will be used to begin and commit transactions during processing.(To Commit Transactions)
+ commit-interval - The number of items that will be processed before the transaction is committed.(No. of Items processed per Transaction)
+ 
+ 
+ - Tasklet (one time process, not repeating)
+ In Spring batch, the Tasklet is an interface, which will be called to perform a single task only, like clean or 
+ set up resources before or after any step execution.
+ consider a scenario which involves just one task, say invoking a Stored Procedure or making a remote call or 
+ anything that does not involve an entire sequence of reading and processing and writing data but just one operation.
+ 
+ Chunk Process-
+ -reading the data one at a time & creating 'chunks' (i.e, read one data , then process, then read, then process, once commit interval came, writes all data)
+ -One item is read in from an ItemReader, handed to an ItemProcessor, and aggregated. Once the number of items read equals the commit interval, 
+  the entire chunk is written out via the ItemWriter, and then the transaction is committed.
+ 
+- Steps 
+ 1.) Define Database(DB) details in xml(database.xml)(Defines a “dataSource” bean for MySQL database.)
+ 2.) Defines jobRepository and jobLauncher(context.xml).
+ 3.) main xml file to configure the Spring batch job(job-report.xml)
+		This file define a job to read a report.csv file, match it to report plain pojo and write the data into MySQL database
+		
+	<batch:job id="reportJob">
+	<batch:step id="step1">
+	  <batch:tasklet>
+		<batch:chunk reader="cvsFileItemReader" writer="mysqlItemWriter"
+			commit-interval="2">
+		</batch:chunk>
+	   </batch:tasklet>
+	  </batch:step>
+    </batch:job>
+  
+	<bean id="cvsFileItemReader" class="org.springframework.batch.item.file.FlatFileItemReader">
+		<!-- Read a csv file -->
+		<property name="resource" value="classpath:cvs/report.csv" />
+		<property name="lineMapper">
+		<bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+		  <!-- split it -->
+		  <property name="lineTokenizer">
+		        <bean
+			  class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+				<property name="names" value="date,impressions,clicks,earning" />
+			</bean>
+		  </property>
+		.......
+		......
+	</bean>
+	
+	<bean id="mysqlItemWriter"
+	class="org.springframework.batch.item.database.JdbcBatchItemWriter">
+	<property name="dataSource" ref="dataSource" />
+	<property name="sql">
+	  <value>
+            <![CDATA[        
+            	insert into RAW_REPORT(DATE,IMPRESSIONS,CLICKS,EARNING) 
+			values (:date, :impressions, :clicks, :earning)
+            ]]>
+	  </value>
+	</property>
+	
+	<!-- It will take care matching between object property and sql name parameter -->
+	  <property name="itemSqlParameterSourceProvider">
+		<bean
+		class="org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider" />
+	  </property>
+    </bean>
+	
+ 4.) Loads everything and run it jobLauncher (App.java)
+		package com.mkyong;
+		import org.springframework.batch.core.Job;
+		import org.springframework.batch.core.JobExecution;
+		import org.springframework.batch.core.JobParameters;
+		import org.springframework.batch.core.launch.JobLauncher;
+		import org.springframework.context.ApplicationContext;
+		import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+		public class App {
+		  public static void main(String[] args) {
+
+			String[] springConfig  = 
+				{	"spring/batch/config/database.xml", 
+					"spring/batch/config/context.xml",
+					"spring/batch/jobs/job-report.xml" 
+				};
+				
+			ApplicationContext context = 
+				new ClassPathXmlApplicationContext(springConfig);
+				
+			JobLauncher jobLauncher = (JobLauncher) context.getBean("jobLauncher");
+			Job job = (Job) context.getBean("reportJob");
+
+			try {
+
+				JobExecution execution = jobLauncher.run(job, new JobParameters());
+				System.out.println("Exit Status : " + execution.getStatus());
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			System.out.println("Done");
+
+		  }
+		}
+		
+		--------- Ends ---------
+http://www.mkyong.com/spring-batch/spring-batch-example-csv-file-to-database/
+https://docs.spring.io/spring-batch/reference/html/configureStep.html
+https://dzone.com/articles/spring-batch-hello-world-1 
+
+-------------------------------------------------------------------------------------------------------
+
+
+-------------------------------------- Spring JDBC Template --------------------------------------------
+
+- JNDI (API used to access Directories)
+- JDBC (Java API used to connect db & execute queries, also used in hibernate)
+	= Spring JDBC framework the burden of resource management and error handling is reduced
+
+ - JDBC Driver
+	One of the Software component used to interact with db
+	
+	4 types of driver :
+		JDBC-ODBC Bridge plus ODBC driver
+		Native-API, partly Java driver
+		JDBC-Net, pure Java driver (Java application is accessing multiple types of databases at the same time, type 3 is the preferred driver)
+		Native-protocol, pure Java driver (accessing one type of database, such as Oracle, Sybase, or IBM, the preferred driver type is 4)
+	
+	2 types to register drivers :
+		dynamic load (Method - class.forName())
+			- dynamically loads the driver's class file into memory
+			- Class.forName("MyClass")
+				Loads the class MyClass.
+				Execute any static block code of MyClass.
+				Returns an instance of MyClass.
+			- A ClassNotFoundException is thrown when an application tries to load in a class through its class name,
+				but no definition for the class with the specified name could be found.
+				
+		static load (DriverManager.getConnection(URL, username, password))		
+		= create connection object (3 types)
+			String URL = "jdbcoraclethin@amrood1521EMP"; String USER = "username"; String PASS = "password"
+			-> Connection conn = DriverManager.getConnection(URL, USER, PASS);
+			
+			-> getConnection(String url)Using only a database URL. For example
+			
+			String URL = "jdbcoraclethinusername/password@amrood1521EMP";
+			Connection conn = DriverManager.getConnection(URL);
+			-> getConnection(String url, Properties prop)Using a database URL and a Properties object
+			Properties info = new Properties( );
+			info.put( "user", "username" );
+			info.put( "password", "password" );
+
+ - JDBC Driver manager
+	class that manages a list of database drivers.
+	
+ = JDBC Components
+	Interfaces:
+		Connection - It always maintains as session with database/dataSource
+		Statement - Query should Compile every time
+		PreparedStatement - Query should compile only once (pre-compiled statements). Just pass parameters only.
+		CallableStatement - Used to execute stored procedures & functions.
+							A stored procedure is a group of SQL statements that form a logical unit and perform a particular task.
+		ResultSet - Object tat holds data retrieved from db
+		ResultSetMetaData - Contains information abt table like no.of colmns, clmn name, data type, etc.		
+		DatabaseMetaData - Contains information abt dataSource like URL, credentials, no.of tables, views, etc.		
+	
+	Classes:
+		DriverManager - Manage all registered drivers.
+		Blob - Datatypes, used to store large amount of data(like images) in DB.
+		Clob
+		Types
+		SQLException etc.
+		
+ - classes for spring JDBC API
+	JdbcTemplate
+	SimpleJdbcTemplate
+	NamedParameterJdbcTemplate
+	SimpleJdbcInsert
+	SimpleJdbcCall
+		
+ - fetch records by spring JdbcTemplate
+	ResultSetExtractor
+	RowMapper		
+				
+ = ResultSet Types:
+	There are three constants which when defined in result set can move cursor in resultset backward, forward and also in a particular row.
+		ResultSet.TYPE_FORWARD_ONLY - The cursor can only move forward in the result set.
+		ResultSet.TYPE_SCROLL_INSENSITIVE - The cursor can scroll forwards and backwards, 
+				and the result set is not sensitive to changes made by others to the database that occur after the result set was created.
+		ResultSet.TYPE_SCROLL_SENSITIVE - The cursor can scroll forwards and backwards, result set is sensitive to changes made by others
+	
+	- view a result set
+		ResultSet interface contains get methods for each of the possible data types
+		Ex :
+		 getInt(String columnName), getInt(int columnIndex)
+    
+	- update a result set
+		updateRow(), insertRow(), deleteRow(), refreshRow(), cancelRowUpdates(), 
+
+ = RowSet - 
+	A JDBC RowSet object holds tabular data
+	A RowSet objects are JavaBeans components.
+	
+	2 types of rowset :
+		-> Connected A connected RowSet Object is permanent in nature.
+		-> Disconnected A disconnected RowSet object is ad-hoc in nature
+ 
+= basic steps to create a JDBC application
+	Import packages containing the JDBC classes needed for database programming.
+	Register the JDBC driver, so that you can open a communications channel with the database.
+	Open a connection using the DriverManager.getConnection () method.
+	Execute a query using an object of type Statement.
+	Extract data from result set using the appropriate ResultSet.getXXX () method.
+	Clean up the environment by closing all database resources relying on the JVM's garbage collection.
+ 
+ = JDBC architecture decouples an abstraction from its implementation. Hence JDBC follows a bridge design pattern.
+ = wasNull( ) method to test whether the wrapper class variable that received the value returned by the getXXX( ) method should be set to null.
+ 
+ - Connection Pooling
+	Connection Pooling is a technique used for reuse of physical connections
+	minimizes expensive operations in the creation and closing of sessions.
+	Database vendor's help multiple clients to share a cached set of connection objects that provides access to a database.
+	  Clients need not create a new connection everytime to interact with the database
+	  
+ - why set auto commit mode to false
+   Following are the reasons
+	To increase performance.
+	To maintain the integrity of business processes.
+	To use distributed transactions.
+	
+ = insert multiple rows into a database in a single transaction
+	//turn off the implicit commit
+		Connection.setAutoCommit(false);
+	//..your insert/update/delete goes here
+		Connection.Commit();
+	//a new transaction is implicitly started.
+
+ =  difference between execute, executeQuery, executeUpdate
+	boolean execute() - 
+		Executes the any kind of SQL statement.
+	ResultSet executeQuery() - 
+		This is used generally for reading the content of the database.
+		The output will be in the form of ResultSet. Generally SELECT statement is used.
+	int executeUpdate() - 
+		This is generally used for altering the databases. 
+		Generally DROP TABLE or DATABASE, INSERT into TABLE, UPDATE TABLE, DELETE from TABLE statements will be used in this.
+		The output will be in the form of int which denotes the number of rows affected by the query.
+
+ - difference between setFetchSize(int) and setMaxRow(int)
+	setFetchSize(int) defines the number of rows that will be read from the database when the ResultSet needs more rows.
+	setMaxRows(int) method of the ResultSet specifies how many rows a ResultSet can contain at a time.
+ 
+ = JdbcTemplate	
+		This class provides many convenience methods for doing things such as converting database data into primitives or objects,
+		executing prepared and callable statements, and providing custom database error handling
+
+ - The Data Access Object (DAO) support in Spring
+		easy to work with data access technologies like JDBC, Hibernate 
+
+ - advantage of NamedParameterJdbcTemplate
+	= we use names instead of ?(question mark)
+	  insert into employee values (:id,:name,:salary)  
+	  
+ - Spring JdbcTemplate is a powerful mechanism to connect to the database and execute SQL queries. It internally uses JDBC api
+	1.) Prepared Statement
+	2.) ResultSetExtractor interface can be used to fetch records from the database. It accepts a ResultSet and returns the list.
+	3.) RowMapper
+	4.) SimpleJDBCTemplate
+
+ - Differ betw RowMapper & ResultsetExtractor
+	  RowMapper is used to map objects when there is a one-to-one relationship between a row in the database and the resulting object.
+		(one row maps to single Obj)
+	  ResultSetExtractor typically creates one object out of several rows, that is subsequently returned.
+		(Single obj carries multiple Rows)
+ 
+ key points:
+ - The Connection interface provides methods for transaction management such as commit(), rollback() etc.
+ - The Connection interface maintains a session with the database. It can be used for transaction management. 
+ - By using PreparedStatement interface, we can store and retrieve images.
+ - In case of Statement, query is complied each time whereas in case of PreparedStatement, query is complied only once.
+ - The DriverManager class manages the registered drivers. It can be used to register and unregister drivers.
+   
+ 
+ - Adv of JDBC 4.0
+	Auto loading of JDBC driver class.
+	DataSet Implementation of SQL using annotations.
+	SQL XML support.
+ 
+ -In bean we define the datasource details like URL, dbname, username, password, etc...
+  Then, we refer this bean to JDBC Template in bean
+
+Example ----
+-- In XML --
+	<?xml version="1.0" encoding="UTF-8"?>  
+	<beans  
+    xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xmlns:p="http://www.springframework.org/schema/p"  
+    xsi:schemaLocation="http://www.springframework.org/schema/beans   
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">  
+  
+	<bean id="ds" class="org.springframework.jdbc.datasource.DriverManagerDataSource">  
+	<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />  
+	<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe" />  
+	<property name="username" value="system" />  
+	<property name="password" value="oracle" />  
+	</bean>  
+	  
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">  
+	<property name="dataSource" ref="ds"></property>  
+	</bean>  
+	  
+	<bean id="edao" class="com.javatpoint.EmployeeDao">  
+	<property name="jdbcTemplate" ref="jdbcTemplate"></property>  
+	</bean>  
+	  
+	</beans>  
+
+-- In Java --
+	String[] reportIdList = reportIds.split(",");
+		for(String reportId:reportIdList){
+		paramsMap.put("reportId",reportId);		
+		SqlRowSet reportDetails = namedParameterJdbcTemplate.queryForRowSet(GET_REPORT_STATUS, paramsMap);
+		while(reportDetails.next()){
+			String status = reportDetails.getString("REPORT_STATUS");
+			String fileNetKey = reportDetails.getString("FILENET_KEY");
+			reportActionList.put(reportId,status + SGQConstants.DOLLAR + fileNetKey);
+		}
+		}
+		return reportActionList;
+		
+----------------------------------------------------------------------------------------------------
+
+

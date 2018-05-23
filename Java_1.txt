@@ -1,0 +1,1085 @@
+﻿ ============================ JAVA ===============================
+ 
+ *** steps involved in Java Application Execution -
+		a.) Compiling Java Source Files into *.class file. (Byte Code)
+		b.) Loading class file into Java Run Time (JRE) using class loader
+		c.) Use Bytecode verifier to check for byte code specification
+		d.) Use Just In time Code Generator or Interpreter for byte code execution
+	 
+	Java Compilers compile JAVA source code into byte code. Java Virtual Machine(JVM) interpreters Java byte code and send necessary 
+		commands to underlying hardware
+		
+  = Java was designed to allow application programs to be built that could be run on any platform, without having to be rewritten or 
+	recompiled by the programmer for each separate platform.
+  
+	Advantages of JVM :
+	 System Independence: A Java application will run the same in any Java VM, regardless of the hardware and software underlying the system. 
+	 Security: Because the VM has no contact with the operating system, there is little possibility of a Java program damaging other files or applications.
+	
+	different segments of memory ?
+   1. Stack Segment - contains local variables and Reference variables(variables that hold the address of an object in the heap)
+   2. Heap Segment - contains all created objects in runtime, objects only plus their object attributes (instance variables,static variables)
+   3. Code Segment -  The segment where the actual compiled Java bytecodes resides when loaded
+   
+	OutOfMemoryError ?
+      Java Virtual Machine cannot allocate an object because it is out of memory, and no more memory could be made available by the garbage collector
+    Types of OutOfMemoryError :
+	   Java heap space
+	   GC Overhead limit exceeded
+	   Requested array size exceeds VM limit
+	   Metaspace
+	   request size bytes for reason. Out of swap space?
+	   Compressed class space
+	   reason stack_trace_with_native_method
+	 
+    JVM - Java Virtual Machine is used to execute the java code (Executing .class files, It can't compile only execute java code(.class files/Byte Code))
+		- Platform Dependent based on vendor
+		- JVM is Interpreter
+		- JVM allocated memory areas in many forms like:
+			1. Class(Method) Area
+			2. Heap
+			3. Stack
+			4. Program Counter Register
+			5. Native Method Stack 
+
+    	Differ Heap & Stack
+			Heap memory is used by all the parts of the application whereas stack memory is used only by one thread of execution.
+			Whenever an object is created, it’s always stored in the Heap space and stack memory contains the reference to it.
+
+		You can find JVM - 32 bit or 64 bit by using System.getProperty() from Java program.
+	
+		If a class is declared without extending another class then it will implicitly extend Object class. This is taken care of by the JVM.
+		This is not applicable for the interfaces. A Java interface does not extends the Object.
+		
+	JRE - Contains JVM, libraries, Jars, etc. It also includes browser plugins for applet execution. 
+			Contains Class Loader, it will load the .class files
+	JDK - Used for developing the code and executing the code (Java Development Kit - JRE + Compilers + Debuggers + Tool).
+      Java 5(jdk 1.5) Features :
+		 - Generics - It will do implicit casting
+		 - import static - access static members 
+				import static java.lang.thread
+				public class A {
+				 public static void main(String args []){
+				 sleep(20);  		-------> no need to extend thread class
+				 }
+				}
+		 - Autoboxing/Unboxing
+		 - Enum data type
+		 - Annotations
+		 - Concurrent Packages(Fail-Safe) like concurrentHashmap, CopyOnWriteArraylist,  CopyOnWriteArraySet, 
+			BlockingQueue(no null values, thread-safe),
+			Callable Interface (Return values, throw exceptions, tasks run in parallel) 
+		 		 
+	 Java 7(jdk 1.7) Features :
+	  - a single catch block can handle more than one type of exception (using | operator)
+		catch (IOException|SQLException ex) {
+			logger.log(ex);
+			throw ex;
+		}
+	  - try-with-resources 
+		try (PrintWriter pw = new PrintWriter("out.txt")) {
+			pw.println("Hello World!");
+		}
+		This closes pw when this scope exits.
+		
+	  - Switch case accepts String
+
+	 Java 8(jdk 1.8) Features :
+	  - static methd in Interfaces
+	 
+   	
+ -- ClassLoader
+	= Every class is identified in JVM by a key which is a combination of three thing...[classname, packagename, its loader]
+		and this combination must be unique.
+	- when a class is loaded into JVM, you have an entry as (package, classname, classloader).
+	- Therefore the same class can be loaded twice by two different ClassLoader instances.
+	= Class Loader Rule 1
+                A class is loaded only once into the JVM.
+	- ClassLoader class has a method name defineClass which takes input as byte array and loads a class.
+
+	- ClassLoader Types :
+            Bootstrap - Loads JDK internal classes, java.* packages.
+			Extensions - Loads jar files from JDK extensions directory - usually lib/ext directory of the JRE
+			System  - Loads classes from system classpath. 
+    	Does it mean that when you have duplicate combination for a single class, then ClassCastException comes ?????
+   
+   - various Methods of loading class
+     static loading - Classes are statically loaded with Java’s “new” operator.
+		(DriverManager.getConnection(URL, username, password))		
+		 create connection object (3 types)
+	 
+	 dynamic class loading - Dynamic loading is a technique for programmatically invoking the functions of a class loader at run time.
+		Class.forName (Test className);
+   
+   - Difference between loadClass(doesn’t initialize obj) and Class.forName(initialize obj after class loaded) ?
+	Ans.
+	loadClass only loads the class but doesn't initialize the object whereas Class.forName initialize the object after loading it.
+  
+ -- Classpath Variables -
+	 = It defines WHERE THE COMPILER AND INTERPRETER LOOK FOR .CLASS FILES to load.
+	 - Classpath is an environment variable that tells the Java Virtual Machine where to look for user-defined classes(.class) and packages in Java programs.
+	 - Classpath is the connection between the Java runtime and the filesystem
+ -- Path/Environment variables
+		= Path says where can the system finds .exe files
+	 	 
+ --- JIT (Just in time Compiler)
+	 = Just-In-Time compiler is a program that turns Java bytecode into instructions that can be sent directly to the processor.  
+	 - JIT compiles JAVA byte code to native machine code and execute it directly on the underlying hardware.
+	 - provides application execution speeds near to C or C++ application
+	
+ -- Java API 
+	- An application programming interface (API) is a LIBRARY OF FUNCTIONS that Java provides for programmers for common tasks like 
+	  file transfer, networking, and data structures.
+	  
+	- Examples of API
+		Java.applet - Applet class
+		Java.awt - Windows, buttons, mouse, etc.
+		Java.awt.image - image processing
+		Java.awt.peer - GUI toolkit
+		Java.io - System.out.print
+		Java.lang - length method for arrays; exceptions
+		Java.net - sockets
+		Java.util - System.getProperty
+		
+ -- Applet
+	- An applet is a small Java program that runs within a web page on your browser
+	- 	Applet read and write files.
+		Applet integrates with desktop services (e.g., e-mail).
+		It is connected to other servers.
+		
+ -- Compile a java file in cmd 
+	-> Go to file path -> javac filename(Person.java)
+	Compile all files in cmd 
+	-> Go to folder path -> javac *.java(*.java)
+	Run compiled files
+	-> Go to file path -> java Person(Class name)
+	
+	- javac -d classes src/Test.java
+	The -d option lets you tell the compiler in which directory to put the .class file it generates (d for destination) 
+	- java Test Test1
+	You must specify exactly one class file to execute. If more than one then first one will be executed
+
+ -- Order of execution 
+	1.) all static block
+	2.) (a.) all empty block, 
+		(b.) default constructor 
+		a & b are executed by number of objects created. Ex: 2 obj created, empty block & default constructor are executed for 2 times
+	3.) main method
+	
+	Example : 1 empty block, 1 static block, 1 default constructor , main method
+		public class Test {
+		{System.out.println("Empty Block");	}		--> Empty block
+		static {System.out.println("Static Block");};		--> Static block
+	 
+		public Test(String string, String string2) {		--> default constructor
+		 System.out.println("Default Constructor ");
+		}
+		public static void main(String [] args){		--> main method & codes (2 Objects created in main method)
+			 Test t1 = new Test("Om","Pravin");
+			 Test t2 = new Test("Om","Pravin");
+			....
+		}
+		
+	-- Output
+	Static Block
+	Empty Block
+	Default Constructor 
+	Empty Block
+	Default Constructor 
+	HashSet Object size --> 2
+	ArrayList Size --> 3
+	HashSet size --> 2
+	HashSet Total Size ---> 4
+	
+ -- Difference between import and static import? 
+	 = The import provides accessibility to classes and interface whereas static import provides accessibility to static members of the class.
+	 - The import allows the java programmer to access classes of a package without package qualification whereas 
+		the static import feature allows to access the static members of a class without the class qualification. 
+		
+	- java static import? 
+	import static java.lang.Thread; 
+	public class MyStaticImportTest { 
+	public static void main(String[] a) {
+	 try{ 
+	 sleep(100);
+	 }
+	 catch(Exception ex){
+	 } 
+	 } }
+ 
+ -- Servlet
+		To generate dynamic content based on the request.
+		
+    - Clipping is the process of confining paint operations to a limited area or shape
+	- The setLayout() method is used to specify a container's layout.
+	- The Panel and Applet classes use the FlowLayout as their default layout.
+	- The Canvas, Frame, Panel, and Applet classes support painting.
+	- Unicode requires 16 bits and ASCII require 7 bits  
+	
+ -- Reading values from Property files
+	Properties prop = new Properties();
+	InputStream in = getClass.getClassLoader.getInputAsstream("config.properties");
+
+	if(in!=null) {
+	prop.load(in);
+	}
+
+	prop.getProperty("user")
+	
+Main Links -
+http://www.journaldev.com/2366/core-java-interview-questions-and-answers
+Memory related Questions -
+http://www.buggybread.com/2014/04/java-interview-questions-and-answers-on_706.html
+
+Java Questions 
+http://java-questions.com/Exceptions-interview-questions.html
+http://www.java2novice.com/java_interview_questions/private-main-method/
+http://a4academics.com/interview-questions/54-core-java-swing/506-core-java-interview-questions-and-answers?showall=&start=1
+http://www.fromdev.com/2012/02/java-interview-question-answer.html
+
+Thread Questions -
+http://javarevisited.blogspot.in/2011/02/how-to-implement-thread-in-java.html
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------	
+
+	
+---------------------------------------------------------------- Java Concepts ------------------------------------------
+
+1.) OOPS Concepts -
+ a.) Encapsulation (Def - Data Hiding, Adv - re-usability of code)
+		Encapsulation helps us to show/hide what user can access.(Functions tat can be shown to users, make as Public. Hide can achieved by keyword private)
+		Hiding the fields within the class by using keyword private.
+		
+		Example -
+		 If a data member is private it means it can only be accessed within the same class. No outside class can access private data member (variable) of other class. 
+		 However if we setup public getter and setter methods to update (for e.g. void setSSN(int ssn))and read (for e.g.  int getSSN()) the private data fields then 
+		 the outside class can access those private data fields via public methods.
+		 This way data can only be accessed by public methods thus making the private fields and their implementation hidden for outside classes.
+		 That’s why encapsulation is known as data hiding.
+		 
+		public class EncapsulationDemo{
+			private int ssn;
+			private String empName;
+			
+			//Getter and Setter methods
+			public int getEmpSSN(){
+				return ssn;
+			}
+			public void setEmpSSN(int newValue){
+				ssn = newValue;
+			}
+			
+			public String getEmpName(){
+				return empName;
+			}
+			public void setEmpName(String newValue){
+				empName = newValue;
+			}		
+		}
+		
+		public class EncapsTest{
+			public static void main(String args[]){
+				 EncapsulationDemo obj = new EncapsulationDemo();
+				 obj.setEmpName("Mario");			
+				 obj.setEmpSSN(112233);
+				 System.out.println("Employee Name: " + obj.getEmpName());
+				 System.out.println("Employee SSN: " + obj.getEmpSSN());				 
+			} 
+		}
+  
+   In above example all the 2 data members (or data fields) are private which cannot be accessed directly. 
+   These fields can be accessed via public methods only. Fields empName, ssn and empAge are made hidden data fields using encapsulation
+   
+ b.) Abstraction (process of hiding the implementation details and showing only functionality to the user)
+	   Abstract class can't be instantiated directly, only extends
+
+	   Other Features 		
+		Abstract classes are NOT INTERFACES. 
+		An abstract class MUST HAVE AN ABSTRACT METHOD (ONLY METHOD SIGNATURE, NO BODY).
+		Abstract classes can have Constructors, Member variables and Normal methods.
+		Abstract classes are never instantiated.
+
+	  - 2 ways to achieve abstraction in java
+	      1.)Abstract class (0 to 100%) 
+		  2.)Interface (100%))
+		
+		-- Abstract class (0 to 100%)
+		  Example -
+			abstract class Bike{  
+			  abstract void run();
+			  public abstract int getLength();			  
+			}  
+			class Honda4 extends Bike{  
+				void run(){System.out.println("running safely..");}  
+				public static void main(String args[]){  
+				 Bike obj = new Honda4();  
+				 obj.run();  
+				}  
+			}  
+	
+ = Encapsulation hides the irrelevant details of an object and Abstraction makes only the relevant details of an object visible.
+ 
+ c.) Interface (Complete Abstraction - contains only final variables(public, static & final by default) + abstract methods(no Concrete methods))
+ 	   = You can’t instantiate an interface directly(just like abstract class), but you can instantiate a class that implements an interface.
+	   = Class implements interface but an interface extends another interface.
+	   = we can declare an interface inside a class and a class can be declared inside an interface, both statements are true.
+	   
+	  Main Advantages :
+		In java, MULTIPLE INHERITANCE is not allowed, However by using interfaces you can achieve the same. 
+		A class can extend only one class but can IMPLEMENT ANY NUMBER OF INTERFACES. An interface can extend multiple interfaces
+		Ex :  MULTIPLE INHERITANCE
+		 interface Printable{  
+			void print();  
+			}  
+		 interface Showable{  
+			void print();  
+			}  
+			  
+		 class TestTnterface1 implements Printable,Showable{  
+			public void print(){System.out.println("Hello");}  
+			public static void main(String args[]){  
+			TestTnterface1 obj = new TestTnterface1();  
+			obj.print();  
+			 }  
+			}  
+			Output - Hello
+			= above example, Printable and Showable interface have same methods but its implementation is provided by class TestTnterface1, 
+			   so there is no ambiguity.
+			   
+	  Other Features :
+	   1.) All Methods declared in interface are by DEFAULT ABSTRACT (ONLY METHOD SIGNATURE, NO BODY) and public.
+		   Variables declared in interface are PUBLIC, STATIC AND FINAL BY DEFAULT.
+		   INTERFACE VARIABLES MUST BE INITIALIZED at the time of declaration otherwise compiler will through an error.
+	   2.) Interface provides COMPLETE ABSTRACTION as none of its methods can have body. abstract class provides partial abstraction as it can have
+			abstract and concrete(methods with body) methods both.
+	   3.) implementing in class of any method of an interface, it needs to be mentioned as PUBLIC.
+	   4.) Class implementing any interface must IMPLEMENT ALL THE METHODS, OTHERWISE the class should be declared as “ABSTRACT”
+	   5.) Interface cannot be declared as private, protected or transient.
+	   6.) If there are two or more same methods in two interfaces and a class implements both interfaces, implementation of the method once is enough
+		   A class cannot implement two interfaces that have methods with same name but different return type.
+	   7.) - An interface does not contain any constructors.
+			Interface are used for abstraction	   
+	
+	 Example -
+	 class A implements myinterface{
+		public void method1(){System.out.println("Method 1");};
+		public void method2(){System.out.println("Method 2");};
+		public void method3(){System.out.println("Method 3");};
+	
+    	myinterface obj = new A(); 
+	}
+	interface myinterface extends i2{
+		public void method1();
+		public void method2();
+	}
+	interface i2{
+		public void method3();
+	}
+
+	= http://beginnersbook.com/2013/05/java-interface/
+	
+	    ----------------------------------------------------------------------------------------------------------------
+							Abstract class								|				Interface
+        ----------------------------------------------------------------------------------------------------------------							
+		1)An abstract class can have method body (non-abstract methods) |	Interface have only abstract methods.
+		2)An abstract class can have instance variables.				|	An interface cannot have instance variables.
+		3)An abstract class can have constructor.						|	Interface cannot have constructor.
+		4)An abstract class can have static methods.					|	Interface cannot have static methods.
+		5)You can extends one abstract class.							|	You can implement multiple interfaces.
+		----------------------------------------------------------------------------------------------------------------
+		
+ d.)Polymorphism (looks like same, but different characters - Ex: Twin Brothers)
+   - Polymorphism can be achieved by - 
+		Overloading
+		Overriding
+   - Polymorphism means to process objects differently based on their data type. 
+   - one method with multiple implementation, for a certain class of action. And which implementation to be used is decided at runtime depending 
+     upon the situation (i.e., data type of the object)
+   - Overloading is static polymorphism ,overriding is dynamic polymorphism 
+  
+	(i) OverLoading : (Adv : increases the readability of the program)
+          - In a Class, two or more methods have same Name but with different arguments. 
+                Links - http://www.techtamasha.com/method-overriding-and-overloading-in-java/66
+				
+		 = 2 ways to overload the method in java
+			By changing number of arguments
+			By changing the data type
+		- method overloading is NOT POSSIBLE BY CHANGING THE RETURN TYPE of the method because there may occur ambiguity
+		- main method can be overloaded ? - Yes, with multiple main methods but different arguments
+		- One type is promoted to another implicitly if no matching datatype is found.
+			class OverloadingCalculation1{  
+			  void sum(int a,long b){System.out.println(a+b);}  
+			  void sum(int a,int b,int c){System.out.println(a+b+c);}  
+			  
+			  public static void main(String args[]){  
+			  OverloadingCalculation1 obj=new OverloadingCalculation1();  
+			  obj.sum(20,20);//now second int literal will be promoted to long  
+			  obj.sum(20,20,20);  			  
+			  }  
+			}  
+		= One type is not de-promoted implicitly for example double cannot be depromoted to any type implicitely.
+		
+   (ii) OverRidding : (Usage -> to provide specific implementation of a method that is already provided by its super class)
+	  = Subclass can implement a parent class method (override the functionality of an existing method)
+	  - when you extend a class and write a method in the derived class(sub-class) which is exactly similar to the one present in the 
+		base class(parent), it is termed as overriding.
+	  = By using keyword Super, we can call the methods in parent class from child class.
+	  = Can't override a method or class, if it is marked as static, final
+	  = Co-Variant Variable
+	   - covariant return types (Based on return type, Overriden can be achieved)
+		  It allows the user to have a method in inherited class with same signature as in parent’s class but differing only in return types. 
+		  It makes programs more readable and solves casting problem.
+
+			class Shape
+			{
+				public Shape transform(int x, int y)
+			}
+			class Rectangle extends Shape
+			{
+				public Rectangle transform(int x, int y)
+			}
+		 
+	 -- Rules for Overriding
+		1.) Arguments -> Same arguments as in overriding method for overriden method(child class)
+		2.) Return Type -> Same return type or sub-return type of overriding method for overriden method(child class)
+		3.) Access Modifiers 
+			= Cannot reduce the visibility of the inherited method than parent method
+			- Access modifiers should not restrictive than in overriding method(parent class)
+			= order of visibility from high priority -> public, protected, default, private
+			Ex : Parent class have private mthd -> Child class have private/default/protected/public mthd
+				 Parent class have default modifier mthd -> Child class have default/protected/public mthd
+				 Parent class have protected mthd -> Child class have protected/public mthd
+				 Parent class have public mthd -> Child class must have public mthd only(not of default/private/protected)
+		4.) Non access modifiers - static & final
+			- private, static & final method can't be overrided.
+			- But, Overriden method (child mthd) can be final, but not as static
+			- but static method can be replaced
+			= Reason for Static method can't override :
+				A static method is not associated with any instance of a class so the concept is not applicable.
+		
+		- The overriding method can throw any unchecked (runtime) exception, regardless of exception thrown by overridden method.
+		- can not override private or static method in Java, 
+			if you create similar method with same return type and same method arguments that's called METHOD HIDING.
+		
+ e.)Inheritance :
+	Adding the additional Features or Functions frm Parent. 
+	EX : Raju is inherited from balu(Father) & Ramya(Mother).i.e, Getting characters from both dad & mother, 
+		  so Raju had both characters as frm thier parents.
+    - 2 Types :
+		1.) Single Inheritence -> One Sub-Class can inherited frm only one parent class.
+		2.) Multiple Inheritence  -> One Sub-Class can inherited frm Multiple Parent Classes.
+
+		
+2.) Collection & Collections 
+	-- Collection & Collections
+		- Collection is an interface whereas Collections is a class. 
+		- Collection interface provides normal functionality of data structure to List, Set and Queue. 
+			But, Collections class is to sort and synchronize collection elements.
+		
+		= Collections class provides methods to make List, Set or Map elements as synchronized, to sort, make as Unmodifiable(readonly)
+		
+	   - If we use generic class, we don't need typecasting. It is typesafe and checked at compile time.
+	     Check done at compile-time – avoid nasty casting surprises during runtime.
+	   - The Dictionary class provides the capability to store key-value pairs.   
+	   - The default size of load factor is 0.75. The default capacity is computed as initial capacity * load factor.
+   
+   -- hashcode 	
+	 = Whenever you implement equals, you MUST also implement hashCode	
+	 - Objects that are equal must have the same hash code
+	 - Unequal objects must have different hash codes – WRONG!
+	 - Objects with the same hash code must be equal – WRONG!
+
+   -- Collection
+	= Collecting the multiple elements into single unit.
+	Usage - To store, retrieve, manipulate data
+	Advantage - Improve the speed, quality, performance of program.
+
+	Types :
+	 List - Collecting the elements in Order (Duplications allowed)
+	 Set  - Unique Elements (No duplications)
+	 Map  - By using object, mapping an key to its corresponding value (Duplicate value occur, but no duplicate keys allowed).
+
+	  - interface -> list, set, Queue, SortedMap, SortedSet, Iterator, ListIterator
+	  - class -> Arraylist, linkedlist, priorityqueue, hashmap, linkedhashmap, treemap
+  
+	 2 ways to iterate the elements of collection in java
+		By Iterator interface.
+		By for-each loop.
+		
+	-- Iterator -- (Iterator is an interface.)
+	   Iterator can be useful if you want to manipulate the list and Enumeration is for read-only access.
+	   Enumeration you can only traverse and fetch the objects, where as using Iterator we can also add and remove the objects.
+	 - Enumerator
+		To iterate the elements in collection
+		No Remove methods as like Iterator (Old method, used in JDK 1.0)
+			Ex:
+			Vector<String> vct = new Vector<String>();
+        	vct.add("First");
+			vct.add("Second");
+			Enumeration<String> enm = vct.elements();
+			while(enm.hasMoreElements()){
+				System.out.println(enm.nextElement());
+			}
+			
+	 - Iterator
+		 Iterator interface provides the facility of iterating the elements in FORWARD direction only
+		 Methods - hasNext() ,next(), remove()
+			Ex :			
+			Iterator<String> itr = vct.iterator();
+			while(itr.hasNext()){
+				System.out.println(itr.next());
+			}			
+						
+	 - List Iterator
+		 ListIterator Interface is used to traverse the element in BACKWARD and FORWARD direction
+		 Methods - hasNext() ,next(), hasPrevious(), previous()
+	 
+	 Difference betw Iterator & ListIterator
+	 ---------------------------------------------------------------------------------------------
+		Iterator									ListIterator
+	 ---------------------------------------------------------------------------------------------
+		Iterates both List & Set           		Iterates only List
+		Traverse only Forward direction			Traverse on both Forward & Reverse direction
+		Can't find Index values					Find Index values using nextIndex(), previousIndex()
+		Can't add elements during Iteration		Add elements during Iteration
+		Can't replace elements					Replace last element, using Get(E e)
+	---------------------------------------------------------------------------------------------
+	
+    -- List --
+	 In List, the indexes are integer. 
+	 
+	 - 2 Types 
+	  - ArrayList (ArrayList is better for storing and accessing data)
+	    - Store elements in array
+	    - Java ArrayList class is non synchronized.
+		- Java ArrayList allows random access because array works at the index basis.
+		- In Java ArrayList class, manipulation is SLOW because a lot of shifting needs to be occurred if any element is removed from the array list.
+		- Constructs an empty list with an initial capacity of ten. */ public ArrayList() { this(10); } 
+
+	  - LinkedList (LinkedList is better for manipulating data)
+	    -Store elements in doubly linked list (like as stack or queue or list)
+		= provides adding or removing elements from both sides and 
+			hence it may iterate slow than ArrayList but insertion and deletion is much more fast that ArrayList.
+	    -non synchronized.
+		-In Java LinkedList class, manipulation is FAST because no shifting needs to be occurred. Based on nodes, one node have 
+		  data & address/reference of next node.
+		-Java LinkedList class can be used as list, stack or queue.
+		
+		Difference betw Arraylist & LinkedList - 
+			access easy bcz index based - not ease to access element, bcz we have to traverse frm starting to end
+			insert/remove difficult, bcz shift in memory - easy to insert/remove bcz like a queue
+			dynamic array - doubly linked list
+			slow - faster
+			act as a list - act as a list and queue
+			
+		 ArrayList provides support random access through an index without inserting or removing elements from any place other than an end.
+		 LinkedList provides support for random access through an index with inserting and deletion elements from any place .
+		 If your application does not require insertion or deletion of elements, the Array is the most efficient data structure.
+
+		- Vector & ArrayList  
+			vector (Synchronized, uses both Iterator & Enumerator(No Remove methods as like iterator, one of old method), 100% size increases) 
+			arraylist (Non-Synchronized, uses only Iterator, 50% size increases)
+				The Enumeration interface defines a way to traverse all the members of a collection of objects
+		 
+		=  Constructor of vector -
+	   	 - Vector( )
+			This constructor creates a default vector, which has an initial size of 10
+	   	 - Vector(int size)
+	   	 - Vector(int size, int incr)
+			The increment specifies the number of elements to allocate each time that a vector is resized upward
+	  	 - Vector(Collection c)
+			creates a vector that contains the elements of collection c						
+		 
+		 Methods in vector :
+			 - Clone
+				 Vector<String> copy = (Vector<String>) vct.clone();
+				 System.out.println("Cloned vector:"+copy);
+			 - clear (remove all elements in vector)
+				vct.clear();
+			 - copy array to vector :
+				vct.copyInto(copyArr);
+			 - get Sublist of vector:
+				List<String> list = vct.subList(2, 4);
+			
+		- Queue 
+			- The Queue interface basically ORDERS THE ELEMENT IN FIFO(First In First Out)manner.
+			- It extends Collection interface. It is designed for holding elements prior to processing. 
+			- Main Methods are - remove() and pull().			
+			= The PriorityQueue class provides the facility of using queue. But it does not orders the elements in FIFO manner
+			- If the show method signature is public static void show(Queue<String> q) than you can't add Integer, Only String allowed. 
+			   But public static void show(Queue q) is untyped Queue so you can add Integer. 	
+			- poll() Retrieves and removes the head of this queue, or returns null if this queue is empty.
+			- peek() Retrieves the head of this queue, or returns null if this queue is empty.
+			= The Queue implementation in Java has two methods to remove element, 
+				One is remove() which throws exception and 
+				other one is poll() which returns null for an empty queue. 
+		
+		- Stack class (LIFO)
+			The Stack class represents a last-in-first-out (LIFO) stack of objects
+			The elements are accessed only from the top of the stack. You can retrieve, insert, or remove an element from the top of the stack.
+	
+	-- Set --	
+		- data structures/memory used by set -> Map
+		- uses hashtable to store the elements
+		= Without generics, the compiler does not know what type is appropriate for this TreeSet, so it allows everything to compile.
+		  But at runtime the TreeSet will try to sort the elements as they are added, and when it tries to compare an Integer with 
+		  a String it will throw a ClassCastException. 
+			
+	  3 Types -
+		----------------------------------------------------------------------------------------------
+							HashSet               			 LinkedHashSet          TreeSet
+		----------------------------------------------------------------------------------------------               
+		Order Of Elements | doesn’t maintain any order 
+									of elements            Insertion Order         Ascending Order 
+		Null elements  	  | Only one null value            Only one null value     No null elements
+		Compare Method    | equals() & hashCode() methods 
+								to compare the elements    same as HashSet         compare() or compareTo() methods to compare the elements         
+		Memory Occupation |         Less Memory              more memory           more memory(Comparator to sort the elements along with the TreeMap)  
+		--------------------------------------------------------------------------------------------
+		
+		= How set allows unique elements ?
+			It internally create Hashmap obj, once an obj created for set.
+			call mthd -
+				public boolean add (Element e){
+				return map.put(e, dummyvalue)==null
+				}
+			It return true, if memory contains no values, then value is added with dummyvalue
+			It return false, if memory contains values, then no value is updated.
+			
+	-- Map --	
+		- The keys are like indexes. In Map, the keys can be any objects.
+		= The default  value of DEFAULT_INITIAL_CAPACITY is 16 in HashMap Java Api
+		
+		4 Types -
+		----------------------------------------------------------------------------------------------------------------------------
+							HashMap(non-synchronized)    LinkedHashMap              TreeMap			             ConcurrentHashmap(synchronized)
+		----------------------------------------------------------------------------------------------------------------------------                 
+		Order Of Elements | doesn’t maintain any order 
+								   of elements           Insertion Order      ascending order of keys                doesn’t maintain any order
+		Null elements  	  |  Only one null Key & 
+								multiple null values     same as Hashmap    No null Key, but multiple null values    doesn’t allow null keys and null values.
+								
+			Sorting		  |  Collections.synchronizedMap same as Hashmap 	same as Hashmap(whole map locked)		Divide map into segments, lock individually	
+		----------------------------------------------------------------------------------------------------------------------------
+	
+	  ---> HashMap put works (final key, value, next, final Hash)
+			1. key == null 
+				If yes, set hash value as zero
+			2. key.hashcode() (then internally hash() func to get array range values, not as big values)
+			3. int index = indexOf(hash, table.length()) --> getting arraylist index/bucket location
+			4. use next attribute to put key-value pair in linkedlist, until next attr shows node have null address
+		--> Get works
+			1. same as put mthd
+			2. use equal mthd to get exact key-value pair
+	  
+	   = HashMap (http://www.javamadesoeasy.com/2015/02/hashmap-custom-implementation.html)
+		>equals method - helps in checking equality of entry objects.
+		>hashCode method - helps in finding bucket’s index on which data will be stored. 
+			We will maintain bucket (ArrayList) which will store Entry (LinkedList).
+
+	Iterator of the HashMap is a fail-fast and it throws ConcurrentModificationException if any other Thread modifies the map structurally 
+	  by adding or removing any element except iterator’s own remove() method.
+	Enumerator for the Hashtable is not fail-fast
+	
+	= Fail-Fast Iterator -> Throws Exception, if structure of collection modified during iteration.
+	= Fail-Safe Iterator -> Copy original array, iterates on copied array. So no exception, if structure modified
+		   But memory constraint occurs, we can't confirm our data are iterated.
+	
+    -- equals and == method
+	 == -> Compare objects memory address (chk 2 objects are equal)
+	 equals -> Compare contents or strings not address
+	 
+	-- equals and Hashcode(each key has Hashcode, based on this only objects r stored & searched) method 
+	 The hashCode() method of objects is used when you insert them into a HashTable, HashMap or HashSet.
+	 
+	 If object1 and object2 are equal according to their equals() method, they must also have the same hash code.
+	 If object1 and object2 have the same hash code, they do NOT have to be equal too.
+	 
+	 When inserting an object into a hastable you use a key. The hash code of this key is calculated, and used to determine where to store
+	 the object internally. When you need to lookup an object in a hashtable you also use a key. The hash code of this key is calculated and 
+	 used to determine where to search for the object.
+	 
+	-- Comparable & Comparator
+	 = single sorting + natural order comparison + CompareTo() + java.lang 	multiple sorting + custom order comparison + Compare + java.util
+	  Comparable	Comparator
+	1) Comparable provides single sorting sequence. In other words, we can sort the collection on the basis of single element such as id or name or price etc.
+	Comparator provides multiple sorting sequence. In other words, we can sort the collection on the basis of multiple elements such as id, name and price etc.
+	2) Comparable affects the original class i.e. actual class is modified.	Comparator doesn't affect the original class i.e. actual class is not modified.
+	3) Comparable provides compareTo() method to sort elements.	Comparator provides compare() method to sort elements.
+	4) Comparable is found in java.lang package.	Comparator is found in java.util package.
+	5) We can sort the list elements of Comparable type by Collections.sort(List) method.	We can sort the list elements of Comparator type by  Collections.sort(List,Comparator) method.
+
+	The hash code only points to a certain "area" (or list, bucket etc) internally. Since different key objects could potentially have the same hash code,
+	the hash code itself is no guarantee that the right key is found. The hashtable then iterates this area (all keys with the same hash code) 
+	and uses the key's equals() method to find the right key. Once the right key is found, the object stored for that key is returned.
+
+	So, as you can see, a combination of the hashCode() and equals() methods are used when storing and when looking up objects in a hashtable.
+	
+	-- ArrayList & arrays
+		- ArrayList are resizable arrays, it can grow dynamically. Arrays are static in size(fixed).
+		- ArrayList provides better implementation of searching, iterating, deleting or inserting an element than arrays.
+		  Arrays allow only primitive data types.
+		  
+    -- convert Map to List
+		public static void main(String a[]){ 
+		Map<String, String> wordMap = new HashMap<String, String>();
+		Set<Entry<String, String>> set = wordMap.entrySet();
+		List<Entry<String, String>> list = new ArrayList<Entry<String, String>>(set);
+		}
+		
+	Set - http://javaconceptoftheday.com/hashset-vs-linkedhashset-vs-treeset-in-java/	
+	Map - http://msdn.microsoft.com/en-us/library/aa986652(v=vs.80).aspx
+		  http://beginnersbook.com/2014/06/difference-between-hashmap-and-hashtable/
+	
+3.) Exception
+	It's an event/abnormal Condition. 
+
+	- There are 2 categories of exceptions:
+	   1.) Built in Exceptions
+			Checked Exceptions (Error are known as checked exceptions)
+			Unchecked Exceptions
+	   2.) User Defined Exceptions
+		
+  a.) Built in Exceptions
+		Checked Exception (Compile time exception -> ISF --- IOException, SQLException, FileNotFoundException, etc)
+		Unchecked Exception (Runtime exception -> NNAAC ---- NullPointerException, NumberFormatException, ArrayOutOfIndexException, ArithmeticException,
+								ClassCastException, etc)
+		
+		Error - Can't be handled (Runtime error like OutOfMemory, StackOverFlowError, Assert error)
+		Exception - Can be handled
+
+	 - Advantage
+		Can't interrupt the flow of Program (In case, exception is not implemented, any error cause the program flow stops in 
+			corresponding statements itself, not move to next step) 
+	 
+	 - Unchecked Exception are handled by try-catch block
+		- try block - To Monitor the code
+		
+		- catch block - Handle the Exception/Error
+		
+		- finally - whatever exception occurs or not, code in finally block will executed (not all cases)
+		
+		== Other important points :
+		  -> try block is legally followed by either catch or finally block or both. Not others.
+		     It is not valid to use a try clause without either a catch clause or a finally clause.
+			 Ex: try {}
+			    	Sysout("fsd"); ----> Wrong
+				 catch(Exception e){}
+			=== This will result in a compilation error.
+		  -> For each try block there can be zero (or) one (or) more catch blocks, but only one finally block.
+		  = The code present in the finally block executes even if the try or catch block contains control transfer statements like
+			 return, break or continue. the code in a finally block will take precedence over the return statement.
+		  -> If a method does not handle an exception(ie, no catch block), the finally block is executed before the exception is propagated.
+		  -> Yes, the finally block will be executed even after writing return statement at the end fo try block. It returns after executing finally block.
+		  = Anything that is returned in the finally block will actually override any exception or returned value that is inside the try/catch block.
+		  -> finally block have return type, but its bad idea to implement. because it overrides any values or 
+				exceptions thrown from try & catch block.		  		  
+		  -> finally block cannot execute at System.exit() or (by causing a fatal error that causes the process to abort) or
+				thread dies or system shutdown or power off	or JVM Terminates or 
+				If a exception is thrown in finally block and not handled then remaining code in finally block may not be executed.	  
+			-> Exit codes allow for the operating system to determine if the program completed successfully, 
+				the program completed with a certain result or the program had an error.
+			==	Many times a program will use 0 for success and 1 for failure. (JVM will return a code to OS, whether its succeed or fail)
+				Example : 
+				system.exit(0) - Success , 
+				system.exit(1) - Failure (Make user to chk what kind of error cause failure)
+			-> It is possible to use other exit codes to specify what went wrong or how he program completed.
+				Example : system.exit(3), system.exit(4), etc
+						 		
+		- halt & exit
+			public void halt(int status)
+				Forcibly terminates the currently running Java virtual machine. This method never returns normally.
+			public void exit(int status)
+				The virtual machine's shutdown sequence consists of two phases
+				1.) In the first phase all registered shutdown hooks, if any, are started in some unspecified order 
+					and allowed to run concurrently until they finish.
+				2.) In the second phase all uninvoked finalizers are run if finalization-on-exit has been enabled.
+					Once this is done the virtual machine halts.
+			
+		- throw/throws -  
+			--------------------------------------------------------------------------------------------------------------------------
+									Throw 								  |					 Throws
+			--------------------------------------------------------------------------------------------------------------------------
+			Throw keyword is used to throw an exception explicitly(Manually)	  | Throws clause in used to declare an exception.
+			The keyword throw is used inside method body to invoke an exception   | throws clause is used in method declaration (signature).
+			Throw keyword cannot throw more than one exception  				  | throws can declare multiple exceptions.
+			If we see syntax wise than throw is followed by an instance variable  | throws is followed by exception class names.
+			--------------------------------------------------------------------------------------------------------------------------
+		  throw 
+			throw (ThrowableInstance);
+			ThrowableInstance ---> new NullPointerException("test");
+	 
+		  throws (method is capable of raising an exception that it does not handle, handled by method signature)
+			type method_name(parameter_list) throws exception_list
+			{
+			 //definition of method
+			}
+		  = The throws statement is used by a method to specify the types of exceptions the method throws. 
+		  = If a method is capable of raising an exception that it does not handle, the method must specify that 
+			the exception has to be handled by the calling method.	
+		 
+  b.) User Defined Exceptions
+	 - Own Exception
+	   To create you own exception extend the Exception class or any of its subclasses.
+	   Create a class that extend from a right kind of class from the Exception Hierarchy.
+	   
+	   Example :
+	   public class DivideByZeroException extends ArithmeticException 
+		{
+		 public DivideByZeroException() 
+		 {
+			super("Divide by 0 error");
+		 }
+		}
+
+	
+	Key Points --
+	 - Close() is generally used to close all the open streams in one go. Its a good practice to use close() inside finally block.
+	 - If the calling method does not handle and declares the exception, the exceptions is passed to the next method in the method stack.
+		This is called as DUCKING the exception down the method stack.
+	 = Can a catch block throw the exception caught by itself?
+			Ans) Yes. This is called rethrowing of the exception by catch block.
+			e.g. the catch block below catches the FileNotFound exception and rethrows it again.
+			 void checkEx() throws FileNotFoundException {
+			  try{
+				//code that may throw the FileNotFoundException
+
+			  }catch(FileNotFound eFnf){
+				throw FileNotFound();
+			  }
+			}
+	 = Is an empty catch block legal?
+		Ans) Yes you can leave the catch block without writing any actual code to handle the exception caught
+	 - In Java SE 7 and later, a single catch block can handle more than one type of exception.
+			catch (IOException|SQLException ex) {
+				logger.log(ex);
+				throw ex;
+			}
+		If a catch block handles more than one exception type, then the catch parameter is implicitly final.
+		In this example, the catch parameter ex is final and therefore you cannot assign any values to it within the catch block.
+			
+4.) Thread - Executing a program
+		Multithreading - Multiple programs r executed simultaneously.
+	- In Java every thread maintains its own separate stack. It is called Runtime Stack but they share the same memory.
+	- The first thread to be executed in a multithreaded process is called the main thread. 
+	- The main thread is created automatically on the startup of java program execution.	
+	- The start() method causes this thread to begin execution
+	- start(), run(), stop(), sleep() are defined by the Thread class.
+	- wait(), notify() & notifyAll(), clone() are methods of the Object class.
+	= The Runnable interface only contains 1 method, the void run() method
+	= Either of the two events (notification or wait time expiration) will make the thread become a candidate for running again.
+	=  A static synchronized method and a non static synchronized method will not block each other
+
+	-- Difference betw Runnable & extends thread class
+	- By implementing Runnable interface, you need to provide implementation for run() method. (Bcz interface have only Signature, no body)
+		To run this implementation class, create a Thread object, pass Runnable implementation class object to its constructor.
+		Call start() method on thread class to start executing run() method.
+	- Implementing Runnable interface does not create a Thread object, it only defines an entry point for threads in your object.
+	
+	- Java allows only one class to extend, but allows you to impliment multiple interfaces at a time.
+	   So it is always better to create a thread by implementing Runnable interface.
+	
+	-- run() method contains the code to execute by user
+	-- 2 ways to create Thread
+		- Implements runnable interface
+			class Multi3 implements Runnable{  
+				public void run(){  
+					System.out.println("thread is running...");  
+				}    
+				public static void main(String args[]){  
+					Multi3 m1=new Multi3();  
+					Thread t1 =new Thread(m1);  
+					t1.start();  
+				 }  
+			}  
+		- Extends Thread class
+			class Multi extends Thread{  
+				public void run(){  
+					System.out.println("thread is running...");  
+				}  
+				public static void main(String args[]){  
+					Multi t1=new Multi();  
+					t1.start();  
+				 }  
+			}  
+	
+	Thread states/lifecycle - New, Runnable, Running, wait/sleep, Dead
+	
+	Commonly used Constructors of Thread class:
+		Thread()
+		Thread(String name)
+		Thread(Runnable r)
+		Thread(Runnable r,String name)
+	
+	-- Synchronization
+		Achieved by 3 ways :
+		Synchronized method.
+		Synchronized block.
+		static synchronization.
+		
+	 -- Daemon thread
+			Daemon thread in java is a service provider thread that provides services to the user thread
+			when all the user threads dies, JVM terminates this thread automatically. Its life depends on user threads.		
+			It is a low priority thread.
+			If you want to make a user thread as Daemon, it must not be started otherwise it will throw IllegalThreadStateException.
+			
+			Methods -
+			public void setDaemon(boolean status)	->	is used to mark the current thread as daemon thread or user thread.
+			public boolean isDaemon()				->	is used to check that current is daemon.
+	
+	-- Shutdown Hook Thread
+		- Performing clean resource means closing log file, sending some alerts
+		- we want to execute some code before JVM shuts down, use shutdown hook.
+	
+	-- start() 
+		t.run() Legal, but does not start a new thread , it is like a method call of class Test BUT
+		t.start() create a thread and call run() method.
+		Ex :
+		public class Threadss extends Thread {
+		  public static void main(String argv[]){
+			 Threadss t = new Threadss();
+			 t.run();
+			 t.start();
+			 }
+		  public void run(){
+			 System.out.println("run-test");
+			 }
+			 Output -> run-test
+					   run-test
+			
+		= Once a thread has been started, it can never be started again. 2nd time t.start() throws java.lang.IllegalThreadStateException.
+		= Compilation succeed but Runtime Exception
+		  Ex :
+		  A a = new A();
+		  Thread t = new Thread(a);
+		  t.start();
+		  t.start();	  
+	
+	Other Key Points ::::
+	-- Blocking methods in Java 
+	  - Blocking means that a thread may stop until certain conditions are met.
+		Method which block the current executing thread until there operation finished.
+		InputStream read() method which blocks until all data from InputStream(file) has been read completely.
+		
+		Ex: public static void main(String args[]) throws FileNotFoundException, IOException  {
+			  System.out.println("Calling blocking method in Java");
+		***	  int input = System.in.read();
+			  System.out.println("Blocking method is finished");
+			}  
+	   - Use call-back functions to process result of a blocking call.
+		 Use timeout while calling blocking method.		
+		
+	-- pre-emptive scheduling and time slicing
+		- Under preemptive scheduling, the highest priority task executes until it enters the waiting or dead states or 
+			a higher priority task comes into existence. 
+		- a task executes for a predefined slice of time and then reenters the pool of ready tasks. 
+			The scheduler then determines which task should execute next, based on priority and other factors.
+	
+	-- command to identify thread dump/heap dump(active threads in JVM) -> kill -3 PID (Process ID)/ ctrl + break(windows)
+	
+	-- Priority on threads	
+	We can specify the priority of thread but it doesn’t guarantee that higher priority thread will get executed before lower priority thread.
+	Thread priority is an int whose value varies from 1 to 10 where 1 is the lowest priority thread and 10 is the highest priority thread.
+
+	-- Context Switching (store & re-store the state of CPU, to start thread frm where they stopped/paused)
+		Context Switching is the process of storing and restoring of CPU state so that Thread execution can be resumed from 
+		the same point at a later point of time. We can use Thread join() method to make sure all the threads created by the program is dead 
+		before finishing the main function.
+
+	-- sleep() & yield() mthd static ? (bcz active thread only make a call for sleep/yield mthd, no dead state thread - so static)
+		Thread sleep() and yield() methods work on the CURRENTLY EXECUTING THREAD.
+		So there is no point in invoking these methods on some other threads that are in wait state.
+		That’s why these methods are made static so that when this method is called statically, it works on the current executing thread
+
+	-- Thread safety
+		There are several ways to achieve thread safety in java – 
+			synchronization, 
+			atomic concurrent classes,
+			implementing concurrent Lock interface,
+			using volatile keyword, 
+			using immutable classes and Thread safe classes.
+			
+	-- Thread class setDaemon(true) can be used to create daemon thread in java.
+		We need to call this method before calling start() method else it will throw IllegalThreadStateException.		
+		
+	-- Synchronized block or method ?
+		Synchronized block is more preferred way because it doesn’t lock the Object,
+		synchronized methods lock the Object and if there are multiple synchronization blocks in the class, 
+		even though they are not related, it will stop them from execution and put them in wait state to get the lock on Object.
+		
+	-- Callable Interface (call() mthd instead of run() ) & Future
+		- Java 5 introduced java.util.concurrent.Callable interface in concurrency package that is similar to Runnable interface but
+			it can return any Object and able to throw Exception.
+		- callable tasks run in parallel
+		-  Using Future we can find out the status of the Callable task and get the returned Object.
+			It provides get() method that can wait for the Callable to finish and then return the result.
+			
+	-- Thread Locale 
+		= used to create thread-local variables. 
+		= Instead of using synchronization, we use thread-local variables - these are thread safe by making field as private static.
+		= Every thread has it’s own ThreadLocal variable and 
+		  they can use it’s get() and set() methods to get the default value or change it’s value local to Thread
+		
+	-- Thread Group (ThreadGroup is a class)
+		2 major feature are -
+		  - to get the list of active threads in a thread group
+		  - to set the uncaught exception handler for the thread.
+		  
+		  But Java 1.5 has added setUncaughtExceptionHandler(UncaughtExceptionHandler eh) method using 
+		  which we can add uncaught exception handler to the thread
+		  
+    -- Thread dump is list of all the threads active in the JVM,
+
+	-- Thread Pool
+		- manages the pool of worker threads,
+    	- it contains a queue that keeps tasks waiting to get executed.
+		= java.util.concurrent.Executor interface to create the thread pool in java.
+		
+5.) Garbage Collector
+     Def :
+		The Java runtime environment deletes objects when it determines that they are no longer being used.
+		
+	 - Garbage collection is an automatic process, request it by calling System.gc() or Runtime.gc()
+	 - Java internally uses garbage collector to deallocate unused memory, that allocated during runtime.
+	 - finalize() method & Damon Thread are used
+	
+   -- Garbage Collection
+	= Garbage Collection is process of reclaiming the runtime unused memory automatically. 
+	- In other words, it is a way to destroy the unused objects.
+
+	Adv :
+		It makes java memory efficient because garbage collector removes the unreferenced objects from heap memory.
+		It is automatically done by the garbage collector(a part of JVM) so we don't need to make extra efforts.
+	
+	= Unreferenced Object by 3 ways (reuse of objects):
+		By nulling the reference (Employee e=new Employee();  e=null;)
+		By assigning a reference to another (Employee e1=new Employee();   Employee e2=new Employee(); 
+												e1=e2; //now, first object referred by e1 is available for garbage collection)
+		By annonymous object etc.(new Employee(); )
+	
+	 = The Garbage collector of JVM collects only those objects that are created by new keyword. 
+		So if you have created any object without new, you can use finalize method to perform cleanup processing (destroying remaining objects).	
+		protected void finalize(){} 
+	 =  Garbage collection is performed by a daemon thread called Garbage Collector(GC). This thread calls the finalize() method before object 
+		is garbage 	collected.	
+		public static void gc(){}  
+		System.gc();  /// Used in program
+	 - gc() is a daemon thread.gc() method is defined in System class that is used to send request to JVM to perform garbage collection.
+	 - finalize() method is invoked just before the object is garbage collected.It is used to perform cleanup processing. 
+
+  -- weak & soft reference
+		- weak reference
+		  Once the object is memory is free/it loses strong reference, corresponding obj is eligible for Garbage collection.
+		- soft reference
+		  Memeory is insufficient in JVM/memory required by JVM, then only obj goes for Garbage collection.
+		
+
+===================================================================================================================
+Key Points -
+
+ 
+
+http://beginnersbook.com/2013/05/java-interface/ 
+http://www.instanceofjava.com/p/interview-questions.html
+http://www.javatpoint.com/exception-handling-in-java - Exceptions 
+

@@ -1,0 +1,208 @@
+------------------------------------------------ Java --------------------------------------------
+
+OOPs Concept
+ = private,static & final methods can't be overrided, but overloaded
+ - main method can be overloaded ? -> Yes, with multiple main methods but different arguments
+   Constructor can be overloaded ? -> Yes 
+   
+   = private mthds can't override -> Bcz its visibility is within the class, not even child class know its visibility.
+   = main(static) method cannot be overridden, though its a static mthd. It leads to mthd hidding.
+	 = Static mthds r accessed by class name only, not by object.
+	 = Overriding r dynamic binding, happens in runtime. But static mthds r bounded at compile time, relates to compile binding
+	 
+	 - Static methods are belogs to class, not belongs to object. Inheritance will not be applicable for class members
+	 
+  - If main method is declared as private then - 
+	Program will compile properly but at run-time it will give "Main method not public." error. 
+   Constructors cannot be overridden, though a subclass can call the constructor of its super class.
+ 
+ = If you create object of subclass with reference of super class like ( A a = new B();) then subclass method and super class variable 
+	will be executed. 
+	Ex :
+		public class A {int i=10; void s (){Sysout.("Super class")}}
+		class B extends A {int i=12; void s (){Sysout.("Child class")}}
+		 a.s(); a.i; 		output -> Child class 10
+ = Constructor of class B call their superclass constructor of class A (public A()) , which execute first, and that constructors can be overloaded.
+	Then come to constructor of class B (public B (int i)).	
+	
+ = Java allows only public and default modifier for top level classes in java. 
+			Inner classes can be private.
+ - local classes can be defined in a block as in a method body or local block.
+ - we initialise uninitialized final variable
+	Yes. We can initialise blank final variable in constructor, only in construtor. The condition here is the final variable should be non-static.
+
+ - Can use abstract and final both with a method? -> No, because abstract method needs to be overridden whereas you can't override final method.
+ - What happen, not pass an String array of objects to main() method ?
+	Program will compile fine, but at runtime it will give an error “NoSuchMethodError”. 
+ - The program will compile fine and run properly, main() method implementation is regardless of the order of public, static and void keywords.
+ 
+ = Interface method cannot be private, static & final
+	 - Can you declare an interface method static? -> static and abstract keywords can't be used together
+	 - Can an Interface be final? -> No, because its implementation is provided by another class.
+	 
+	 
+Collection
+- The Vector class provides the capability to implement a growable array of objects
+- Dictionary is an abstract class. Hastable extends Dictionary.
+- The readLine() method returns null when it has reached the end of a file
+- add Enum constants to a TreeSet, What sorting order will it use ?
+	Ans. Tree Set will sort the Values in the order in which Enum constants are declared.
+
+	
+Thread
+- Threads are independent so it doesn't affect other threads if exception occur in a single thread.
+  At a time one thread is executed only.
+  
+  The notify method only wakes the thread. It does not guarantee that the thread will run.
+  
+  The run() method to a thread is like the main() method to an application.
+  The start() method causes this thread to begin execution  
+- Can we call the run() method instead of start()? 
+	yes, but it will not work as a thread object, rather it will work as a normal object so there will not be context-switching between the threads.
+
+- Differ betw Static synchronized & non-static synchronized
+   Static synchronized methods synchronize on the class object. 
+   If one thread is executing a static synchronized method, all other threads trying to execute any static synchronized methods will be blocked.
+   
+   Non-static synchronized methods synchronize on this ie the instance of the class.
+   If one thread is executing a synchronized method, all other threads trying to execute any synchronized methods will be blocked.
+
+   
+Exception
+- base class for Error and Exception? ---> Throwable.
+= Exception & Error
+	An error is an irrecoverable condition occurring at runtime like out of memory error. These kind of jvm errors cannot be handled at runtime.
+	Exceptions are because of condition failures, which can be handled easily at runtime.
+
+	
+Stream/Bytes/Reader
+- ServletOutputStream (writing binary data in the response)
+	The servlet container does not encode the binary data, it sends the raw data as it is.
+  PrintWriter (PrintWriter object which sends character text to the client)
+	The PrintWriter uses the character encoding returned by getCharacterEncoding().
+
+- The Reader/Writer class hierarchy is character-oriented, and the InputStream/OutputStream class hierarchy is byte-oriented.
+- An I/O filter is an object that reads from one stream and writes to another	
+- InputStream/OutputStream
+		The InputStream class defines methods for reading bytes or arrays of bytes.
+		FileInputStream -> It reads data from file on the native file system
+		SequenceInputStream : It concatenate multiple input streams into one input stream. 
+		StringBufferInputStream : It allow programs to read from a StringBuffer as if it were an input stream. 
+		PipedInputStream : In this data can be read from a thread by using PipedInputStream
+
+		
+Java
+- Immutable objects are automatically thread-safe.
+- hashcode() method is used to find the memory address/reference of a variable/object
+    It will get memory address & convert to a integer & return to user
+- By default 
+	String, Key, hash value - final
+- private synchronized int e;	Error -> Illegal modifier for the field e; 
+	= only public, protected, private, static, final, transient & volatile are permitted (not synchronized for var)		
+- Object based languages (does not follow inheritence) --> javascript, VBscript, etc	
+- substring() works internally 
+	String internally defines two private variables called offset and count to manage the char array.
+		/** The offset is the first index of the storage that is used. */
+		private final int offset;
+
+		/** The count is the number of characters in the String. */
+		private final int count;
+- Switch Case
+	1.) variable used in switch statement can only be integers, convertable integers (byte, short, char), strings and enums
+	2.) No cases executed, then default case execute.
+	3.) When a break statement is reached, the switch terminates, and the flow of control jumps to the next line following the switch statement
+	    No break statement, then all cases + default also executed
+	4.) Case expressions must be constant expressions. (x as final, not as public)
+	5.) The case statement takes only a single argument. The case statement on below line is given two arguments so the compiler complains.
+		 Example : case 0, 1: j = 1;
+	
+- keywords/reserved words
+		import, default, implements		
+	
+- Generics in code :
+	Elimination of casts: If you use generics, then explicit type casting is not required.
+	A Java compiler applies strong type checking to generic code and issues errors if the code violates type safety
+	
+ - A local inner class without name is known as anonymous inner class.	
+	
+	
+Arithmetic 
+- By placing a zero in front of the number is an integer in octal form. 010 is in octal form so its value is 8	
+- byte b = 6; 
+	cannot convert from int to byte for b = b+7; But b += 7; // No problem because +=, -=, *=, and /= will all put in an IMPLICIT CAST. 
+	b += 7 is same as b = (byte)b+7
+- x *= 3 + 7; is same as x = x * (3 +7) = 5 * (10) = 50 because EXPRESSION ON THE RIGHT IS ALWAYS PLACED INSIDE PARENTHESES. 
+- 	int a =5 , b=6, c =7;
+	System.out.println("Value is "+ b +c);
+  If the left hand operand is not a String then + operator treat as plus BUT if left hand operand is a String then + perform String concatenation.
+- Identifier
+	$7 is valid identifier. Identifiers must start with a letter, a currency character ($), or underscore ( _ ). 
+	Identifiers cannot start with a number. You can't use a Java keyword as an identifier  
+- equality check (==) or an assignment (=).
+- Math.random() returns a double value greater than or equal to 0 and less than 1.
+
+	
+System
+- Java is a program that is being written in Java and being read by the Java virtual machine.
+- Jar file is an archive of java classes.
+- System.currentTimeMillis() returns the current time in milliseconds.
+- Runtime class
+  The purpose of the Runtime class is to provide access to the Java runtime system.
+  The runtime information like memory availability, invoking the garbage collector, etc. 
+- System class
+  The purpose of the System class is to provide access to system resources.
+  It contains accessibility to standard input, standart output, error output streams, current time in millis, terminating the application, etc.
+  
+- A native method is a method that is implemented in a language other than Java.
+  Native keyword is used only with methods. It signals the compiler that the method has been coded in a language other than Java.
+- If you change the value in properties file, you don't need to recompile the java class.
+
+- A java.util.Date represents date and time of day, a java.sql.Date only represents a date 
+
+- System.out.println() briefly?
+	System is a predefined final class, 
+	out is a PrintStream object and 
+	println is a built-in overloaded method in the out object. 
+	
+---------------------------------------------------------------------------------------------------
+
+
+---------------------------------------------- Servers --------------------------------------------	
+
+asynchronous event.
+	= It is not "synchronized" with the program
+	- occurs at an unpredictable time outside the control of the program that the CPU is running.
+	
+DOM & SAX Parser
+	A DOM (Document Object Model) parser creates a tree structure in memory from an input document whereas
+	A SAX (Simple API for XML) parser does not create any internal structure.
+	
+	A SAX parser serves the client application always only with pieces of the document at any given time whereas
+	A DOM parser always serves the client application with the entire document no matter how much is actually needed by the client.
+	
+	Xerces, Crimson are SAX Parsers whereas XercesDOM, SunDOM, OracleDOM are DOM parsers.
+	
+LDAP Servers 
+	LDAP servers are typically used in J2EE applications to authenticate and authorise users.
+	faster than database in providing read access.
+	
+session tracking (maintain state about a series requests from user)
+	Is a mechanism that servlets use to maintain state about a series requests from the same user across some period of time.
+	Methods for Track session -
+	 Cookies 
+	 HttpSession
+	 User Authentication 
+	 URL rewriting
+	
+connection pooling (connection objects will shared & re-used by multiple users)
+ 	It's a technique to allow multiple clients to make use of a cached set of shared and reusable connection objects 
+	providing access to a database or other resource.
+	
+Avoid Deadlock in DB	
+   Can make a queue wherein we can verify and order the request to DB.
+   
+What Design pattern Wrapper Classes implement ?
+	Ans. Adapter.   
+	
+Differ betw proxy & adapter
+   Adapter object has a different input than the real subject whereas Proxy object has the same input as the real subject.

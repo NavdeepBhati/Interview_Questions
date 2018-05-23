@@ -1,0 +1,38 @@
+Developing a single application as a suite of small services each running in its own process and communicating with lightweight mechanisms, often an HTTP resource API. 
+These services are built around business capabilities and independently deployable by fully automated deployment machinery. 
+
+There is a bare minimum of centralized management of these services, which may be written in different programming language and use different data storage technologies - James Lewis and Martin Fowler
+
+
+---Advantages:
+
+		-New Technology & Process Adaption becomes easier. You can try new technologies with the newer microservices that we create.
+		-Faster Release Cycles
+		-Scaling with Cloud
+		
+---Disadvantages
+		
+		-Quick Setup needed : You cannot spend a month setting up each microservice. You should be able to create microservices quickly.
+		-Automation :	
+					Because there are a number of smaller components instead of a monolith, you need to automate everything - Builds, Deployment, Monitoring 
+					etc.
+		-Visibility :
+					You now have a number of smaller components to deploy and maintain. Maybe 100 or maybe 1000 components. You should be able to monitor and  
+					identify problems automatically. You need great visibility around all the components.
+		-Bounded Context:
+						Deciding the boundaries of a microservice is not an easy task. Bounded Contexts from Domain Driven Design is a good starting point. 
+		                Your understanding of the domain evolves over a period of time. You need to ensure that the microservice boundaries evolve.
+		-Configuration Management :
+									You need to maintain configurations for hundreds of components across environments. You would need a Configuration     
+		                            Management    solution
+		-Dynamic Scale Up and Scale Down : 
+										The advantages of microservices will only be realized if your applications can scaled up and down easily in the cloud.
+		-Pack of Cards : 
+						If a microservice at the bottom of the call chain fails, it can have knock on effects on all other microservices. Microservices 
+						should be fault tolerant by Design.
+		-Debugging : 
+					When there is a problem that needs investigation, you might need to look into multiple services across different components. Centralized 
+					Logging and Dashboards are essential to make it easy to debug problems.
+		-Consistency : 
+						You cannot have a wide range of tools solving the same problem. While it is important to foster innovation, it is also important to have 
+						some decentralized governance around the languages, platforms, technology and tools used for implementing/deploying/monitoring microservices

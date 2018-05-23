@@ -1,0 +1,58 @@
+- Applet
+	An applet is a Java program that runs in a Web browser. 
+	Life Cycle of an Applet: init, start, stop, destroy, paint
+	
+- System.out.format()
+	List<Number> list = new ArrayList<Number>();
+	System.out.format("%b%b%d%b",list.add(7),list.add(null),list.size(),list.add(7));	  Output ---> truetrue2true
+	System.out.format("%b%b%b%d",list.add(7),list.add(null),list.add(7),list.size());   Output ---> truetruetrue3
+	System.out.format("%bb%d",list.add(7),list.add(null),list.add(7),list.size()); 
+		Output -> java.util.IllegalFormatConversionException: d is incompatible with java.lang.Boolean
+  Ex :		
+	int i = 2;
+	double r = Math.sqrt(i);
+	System.out.format("The square root of %d is %f.%n", i, r);  Output ----> The square root of 2 is 1.414214.
+
+- final ArrayList<Integer> list = new ArrayList<Integer>();  ----> Correct
+  list = new LinkedList();	  ----> Wrong (list can't be converted into LinkedList from ArrayList)
+  
+- b = i<10 | methodB(4); ---> Both operands are operated.
+  b = i<10 || methodB(8); ---> Any one operands will be operated.   
+  
+- Busy spinning : waiting strategy used in multithreading
+	- Threads are wait in loop, so CPU doesn't go to sleep mode or thread doesn't suspend, it holds value of object.
+	- Usage : used in wait time betw 2 messages is low
+	
+- Read-Write lock : (split 1 lock into 2)
+	2 separate locks are used for read & write
+	
+
+======================================
+program logics
+
+- count characters in given string
+	stringUtils.countOccurencesOf("given string", "char to count") -> Returns integer
+	Ex
+		String input = "java has a value";
+		int count = stringUtils.countOccurencesOf(input, "a") -> It counts occurances of char 'a' in given string
+			(or)
+		int count = input.length() - input.replaceAll("a", "").length   -> Returns occurances of char 'a' in input variable		
+  
+======================================
+Composition ?
+Prototype in java?
+Nested Class ?
+Nested try block ?
+Hibernate ?
+AOP, ORM ?
+JDBC Template 
+
+adv over spring mvc with struts mvc ?
+	
+types of lock, references in boxing	
+	
+	
+	
+	
+	
+	

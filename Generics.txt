@@ -1,0 +1,14 @@
+	❑ Polymorphic assignments apply only to the base type, not the generic type parameter.
+		You can say
+		List<Animal> aList = new ArrayList<Animal>(); // yes
+		You can't say
+		List<Animal> aList = new ArrayList<Dog>(); // no
+			
+	❑ When using a wildcard List<? extends Dog>, the collection can be accessed but not modified.
+	❑ When using a wildcard List<?>, any generic type can be assigned to the reference, but for access only—no modifications.
+	❑ List<Object> refers only to a List<Object>, while List<?> or List<? extends Object> can hold any type of object, but for access only.		
+		
+	❑ You can declare a generic method using a type not defined in the class: public <T> void makeList(T t) { }
+	  This is NOT using T as the return type. This method has a void return type, but to use T within the argument, you must declare the <T>, which happens before the return type.		
+	  
+	  Generics only works compile time at run time type erasure erases the generic type of the collection.
