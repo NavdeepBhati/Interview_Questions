@@ -126,7 +126,7 @@ http://career.guru99.com/hibernate-interview-questions/
 		-------------------------------------------------------------------------------------
 		1)	Returns null if object is not found.  |	Throws ObjectNotFoundException if object is not found.
 		2)	get() method always hit the database. |	load() method doesn't hit the database.
-		3)	It returns real object not proxy.	  |	It returns proxy object.	
+		3)	It returns real object not proxy.	  |	It returns proxy object containing only ID.
 		-------------------------------------------------------------------------------------
 			get() -> return null if there is no matching database row.
 

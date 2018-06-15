@@ -89,7 +89,242 @@ https://www.journaldev.com/3481/hibernate-session-merge-vs-update-save-saveorupd
 
    --Finally, persist doesn’t return anything so we need to use the persisted object to get the generated identifier value.
 																					 
+																					 
+---Bag 
+	https://codesjava.com/hibernate-bag-mapping
+	-A Bag is a java collection that stores elements without caring about the sequencing, but allow duplicate elements in the list. A bag is a random grouping of the objects in the list.
 
+	-A Collection is mapped with a <bag> element in the mapping table and initialized with java.util.ArrayList.
+	-Can contain Duplicates and No Order (Also called, Unordered List or Set with duplicates).
+	
+		-Example :
+			<bag name="employees" table="employee"
+					inverse="true" lazy="true" fetch="select">
+				<key>
+					<column name="employee_id" not-null="true" />
+				</key>
+				<one-to-many class="net.viralpatel.hibernate.Employee" />
+			</bag>	
+																						 
+																					 
+---Eager vs Lazy loading
+https://www.youtube.com/watch?v=RmnrgocuivQ&lc=UghnXmRRrAdmrHgCoAEC
 
+	-- By default hibernate supports lazy loading.
+	 Example : 
+	 
+		@Entity
+		public class Employee {
+
+			@Id
+			private int id;  
+			
+			//@NotNull
+			private String firstName;  
+			
+			//@NotNull
+			private String lastName;
+			
+			
+			@OneToOne(	fetch=FetchType.EAGER,optional=false)
+																//Adress will be loaded lazily
+																//So if the get statement is within the session than its okay 
+																// else it will give Lazy initialization exception error to solve it make it eager.
+			@PrimaryKeyJoinColumn 								
+			private Address address;
+			
+		-When we call  Employee e = (Employee) session.get(Employee.class, 1);
+		-This will fetch the employee object(proxy) and address is not loaded.
+		-When we make the very first call of address it will hit the db and return address.
+		-But it should be within session otherwise it will throw LazyInitializationExeception. To resolve this we need to make dependent entity to fetch eager.
 		
 	
+	
+	 
+--- Default lazy strategy 
+
+		-OneToMany	: 		LAZY
+		-ManyToOne	: 		EAGER
+		-ManyToMany	: 		LAZY
+		-OneToOne	:		EAGER
+	
+	
+--- Criteria Query
+	https://www.tutorialspoint.com/hibernate/hibernate_criteria_queries.htm
+
+	--The Criteria API allows us to build up a criteria query object programmatically, where we can apply different kind of filtration rules and logical 
+	  conditions.
+	--And the Session provides the createCriteria() API – which can be used to create a Criteria object that returns instances of the persistence object’s 
+	  class when we execute a query.																	
+
+	 1) Restrictions like less than, greater than, like, between 
+	  
+	  --Example:
+			Criteria cr = session.createCriteria(Employee.class);
+			cr.add(Restrictions.eq("salary", 2000));
+			List results = cr.list();
+	
+	2) And Or Logical Expressions
+		
+	 --Example:
+	
+		Criteria cr = session.createCriteria(Employee.class);
+
+		Criterion salary = Restrictions.gt("salary", 2000);
+		Criterion name = Restrictions.ilike("firstNname","zara%");
+
+		// To get records matching with OR conditions
+		LogicalExpression orExp = Restrictions.or(salary, name);
+		cr.add( orExp );	
+		
+	3)Pagination
+	--Example:
+		Criteria cr = session.createCriteria(Employee.class);
+		cr.setFirstResult(1);
+		cr.setMaxResults(10);
+		List results = cr.list();
+		
+	4)Sorting
+	--Example:
+			
+		Criteria cr = session.createCriteria(Employee.class);
+
+		// To get records having salary more than 2000
+		cr.add(Restrictions.gt("salary", 2000));
+
+		// To sort records in descening order
+		cr.addOrder(Order.desc("salary"));	
+		
+	5)Projections and Aggregatons like average, maximum, or minimum
+	--Example:
+
+		Criteria cr = session.createCriteria(Employee.class);
+
+		// To get total row count.
+		cr.setProjection(Projections.rowCount());
+
+		// To get average of a property.
+		cr.setProjection(Projections.avg("salary"));
+
+		// To get distinct count of a property.
+		cr.setProjection(Projections.countDistinct("firstName"));
+
+		// To get maximum of a property.
+		cr.setProjection(Projections.max("salary"));	
+	
+---Named Queries
+	--Named queries are created via class-level annotations on entities; normally, the queries apply to the entity in whose source file they occur, but there’s 
+	  no absolute requirement for this to be true.
+	
+	--Example:
+		@NamedQueries({
+				@NamedQuery(name = "supplier.findAll", query = "from Supplier s"),
+				@NamedQuery(name = "supplier.findByName",
+						query = "from Supplier s where s.name=:name"),
+		})	
+		
+		Query query = session.getNamedQuery("supplier.findAll");
+		List<Supplier> suppliers = query.list();
+		
+---HQL
+	--It is not used for DDL queries e.g. to alter table structure
+
+	--Example:
+		String hql = "from Product where price > :price";
+		Query query = session.createQuery(hql);
+		query.setDouble("price",25.0);
+		List results = query.list();		
+
+		
+---Native SQL:
+	--Example
+		String sql = "select avg(product.price) as avgPrice from Product product";
+		SQLQuery query = session.createSQLQuery(sql);
+		query.addScalar("avgPrice",Hibernate.DOUBLE);
+		List results = query.list();	
+		
+---First Level Cache 
+
+	-Its easy to understand the first level cache if we understand the fact that it is associated with Session object.
+	-As we know session object is created on demand from session factory and it is lost, once the session is closed.
+	-Similarly, first level cache associated with session object is available only till session object is live.
+	-It is available to session object only and is not accessible to any other session object in any other part of application.
+	-The loaded entity can be removed from session using evict() method. The next loading of this entity will again make a database call if it has been removed 
+	 using evict() method.
+	-The whole session cache can be removed using clear() method. It will remove all the entities stored in cache.	
+	
+
+---Auto Generated Values
+	https://www.objectdb.com/java/jpa/entity/generated
+
+	--Four Tpes		
+		-The Auto Strategy
+		-The Identity Strategy
+		-The Sequence Strategy
+		-The Table Strategy	
+			
+	
+	
+	
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+---Call stored procedure in hibaernate 
+	-We call suinfg named Query
+	
+	-Example:
+	1)
+		-Declare
+			@NamedNativeQueries({
+				@NamedNativeQuery(
+				name = "callStockStoreProcedure",
+				query = "CALL GetStocks(:stockCode)",
+				resultClass = Stock.class
+				)
+			})
+			@Entity
+			@Table(name = "stock")
+			public class Stock implements java.io.Serializable {	
+			
+			
+		-CaLL 
+			Query query = session.getNamedQuery("callStockStoreProcedure")
+				.setParameter("stockCode", "7277");
+			List result = query.list();
+			for(int i=0; i<result.size(); i++){
+				Stock stock = (Stock)result.get(i);
+				System.out.println(stock.getStockCode());
+			}		
+	
+	2)
+	
+		Query query = session.createSQLQuery(
+			"CALL GetStocks(:stockCode)")
+			.addEntity(Stock.class)
+			.setParameter("stockCode", "7277");
+					
+		List result = query.list();
+		for(int i=0; i<result.size(); i++){
+			Stock stock = (Stock)result.get(i);
+			System.out.println(stock.getStockCode());
+		}	
+		
+		
+---@Embedded Id
+	--It is used  to create Composite Key.
+	
+	-Example
+			
+		@Entity
+		public class Project {
+			@EmbeddedId ProjectId id;
+			 :
+		}
+
+		@Embeddable
+		Class ProjectId {
+			int departmentId;
+			long projectId;
+		}	
+		
+		
+		

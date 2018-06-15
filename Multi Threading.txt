@@ -1,0 +1,140 @@
+
+---ExecutorService
+
+--Implementations
+			ExecutorService es= Executors.newCachedThreadPool()
+
+	1) 	newCachedThreadPool:
+		   -A cached thread pool will create new threads as they are needed and reuse threads that have become free. 
+		   -Threads that have been idle for 60 seconds are removed from the pool.
+		   -Creates a thread pool that creates new threads as needed, but will reuse previously constructed threads when they 
+		     are available. 
+		   -These pools will typically improve the performance of programs that execute many short-lived asynchronous tasks. -Calls to execute will reuse previously constructed threads if available. 
+		   -If no existing thread is available, a new thread will be created and added to the pool. Threads that have not been 
+		     used for sixty seconds are terminated and removed from the cache. 
+		   -Thus, a pool that remains idle for long enough will not consume any resources. Note that pools with similar 
+		     properties but different details (for example, timeout parameters) may be created using ThreadPoolExecutor constructors.
+			 
+	2) newFixedThreadPool:
+			-Creates a thread pool that reuses a fixed number of threads operating off a shared unbounded queue. 
+			-At any point, at most nThreads threads will be active processing tasks. If additional tasks are submitted when 
+			  all threads are active, they will wait in the queue until a thread is available. 
+			-If any thread terminates due to a failure during execution prior to shutdown, a new one will take its place if 
+			  needed to execute subsequent tasks. 
+			-The threads in the pool will exist until it is explicitly shutdown.
+
+	3)newSingleThreadExecutor: 
+			-Creates an Executor that uses a single worker thread operating off an unbounded queue. (Note however that if 
+			 this single thread terminates due to a failure during execution prior to shutdown, a new one will take its place if needed to execute subsequent tasks.) 
+			-Tasks are guaranteed to execute sequentially, and no more than one task will be active at any given time. -Unlike the otherwise equivalent newFixedThreadPool(1) the returned executor is guaranteed not to be 
+			 reconfigurable to use additional threads.
+
+	4)newScheduledThreadPool:
+			-Creates a thread pool that can schedule commands to run after a given delay, or to execute periodically
+			
+			Example 
+			ScheduledExecutorService ftses = Executors.newScheduledThreadPool(4); // multi-threaded
+			// version
+			ftses.schedule(r, 5, TimeUnit.SECONDS); // run once after
+			// a delay 
+			//scheduleAtFixedRate (Runnable, long initialDelay, long period, TimeUnit timeunit)
+			ftses.scheduleAtFixedRate(r, 2, 5, TimeUnit.SECONDS); // begin after a
+			// 2sec delay
+			// and begin again every 5 seconds
+			//scheduleWithFixedDelay (Runnable, long initialDelay, long period, TimeUnit timeunit)
+			ftses.scheduleWithFixedDelay(r, 2, 5, TimeUnit.SECONDS); // begin after
+			// 2sec delay
+			// and begin again 5 seconds *after* completing the last execution
+
+		
+---Difference Between newSingleThreadExecutor() and newFixedThreadPool(1)
+
+	--Similirity
+		newSingleThreadExecutor() returns ExecutorService with single thread worker and newFixedThreadPool(1) also returns ExecutorService with single thread worker. In both cases if thread terminates, new thread will be created. 
+
+	--Difference
+		ExecutorService returned by newSingleThreadExecutor(), can never increase its thread pool size more than one. ExecutorService returned by newFixedThreadPool(1), can increase its thread pool size more than one at run time by setCorePoolSize() of the class ThreadPoolExecutor.			 
+			 
+			 
+---ExecutoeService Usage 
+	http://tutorials.jenkov.com/java-util-concurrent/executorservice.html
+				
+	--execute(Runnable)
+		-The execute(Runnable) method takes a java.lang.Runnable object, and executes it asynchronously.
+		
+	--submit(Runnable)
+		-The submit(Runnable) method also takes a Runnable implementation, but returns a Future object i.e. returns null. 
+		-This Future object can be used to check if the Runnable as finished executing.
+
+	--submit(Callable)
+		-The Callable instance is very similar to a Runnable except that its call() method can return a result. 
+		
+	--invokeAny()
+		-The invokeAny() method takes a collection of Callable objects, or subinterfaces of Callable.
+		-Invoking this method does not return a Future, but returns the result of one of the Callable objects.
+		-You have no guarantee about which of the Callable's results you get. Just one of the ones that finish.
+		-If one of the tasks complete (or throws an exception), the rest of the Callable's are cancelled.
+		
+		Example
+					
+			ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+			Set<Callable<String>> callables = new HashSet<Callable<String>>();
+
+			callables.add(new Callable<String>() {
+				public String call() throws Exception {
+					return "Task 1";
+				}
+			});
+			callables.add(new Callable<String>() {
+				public String call() throws Exception {
+					return "Task 2";
+				}
+			});
+			callables.add(new Callable<String>() {
+				public String call() throws Exception {
+					return "Task 3";
+				}
+			});
+
+			String result = executorService.invokeAny(callables);
+			System.out.println("result = " + result);
+			executorService.shutdown();		
+			
+		-This code example will print out the object returned by one of the Callable's in the given collection. I have tried running it a few times, and the 
+		  result changes. Sometimes it is "Task 1", sometimes "Task 2" etc.
+	
+	--invokeAll		
+		-The invokeAll() method invokes all of the Callable objects you pass to it in the collection passed as parameter. 
+		-The invokeAll() returns a list of Future objects via which you can obtain the results of the executions of each Callable.
+		-Keep in mind that a task might finish due to an exception, so it may not have "succeeded". There is no way on a Future to tell the difference.
+
+---Locks
+	--Benefits
+		■ The ability to duplicate traditional synchronized blocks.
+		■ Nonblock scoped locking—obtain a lock in one method and release it in	another (this can be dangerous, though).
+		■ Multiple wait/notify/notifyAll pools per lock—threads can select which pool (Condition) they wait on.
+		■ The ability to attempt to acquire a lock and take an alternative action if locking fails.
+		■ An implementation of a multiple-reader, single-writer lock.
+	
+---ReentrantLock
+	--TryLock		
+		Benefits
+			-One of the very powerful features is the ability to attempt (and fail) to acquire a lock. Ift it fails it cam do some other stuff and resume to 	
+			 the code when lock is available which ensures proper utilisation of CPU. 	
+			-There is also a variation of the tryLock method that allows you to specify an amount of time you are willing to wait to acquire the lock:
+			-Avoid Deadlock condition 
+			
+			Lock lock = new ReentrantLock();
+				try {
+						boolean locked = lock.tryLock(3, TimeUnit.SECONDS);
+						if (locked) {
+							try {
+									// work
+							}finally { // to ensure we unlock
+								lock.unlock();
+							}
+						}
+					} catch (InterruptedException ex) {
+					// handle
+				}		
