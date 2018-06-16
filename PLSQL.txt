@@ -1,0 +1,404 @@
+---PLSQL
+	--Provides a block structure for executable units ofcode. Maintenance of code is made easier with such a well-defined structure
+
+---Benefits
+	• Modularized program development
+	• Integration with Oracle tools
+	• Portability
+	• Exception handling
+	
+	
+---Structure
+
+	--Anonymous						
+		-Not saved in DB. Need to rewrite everytime.
+		
+		DECLARE (Optional)
+			Variables, cursors, user-defined exceptions
+		BEGIN (Mandatory)
+			- SQL statements
+			- PL/SQL statements
+		EXCEPTION (Optional)
+			Actions to perform when errors occur
+		END; (Mandatory)
+	
+	--Procedure
+		PROCEDURE name 
+			is
+		BEGIN (Mandatory)
+			- SQL statements
+			- PL/SQL statements
+		EXCEPTION (Optional)
+			Actions to perform when errors occur
+		END; (Mandatory)
+		
+	--Functions
+		Function name 
+		Return DataType
+			is
+		BEGIN (Mandatory)
+			- SQL statements
+			- PL/SQL statements
+			RETURN value;
+		EXCEPTION (Optional)
+			Actions to perform when errors occur
+		END; (Mandatory)
+	
+---Anonymous Block Example
+
+		 set serveroutput on;
+
+		declare 
+			i number;
+		begin
+		  i:=1;
+		  loop
+			dbms_output.put_line(i);  
+			i:=i+1;
+		  exit when i>5;
+		  end loop;
+		 end; 
+		 
+		 
+		 
+---Declare variable
+	--Syntax 
+		identifier [CONSTANT] datatype [NOT NULL]
+			[:= | DEFAULT expr];
+	
+	--Example
+		1)
+		DECLARE
+			emp_hiredate 	DATE;
+			emp_deptno 		NUMBER(2) NOT NULL := 10;
+			location 		VARCHAR2(13) := 'Atlanta';
+			c_comm 			CONSTANT NUMBER := 1400;
+			
+		2)	
+		SET SERVEROUTPUT ON
+		DECLARE
+			Myname VARCHAR2(20):= 'John';       
+		BEGIN
+			Myname := 'Steven';
+			DBMS_OUTPUT.PUT_LINE('My name is: '||Myname);
+		END;		
+		O/P :- My name is: Steven
+
+		3)
+			Myname VARCHAR2(20):='John';
+			Myname VARCHAR2(20) DEFAULT 'John';       		//Using default
+			
+---Data Types
+	
+	1) Scalar DataTypes
+
+		• CHAR [(maximum_length)]			--> Always store with fixed size. If size not given then default is 1 byte.
+		• VARCHAR2 (maximum_length)			--> Stores within the range of fixed size i.e. depends on what size of text is stored.  
+		• LONG
+		• LONG RAW
+		• NUMBER [(precision, scale)]
+		• BINARY_INTEGER
+		• PLS_INTEGER
+		• BOOLEAN
+		• BINARY_FLOAT
+		• BINARY_DOUBLE	
+	
+			
+	2) The %TYPE attribute
+
+		• Is used to declare a variable according to:
+			– A database column definition
+			– Another declared variable
+		• Is prefixed with:
+			– The database table and column
+			– The name of the declared variable	
+			
+		-Syntax	
+			identifier table.column_name%TYPE;
+		-Example
+			emp_lname employees.last_name%TYPE;
+			balance NUMBER(7,2);
+			min_balance balance%TYPE := 1000;				
+			
+			
+--Substitution Variables
+
+		• Are used to get user input at run time
+		• Are referenced within a PL/SQL block with a preceding ampersand
+		• Are used to avoid hard coding values that can be obtained at run time			
+		
+	-Example
+
+		VARIABLE emp_salary NUMBER
+		SET AUTOPRINT ON
+		DECLARE
+				empno NUMBER(6):=&empno;
+		BEGIN
+			SELECT salary INTO :emp_salary FROM employees WHERE employee_id = empno;
+		END;	
+		
+
+---Operators/Symbols
+
+		Symbol 	Meaning
+		<> 		Relational operator
+		!= 		Relational operator
+		|| 		Concatenation operator
+		-- 		Single line comment indicator
+		/* 		Beginning comment delimiter
+		*/ 		Ending comment delimiter
+		:= 		Assignment operator		
+		
+		
+---SQL Functions
+
+		• Available in procedural statements:
+			– Single-row number
+			– Single-row character
+			– Data type conversion
+			– Date
+			– Timestamp
+			– GREATEST and LEAST
+			– Miscellaneous functions
+		• Not available in procedural statements:
+			– DECODE
+			– Group functions	
+
+
+
+---Loops
+
+	LOOP
+	statement1;
+	. . .
+	EXIT [WHEN condition];
+	END LOOP;			
+
+---While Loops
+
+	WHILE condition LOOP
+	statement1;
+	statement2;
+	. . .
+	END LOOP;
+	
+---For Loops
+	No need to increment the counter. It is done implicitly.
+		FOR counter IN [REVERSE]
+		lower_bound..upper_bound LOOP
+		statement1;
+		statement2;
+		. . .
+		END LOOP;	
+	-Example
+		FOR i IN 3..3
+		LOOP
+		statement1;
+		END LOOP;		
+		
+---Composite data Types
+		• Use PL/SQL records when you want to store	values of different data types but only one occurrence at a time.
+		• Use PL/SQL collections when you want to store values of same data type. Like arrays 
+		
+	--Record
+		-Example
+	
+		TYPE emp_record_type IS RECORD
+			(last_name VARCHAR2(25),
+			job_id VARCHAR2(10),
+			salary NUMBER(8,2));
+		emp_record emp_record_type;	
+		
+---%ROWTYPE
+	https://www.tutorialspoint.com/plsql/plsql_records.htm
+
+	-The %ROWTYPE attribute provides a record type that represents a row in a database table.
+	-The record can store an entire row of data selected from the table or fetched from a cursor or cursor variable.
+	
+	-Advantages of Using %ROWTYPE
+			
+		• The number and data types of the underlying database columns need not be known.
+		• The number and data types of the underlying database column may change at run time.
+		• The attribute is useful when retrieving a row with the SELECT * statement	
+		
+		--Example
+
+			DEFINE employee_number = 124
+			DECLARE
+				emp_rec retired_emps%ROWTYPE;
+			BEGIN
+				SELECT employee_id, last_name, job_id, manager_id,hire_date, hire_date, salary, commission_pct,department_id INTO emp_rec FROM employees
+				WHERE employee_id = &employee_number;
+				INSERT INTO retired_emps VALUES emp_rec;
+			END;		
+			
+			
+---Cursors			
+	--Implicit cursors
+		-Implicit cursors are created and managed by the Oracle server. You do not have access to them. 
+		-The Oracle server creates such a cursor when it has to execute a SQL statement.
+		
+	--Explicit cursors
+
+		-As a programmer you may want to retrieve multiple rows from a database table, have a pointer to each row that is retrieved, and work on the rows one
+		 at a time. 
+		-In such cases, you can declare cursors explicitly depending on your business requirements. Such cursors that are declared by programmers are called   
+		 explicit cursors.
+		-You declare these cursors in the declarative section of a PL/SQL block.
+		-Remember that you can also declare variables and exceptions in the declarative section.	
+		
+		
+---SQL%ROWCOUNT
+	-An integer value that represents number of rows affected by the most recent SQL statement.
+
+---SQL%FOUND
+	-Boolean attribute that evaluates to TRUE if the most recent SQL statement returned at least one row.
+
+---SQL%NOTFOUND		
+	- Boolean attribute that evaluates to TRUE if the most recent SQL statement did not return even one row.
+		
+		
+---Explicit cursors
+		
+	--Note:
+		-If the query returns no rows when the cursor is opened, PL/SQL does not raise an exception.	
+	
+	--Syntax
+	
+		CURSOR cursor_name IS
+		select_statement		
+			
+	--Example	
+				
+		1)
+		DECLARE
+			locid NUMBER:= 1700;
+			CURSOR dept_cursor IS
+			SELECT * FROM departments WHERE location_id = locid;	
+			
+		2)
+			SET SERVEROUTPUT ON
+			DECLARE
+				CURSOR emp_cursor IS
+				SELECT employee_id, last_name FROM employee	WHERE department_id =30;
+				empno employees.employee_id%TYPE;
+				lname employees.last_name%TYPE;
+			BEGIN
+				OPEN emp_cursor;
+				LOOP
+					FETCH emp_cursor INTO empno, lname;							//The FETCH statement retrieves the rows from the cursor one at a time.
+
+					EXIT WHEN emp_cursor%NOTFOUND;
+					DBMS_OUTPUT.PUT_LINE( empno ||' '||lname);
+				END LOOP;			...
+			END;		
+				CLOSE emp_cursor;												//You can reopen the cursor if required. 
+			OPEN emp_cursor;
+
+		3) With paramters
+
+			SET SERVEROUTPUT ON
+			DECLARE
+				CURSOR emp_cursor (deptno NUMBER) IS
+				SELECT employee_id, last_name FROM employees
+				WHERE department_id = deptno;
+				dept_id NUMBER;
+				lname VARCHAR2(15);
+			BEGIN
+				OPEN emp_cursor (10);
+				...
+				CLOSE emp_cursor;
+				OPEN emp_cursor (20);
+			...
+			
+			
+---Cursor Status
+
+		Attribute			 Type			    Description
+					
+		%ISOPEN				Boolean		 		Evaluates to TRUE if the cursor is open
+										
+		%NOTFOUND			Boolean				Evaluates to TRUE if the most recent fetch does not return a row
+										
+		%FOUND				Boolean				Evaluates to TRUE if the most recent fetch returns a row; complement of %NOTFOUND
+
+		%ROWCOUNT			Number				Evaluates to the total number of rows returned so far
+
+		
+---Exception 
+		-We can raise user defined exception also.
+
+	--Example
+	
+			DECLARE 
+			   c_id customers.id%type := 8; 
+			   c_name customerS.Name%type; 
+			   c_addr customers.address%type; 
+			BEGIN 
+			   SELECT  name, address INTO  c_name, c_addr 
+			   FROM customers 
+			   WHERE id = c_id;  
+			   DBMS_OUTPUT.PUT_LINE ('Name: '||  c_name); 
+			   DBMS_OUTPUT.PUT_LINE ('Address: ' || c_addr); 
+
+			EXCEPTION 
+			   WHEN no_data_found THEN 
+				  dbms_output.put_line('No such customer!'); 
+			   WHEN others THEN 
+				  dbms_output.put_line('Error!'); 
+			END; 
+			/	
+			
+			
+---Procedure
+	
+	--Example
+
+		DECLARE 
+		   a number; 
+		PROCEDURE squareNum(x IN OUT number) IS   				// IN is default 
+		BEGIN 
+		  x := x * x; 
+		END;  
+		BEGIN 
+		   a:= 23; 
+		   squareNum(a); 
+		   dbms_output.put_line(' Square of (23): ' || a); 
+		END; 	
+	
+	--Invoke PROCEDURE
+		
+		1) 
+		BEGIN 
+			squareNum(5); 
+		END; 
+
+		2) 
+			exec MAXSALARY;
+
+			
+			
+---Triggers			
+	--Triggers are stored programs, which are automatically executed or fired when some events occur. 
+	
+	--Uses
+
+		-Generating some derived column values automatically	
+		-Event logging and storing information on table access
+		-Auditing
+		-Synchronous replication of tables
+	
+	--Example
+
+		CREATE OR REPLACE TRIGGER display_salary_changes 
+		BEFORE DELETE OR INSERT OR UPDATE ON customers 
+		FOR EACH ROW 
+		WHEN (NEW.ID > 0) 
+		DECLARE 
+		   sal_diff number; 
+		BEGIN 
+		   sal_diff := :NEW.salary  - :OLD.salary; 
+		   dbms_output.put_line('Old salary: ' || :OLD.salary); 
+		   dbms_output.put_line('New salary: ' || :NEW.salary); 
+		   dbms_output.put_line('Salary difference: ' || sal_diff); 
+		END; 	
