@@ -138,3 +138,34 @@
 					} catch (InterruptedException ex) {
 					// handle
 				}		
+				
+				
+---CountDownLatch:
+		Ref: https://www.geeksforgeeks.org/countdownlatch-in-java/
+		
+		- CountDownLatch is a synchronization utility, which allows any Thread to wait for certain number of events, triggered by different thread.
+
+		- When each event happens, The Thread which completes that event, calls countDown() method of this class. Which reduces count by one. When count reach  
+		  zero, which confirms that all event has completed, waiting thread wakes up and do its job.
+		- You can not reuse CountDownLatch once count is reaches to zero, this is the main difference between CountDownLatch and CyclicBarrier,
+		
+	
+---CyclicBarrier:
+			Ref : https://javarevisited.blogspot.com/2012/07/cyclicbarrier-example-java-5-concurrency-tutorial.html
+		-It is same as countDownLatch. The barrier is broken when the count givrn in cyclicBarrier matches the number(parties) of threads calling await method.
+		- The threads calling await method keeps on waiting till all threads(equivalent to parties ) call await method.
+		- If CyclicBarrier is initialized with 3 parties means 3 thread needs to call await method to break the barrier.
+		- CyclicBarrier.reset() put Barrier on its initial state, other thread which is waiting or not yet reached barrier will terminate with  
+		  java.util.concurrent.BrokenBarrierException
+		  
+---Semaphore:
+		Ref:-  https://www.geeksforgeeks.org/semaphore-in-java/
+		Ref:-  https://www.mkyong.com/java/java-thread-mutex-and-semaphore-example/
+		
+			-It is used to restrict the acces to shred resourece. 
+			-The threads acquire the lock to the shared access using acquire() method. The other threads wait/ blocked till the acquired thread releases the 
+			 lock.
+			
+		
+			
+			
