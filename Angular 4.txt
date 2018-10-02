@@ -60,20 +60,30 @@ Angular
 ---Directives:-A directive is a class with a @Directive decorator. 
 			- A component is a directive-with-a-template; a @Component decorator is actually a @Directive decorator extended with template-oriented features.		
 				
-		Two types:-	
-		1) Structural		
+		--Two types:-	
+			1) Structural :- It changes DOM structure e.g. *ngIf, *ngFor
+			    Ref: https://stackblitz.com/edit/af-angular-structuraldirective?file=app%2Fng-loop.directive.ts		
+				<li *ngFor="let hero of heroes"></li>
+				<app-hero-detail *ngIf="selectedHero"></app-hero-detail>		
+			
+				--*ngFor tells Angular to stamp out one <li> per hero in the heroes list.
+				--*ngIf includes the HeroDetail component only if a selected hero exists.
 				
-			<li *ngFor="let hero of heroes"></li>
-			<app-hero-detail *ngIf="selectedHero"></app-hero-detail>		
-		
-		--*ngFor tells Angular to stamp out one <li> per hero in the heroes list.
-		--*ngIf includes the HeroDetail component only if a selected hero exists.
-		
-		2) Attribute
-			The ngModel directive, which implements two-way data binding, is an example of an attribute directive.
-			Attribute directives alter the appearance or behavior of an existing element. In templates they look like regular HTML attributes, hence the name.
+			
+			2) Attribute :- change the appearance or behavior of an element, component, or another directive.
+				Ref : Angular.io/.../
+				The ngModel directive, which implements two-way data binding, is an example of an attribute directive.
+				Attribute directives alter the appearance or behavior of an existing element. In templates they look like regular HTML attributes, hence the name.
+				
+		--Note:
+			-The most important difference with the way we created our attribute directive is how they are provided to the DOM.
+			-Attribute directive uses ElementRef and Renderer to render and re-render while structural directives use TemplateRef and ViewContainerRef to update the DOM 
+			 content.	
 			
 		We can also write custom directives also
+			
+--- Views References :  ElementRef,ViewContainerRef,TemplateRef
+		Ref :-https://blog.angularindepth.com/exploring-angular-dom-abstractions-80b3ebcfc02
 
 ---Services :- Service is a broad category encompassing any value, function, or feature that your application needs.
 	--Component classes should be lean. They don't fetch data from the server, validate user input, or log directly to the console. They delegate such tasks 
@@ -110,7 +120,26 @@ Angular
 		price | currency:'USD':true
 		It displays a price of 42.33 as $42.33.		
 		
-		
+	--Custom Pipes: Create Pipe Class with @pipe decorator  implementing PipeTransform interface having transform method
+			Example: 
+					HTML : <p>{{ file.size | filesize }}</p>
+					Pipe Class: 
+							import { Pipe, PipeTransform } from '@angular/core';
+
+							@Pipe({ name: 'filesize' })
+							export class FileSizePipe implements PipeTransform {
+							  transform(size: number): string ) {
+							    return (size / (1024 * 1024)).toFixed(2) + 'MB';}
+							}					
+	--Implemet Custom Pipe in Component: Import Pipe Class as a service and create variable in component constructor.
+			Ref : https://alligator.io/angular/using-pipes-in-component-class/
+			Example : 
+						onSubmit(value) {
+						  this.data = this.fileSizePipe.transform(value);
+						  // ...
+						}			
+						
+					
 ---Decorators :  Angular offers us a few class decorators. These are the top-level decorators that we use to express intent for classes. 
 					They allow us to tell Angular that a particular class is a component, or module, for example. 
 					And the decorator allows us to define this intent without having to actually put any code inside the class.
@@ -221,9 +250,152 @@ Prac
 
 		}	
 	
+---Promises:
+	Ref : https://scotch.io/tutorials/javascript-promises-for-dummies
+	Ref: https://medium.com/front-end-hacking/ajax-async-callback-promise-e98f8074ebd7
+		-Promise is an object which is returned by the async function like ajax. 
+	
+	--Promise object has three states
+
+		-pending :- means the async operation is going on.
+		-resovled :- async operation is completed successfully.
+		-rejected :- async operation is completed with error.
+			
+	--Example:		
+
+			var promise = new Promise(function(resolve, reject) {
+			  // do a thing, possibly async, then…
+
+			  if (/* everything turned out fine */) {
+				resolve("Stuff worked!");
+			  }
+			  else {
+				reject(Error("It broke"));
+			  }
+			});
+			
+	--Chaining ( then() ) 
+		-You can chain thens together to transform values or run additional async actions one after another.
+		-catch is used to catch error 
+	--Example:
+				
+			var promise = new Promise(function(resolve, reject) {
+			  resolve(1);
+			});
+
+			promise.then(function(val) {
+			  console.log(val); // 1
+			  return val + 2;
+			}).then(function(val) {
+			  console.log(val); // 3
+			})
+	
+	
+	
 ---Observables: 
+	Ref:-https://dzone.com/refcardz/rxjs-streams?chapter=18
+	StackBlitz:-https://stackblitz.com/edit/angular-ncq4xg 
 		-Observables provide support for passing messages between publishers and subscribers in your application.
 		-Observables offer significant benefits over other techniques for event handling, asynchronous programming, and handling multiple values.
-
-
+		-Observables are loaded lazily i.e. It will work when it is subscribed.
 		
+	--Creation:
+			
+		-of(arg)						Converts arguments to an observable sequence
+		-from(iterable)					Converts arguments to an observable sequence
+		-fromPromise(promise)			Converts a Promises/A+ spec-compliant Promise and/or ES2015-compliant Promise to an observable sequence
+		-fromEvent(element, eventName)	Creates an observable sequence by adding an event listener to the matching DOMElement, jQuery element, Zepto Element, Angular 	
+										element, Ember.js element, or EventEmitter
+  
+		Example;
+					
+			   var obs = of(1, 2,3,4);
+
+				obs.subscribe(
+				  data => {
+					this.data = data;
+					console.log(data);
+				  }
+				);			
+				
+	--The Observer:
+		-It has three methods next() , error(), completed().
+		-The observer subscribes to this collection using the Subscribe method of the Observable class, and provides actions that are delegates which handle onNext, 
+		 onError and onCompleted.
+		-When an observer subscribes to an observable sequence, the subscribe method may be using asynchronous behavior behind the scenes depending on the operator.  
+		-Therefore, the subscribe call is asynchronous in that the caller is not blocked until the observation of the sequence completes. 
+		
+	--Example:
+	
+		  var obs = of(1, 2,3,4);											//Observer declared
+
+			obs.subscribe(
+		  
+			/////////// Type 1///////////////////
+			data => {
+			 
+		         this.data = data;
+		         console.log("data of "+data);
+		       }
+			   
+			/////////// Type 2///////////////////
+			 function next(val) {  
+			     console.log("data of  "+val);
+			 },
+			 function error(err) { 
+			     ;  fired in case an exception occurs
+			 },
+			 function complete() {
+			    console.log("data of completed "); ;  fired when all events have been processed
+			 }
+			 
+			/////////// Type 3///////////////////
+			  x => console.log('onNext: %s', x),
+			  e => console.log('onError: %s', e),
+			  () => console.log('onCompleted'));
+
+		  }	
+
+	--Sequencing with streams
+			
+		-map(fn)						Projects each element of an observable sequence into a new form
+		-filter(predicate)				Filters the elements of an observable sequence based on a predicate
+		-reduce(accumulator, [seed])	Applies an accumulator function over an observable sequence, returning the result of the aggregation as a single element in the 
+										result sequence. The specified seed value is used as the initial accumulator value
+		
+	--Example:
+	
+
+		const streamA$ = of(2);
+		const streamB$ = of(4);
+		const streamC$ =concat(streamA$, streamB$).pipe(
+		  map(val => val + 10 ),
+		  reduce((x, y) => x  + y),
+
+		 );
+
+		streamC$.subscribe(console.log); //prints 26
+		
+				
+
+---Component LifeCycle:
+
+		--ngOnChanges -		 		called when an input binding value changes
+		--ngOnInit - 		  		after the first ngOnChanges , called only once
+		--ngDoCheck - 		  		after every run of change detection
+		--ngAfterContentInit - 		after component content initialized.   				Used with @ContentChild
+		--ngAfterContentChecked - 	after every check of component content.				Used with @ContentChild
+		--ngAfterViewInit - 		after component's view(s) are initialized.			Used with @ViewChild
+		--ngAfterViewChecked - 		after every check of a component's view(s).			Used with @ViewChild
+		--ngOnDestroy - 			just before the component is destroyed
+		
+	1)ngOnChanges: 
+				-It is used in parent child relationship, where child component is accessing parent component's value using @Input tag.
+				-This method is called automatically when the valure in changed  for variable assigned with @Input tag.
+				-This method has one argument "SimpleChanges". It keeps the track of the previous value and changed value of the @Input declared varaible.
+				
+	2) ngAfterViewInit/ngAfterContentinit : 
+				Ref : https://www.infragistics.com/community/blogs/b/infragistics/posts/simplifying-viewchild-nad-contentchild-in-angular
+				StackBlitz  : https://stackblitz.com/edit/angular-uss5cd
+				
+				
